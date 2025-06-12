@@ -5,6 +5,8 @@ import {
   blogPosts, 
   businessSubmissions, 
   contacts,
+  weddings,
+  rsvps,
   type Vendor, 
   type InsertVendor,
   type Review,
@@ -16,7 +18,11 @@ import {
   type BusinessSubmission,
   type InsertBusinessSubmission,
   type Contact,
-  type InsertContact
+  type InsertContact,
+  type Wedding,
+  type InsertWedding,
+  type Rsvp,
+  type InsertRsvp
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, like, and, desc, sql } from "drizzle-orm";
@@ -47,6 +53,15 @@ export interface IStorage {
 
   // Contacts
   createContact(contact: InsertContact): Promise<Contact>;
+
+  // Weddings
+  getWeddings(): Promise<Wedding[]>;
+  getWedding(slug: string): Promise<Wedding | undefined>;
+  createWedding(wedding: InsertWedding): Promise<Wedding>;
+
+  // RSVPs
+  getWeddingRsvps(weddingId: number): Promise<Rsvp[]>;
+  createRsvp(rsvp: InsertRsvp): Promise<Rsvp>;
 }
 
 export class DatabaseStorage implements IStorage {

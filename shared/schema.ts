@@ -91,6 +91,41 @@ export const contacts = pgTable("contacts", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const weddings = pgTable("weddings", {
+  id: serial("id").primaryKey(),
+  brideName: text("bride_name").notNull(),
+  groomName: text("groom_name").notNull(),
+  weddingDate: timestamp("wedding_date").notNull(),
+  venue: text("venue").notNull(),
+  venueAddress: text("venue_address").notNull(),
+  ceremonyTime: text("ceremony_time").notNull(),
+  receptionTime: text("reception_time"),
+  coverImage: text("cover_image"),
+  galleryImages: text("gallery_images").array(),
+  story: text("story"),
+  slug: text("slug").notNull(),
+  rsvpDeadline: timestamp("rsvp_deadline"),
+  maxGuests: integer("max_guests").default(100),
+  isPublic: boolean("is_public").default(true),
+  contactEmail: text("contact_email").notNull(),
+  contactPhone: text("contact_phone"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const rsvps = pgTable("rsvps", {
+  id: serial("id").primaryKey(),
+  weddingId: integer("wedding_id").notNull().references(() => weddings.id),
+  guestName: text("guest_name").notNull(),
+  guestEmail: text("guest_email").notNull(),
+  guestPhone: text("guest_phone"),
+  attendingCeremony: boolean("attending_ceremony").default(true),
+  attendingReception: boolean("attending_reception").default(true),
+  numberOfGuests: integer("number_of_guests").default(1),
+  dietaryRestrictions: text("dietary_restrictions"),
+  message: text("message"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Insert schemas
 export const insertVendorSchema = createInsertSchema(vendors).omit({
   id: true,
@@ -125,6 +160,16 @@ export const insertContactSchema = createInsertSchema(contacts).omit({
   createdAt: true,
 });
 
+export const insertWeddingSchema = createInsertSchema(weddings).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertRsvpSchema = createInsertSchema(rsvps).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Types
 export type Vendor = typeof vendors.$inferSelect;
 export type InsertVendor = z.infer<typeof insertVendorSchema>;
@@ -138,3 +183,7 @@ export type BusinessSubmission = typeof businessSubmissions.$inferSelect;
 export type InsertBusinessSubmission = z.infer<typeof insertBusinessSubmissionSchema>;
 export type Contact = typeof contacts.$inferSelect;
 export type InsertContact = z.infer<typeof insertContactSchema>;
+export type Wedding = typeof weddings.$inferSelect;
+export type InsertWedding = z.infer<typeof insertWeddingSchema>;
+export type Rsvp = typeof rsvps.$inferSelect;
+export type InsertRsvp = z.infer<typeof insertRsvpSchema>;
