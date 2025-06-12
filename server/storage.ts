@@ -192,6 +192,35 @@ export class DatabaseStorage implements IStorage {
       .returning();
     return newContact;
   }
+
+  async getWeddings(): Promise<Wedding[]> {
+    return await db.select().from(weddings).where(eq(weddings.isPublic, true)).orderBy(desc(weddings.weddingDate));
+  }
+
+  async getWedding(slug: string): Promise<Wedding | undefined> {
+    const [wedding] = await db.select().from(weddings).where(eq(weddings.slug, slug));
+    return wedding || undefined;
+  }
+
+  async createWedding(wedding: InsertWedding): Promise<Wedding> {
+    const [newWedding] = await db
+      .insert(weddings)
+      .values(wedding)
+      .returning();
+    return newWedding;
+  }
+
+  async getWeddingRsvps(weddingId: number): Promise<Rsvp[]> {
+    return await db.select().from(rsvps).where(eq(rsvps.weddingId, weddingId)).orderBy(desc(rsvps.createdAt));
+  }
+
+  async createRsvp(rsvp: InsertRsvp): Promise<Rsvp> {
+    const [newRsvp] = await db
+      .insert(rsvps)
+      .values(rsvp)
+      .returning();
+    return newRsvp;
+  }
 }
 
 export const storage = new DatabaseStorage();

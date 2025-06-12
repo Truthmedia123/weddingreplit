@@ -139,6 +139,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Wedding routes
+  app.get("/api/weddings", async (req, res) => {
+    try {
+      const weddings = await storage.getWeddings();
+      res.json(weddings);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch weddings" });
+    }
+  });
+
+  app.get("/api/weddings/:slug", async (req, res) => {
+    try {
+      const wedding = await storage.getWedding(req.params.slug);
+      if (!wedding) {
+        return res.status(404).json({ error: "Wedding not found" });
+      }
+      res.json(wedding);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch wedding" });
+    }
+  });
+
+  app.post("/api/weddings", async (req, res) => {
+    try {
+      const wedding = await storage.createWedding(req.body);
+      res.json(wedding);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create wedding" });
+    }
+  });
+
+  app.get("/api/weddings/:id/rsvps", async (req, res) => {
+    try {
+      const rsvps = await storage.getWeddingRsvps(parseInt(req.params.id));
+      res.json(rsvps);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch RSVPs" });
+    }
+  });
+
+  app.post("/api/weddings/:id/rsvps", async (req, res) => {
+    try {
+      const rsvpData = { ...req.body, weddingId: parseInt(req.params.id) };
+      const rsvp = await storage.createRsvp(rsvpData);
+      res.json(rsvp);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to submit RSVP" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
