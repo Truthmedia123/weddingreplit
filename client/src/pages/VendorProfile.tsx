@@ -162,6 +162,84 @@ export default function VendorProfile() {
               </Card>
             )}
 
+            {/* Social Media Content */}
+            {(vendor.instagram || vendor.youtube) && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Social Media & Content</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Instagram Integration */}
+                    {vendor.instagram && (
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-2">
+                          <i className="fab fa-instagram text-pink-500 text-xl"></i>
+                          <h3 className="font-semibold">Instagram</h3>
+                        </div>
+                        <div className="bg-gradient-to-r from-pink-50 to-purple-50 p-4 rounded-xl border">
+                          <p className="text-sm text-gray-600 mb-3">
+                            Follow us on Instagram for the latest updates and behind-the-scenes content
+                          </p>
+                          <a 
+                            href={vendor.instagram.startsWith('http') ? vendor.instagram : `https://instagram.com/${vendor.instagram}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-4 py-2 rounded-lg font-medium hover:shadow-lg transition-all transform hover:scale-105"
+                          >
+                            <i className="fab fa-instagram"></i>
+                            View Instagram Profile
+                          </a>
+                          
+                          {/* Instagram embed placeholder */}
+                          <div className="mt-4 bg-white rounded-lg p-4 border-2 border-dashed border-gray-200">
+                            <div className="text-center text-gray-500">
+                              <i className="fab fa-instagram text-3xl mb-2"></i>
+                              <p className="text-sm">Latest Instagram posts would appear here</p>
+                              <p className="text-xs mt-1">Visit our Instagram profile to see recent content</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* YouTube Integration */}
+                    {vendor.youtube && (
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-2">
+                          <i className="fab fa-youtube text-red-500 text-xl"></i>
+                          <h3 className="font-semibold">YouTube</h3>
+                        </div>
+                        <div className="bg-gradient-to-r from-red-50 to-pink-50 p-4 rounded-xl border">
+                          <p className="text-sm text-gray-600 mb-3">
+                            Watch our video portfolio and client testimonials
+                          </p>
+                          <a 
+                            href={vendor.youtube.startsWith('http') ? vendor.youtube : `https://youtube.com/${vendor.youtube}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-lg font-medium hover:shadow-lg transition-all transform hover:scale-105"
+                          >
+                            <i className="fab fa-youtube"></i>
+                            View YouTube Channel
+                          </a>
+                          
+                          {/* YouTube embed placeholder */}
+                          <div className="mt-4 bg-white rounded-lg p-4 border-2 border-dashed border-gray-200">
+                            <div className="text-center text-gray-500">
+                              <i className="fab fa-youtube text-3xl mb-2"></i>
+                              <p className="text-sm">Latest YouTube videos would appear here</p>
+                              <p className="text-xs mt-1">Visit our YouTube channel to watch our portfolio</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             {/* Reviews */}
             <Card>
               <CardHeader>
@@ -330,13 +408,13 @@ export default function VendorProfile() {
                   )}
                 </div>
 
-                {(vendor.website || vendor.instagram || vendor.facebook) && (
+                {(vendor.website || vendor.instagram || vendor.youtube || vendor.facebook) && (
                   <div className="pt-4 border-t">
                     <h4 className="font-semibold mb-3">Follow Us</h4>
                     <div className="flex gap-2">
                       {vendor.website && (
                         <Button 
-                          onClick={() => window.open(vendor.website, '_blank')}
+                          onClick={() => window.open(vendor.website!, '_blank')}
                           size="sm" 
                           variant="outline"
                         >
@@ -345,18 +423,40 @@ export default function VendorProfile() {
                       )}
                       {vendor.instagram && (
                         <Button 
-                          onClick={() => window.open(vendor.instagram, '_blank')}
+                          onClick={() => window.open(
+                            vendor.instagram!.startsWith('http') 
+                              ? vendor.instagram! 
+                              : `https://instagram.com/${vendor.instagram}`, 
+                            '_blank'
+                          )}
                           size="sm" 
                           variant="outline"
+                          className="text-pink-600 border-pink-300 hover:bg-pink-50"
                         >
                           <i className="fab fa-instagram"></i>
                         </Button>
                       )}
-                      {vendor.facebook && (
+                      {vendor.youtube && (
                         <Button 
-                          onClick={() => window.open(vendor.facebook, '_blank')}
+                          onClick={() => window.open(
+                            vendor.youtube!.startsWith('http') 
+                              ? vendor.youtube! 
+                              : `https://youtube.com/${vendor.youtube}`, 
+                            '_blank'
+                          )}
                           size="sm" 
                           variant="outline"
+                          className="text-red-600 border-red-300 hover:bg-red-50"
+                        >
+                          <i className="fab fa-youtube"></i>
+                        </Button>
+                      )}
+                      {vendor.facebook && (
+                        <Button 
+                          onClick={() => window.open(vendor.facebook!, '_blank')}
+                          size="sm" 
+                          variant="outline"
+                          className="text-blue-600 border-blue-300 hover:bg-blue-50"
                         >
                           <i className="fab fa-facebook"></i>
                         </Button>
