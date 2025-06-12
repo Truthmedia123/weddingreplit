@@ -16,6 +16,7 @@ export default function Layout({ children }: LayoutProps) {
     { name: "Vendors", href: "/vendors/all" },
     { name: "Venues", href: "/vendors/venues" },
     { name: "Blog", href: "/blog" },
+    { name: "RSVP", href: "/couples/priya-raj-2024" },
     { name: "About", href: "/about" },
   ];
 
