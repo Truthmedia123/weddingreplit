@@ -64,10 +64,7 @@ export default function Home() {
                 From stunning beach ceremonies to authentic Portuguese-Goan celebrations.
               </p>
               
-              {/* Enhanced search bar */}
-              <div className="max-w-4xl mx-auto px-2 sm:px-0">
-                <SearchBar className="elegant-card search-container" />
-              </div>
+
 
               {/* Trust indicators */}
               <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-3xl mx-auto">

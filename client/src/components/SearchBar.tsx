@@ -60,12 +60,6 @@ export default function SearchBar({ onSearch, className = "" }: SearchBarProps) 
                 <SelectItem value="all">All Locations in Goa</SelectItem>
                 <SelectItem value="North Goa">North Goa</SelectItem>
                 <SelectItem value="South Goa">South Goa</SelectItem>
-                <SelectItem value="Panaji">Panaji</SelectItem>
-                <SelectItem value="Margao">Margao</SelectItem>
-                <SelectItem value="Calangute">Calangute</SelectItem>
-                <SelectItem value="Baga">Baga</SelectItem>
-                <SelectItem value="Anjuna">Anjuna</SelectItem>
-                <SelectItem value="Candolim">Candolim</SelectItem>
               </SelectContent>
             </Select>
           </div>

@@ -14,6 +14,7 @@ export const vendors = pgTable("vendors", {
   address: text("address"),
   website: text("website"),
   instagram: text("instagram"),
+  youtube: text("youtube"),
   facebook: text("facebook"),
   profileImage: text("profile_image"),
   coverImage: text("cover_image"),
