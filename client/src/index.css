@@ -187,3 +187,121 @@
 ::-webkit-scrollbar-thumb:hover {
   background: var(--goan-sea-blue);
 }
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 60px 0 40px;
+    min-height: 70vh;
+  }
+  
+  .hero-section h1 {
+    font-size: 2.5rem !important;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+  
+  .hero-section p {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    padding: 0 1rem;
+  }
+  
+  .wedding-script {
+    font-size: 1.5rem !important;
+  }
+  
+  /* Search bar mobile adjustments */
+  .search-container {
+    padding: 1.5rem 1rem;
+    margin: 1rem;
+    border-radius: 1.5rem;
+  }
+  
+  /* Button adjustments for mobile */
+  .mobile-btn {
+    font-size: 0.875rem;
+    padding: 0.75rem 1rem;
+  }
+  
+  /* Section spacing */
+  .section-mobile {
+    padding: 3rem 0;
+  }
+  
+  /* Text adjustments */
+  .section-title-mobile {
+    font-size: 2rem !important;
+    line-height: 1.2;
+  }
+  
+  .section-subtitle-mobile {
+    font-size: 1rem !important;
+    padding: 0 1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-section {
+    padding: 40px 0 30px;
+    min-height: 60vh;
+  }
+  
+  .hero-section h1 {
+    font-size: 2rem !important;
+    padding: 0 1rem;
+  }
+  
+  .section-title-mobile {
+    font-size: 1.75rem !important;
+  }
+  
+  .wedding-script {
+    font-size: 1.25rem !important;
+  }
+  
+  /* Card grid adjustments */
+  .grid-mobile-1 {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  /* Floating buttons mobile */
+  .floating-buttons {
+    bottom: 20px;
+    right: 15px;
+  }
+  
+  .floating-buttons button {
+    width: 50px;
+    height: 50px;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Navigation mobile */
+  .nav-mobile {
+    padding: 0.5rem 1rem;
+  }
+  
+  /* Footer mobile */
+  .footer-mobile {
+    text-align: center;
+    padding: 2rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-section h1 {
+    font-size: 1.75rem !important;
+  }
+  
+  .section-title-mobile {
+    font-size: 1.5rem !important;
+  }
+  
+  .search-container {
+    margin: 0.5rem;
+    padding: 1rem 0.75rem;
+  }
+}

@@ -37,23 +37,23 @@ export default function SearchBar({ onSearch, className = "" }: SearchBarProps) 
         <p className="text-gray-600">Search from 500+ verified wedding professionals</p>
       </div>
       
-      <form onSubmit={handleSearch} className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <form onSubmit={handleSearch} className="space-y-3 md:space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
           <div className="relative">
-            <i className="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-red-500"></i>
+            <i className="fas fa-search absolute left-3 md:left-4 top-1/2 transform -translate-y-1/2 text-red-500"></i>
             <Input
               type="text"
               placeholder="Search photographers, venues, caterers..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-12 pr-4 py-4 text-lg border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all"
+              className="pl-10 md:pl-12 pr-3 md:pr-4 py-3 md:py-4 text-base md:text-lg border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all"
             />
           </div>
           
           <div className="relative">
-            <i className="fas fa-map-marker-alt absolute left-4 top-1/2 transform -translate-y-1/2 text-teal-500 z-10"></i>
+            <i className="fas fa-map-marker-alt absolute left-3 md:left-4 top-1/2 transform -translate-y-1/2 text-teal-500 z-10"></i>
             <Select value={selectedLocation} onValueChange={setSelectedLocation}>
-              <SelectTrigger className="pl-12 pr-4 py-4 text-lg border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+              <SelectTrigger className="pl-10 md:pl-12 pr-3 md:pr-4 py-3 md:py-4 text-base md:text-lg border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
                 <SelectValue placeholder="Select Location in Goa" />
               </SelectTrigger>
               <SelectContent>
