@@ -22,12 +22,12 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <div className="min-h-screen">
       {/* Sticky Navigation */}
-      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-lg border-b border-yellow-500/20">
+      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-lg border-b border-yellow-500/20 nav-mobile">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+          <div className="flex justify-between items-center h-14 md:h-16">
             <div className="flex items-center">
               <Link href="/" className="flex-shrink-0">
-                <h1 className="text-2xl font-bold text-slate-800">
+                <h1 className="text-xl md:text-2xl font-bold text-slate-800">
                   <span style={{ color: "var(--goan-coral)" }}>TheGoan</span>
                   <span style={{ color: "var(--goan-sea-blue)" }}>Wedding</span>
                 </h1>

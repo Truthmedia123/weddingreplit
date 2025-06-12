@@ -84,20 +84,22 @@ export default function VendorCard({ vendor }: VendorCardProps) {
           <span>{vendor.location}</span>
         </div>
         
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-2 md:gap-3">
           <Button
             onClick={handleWhatsApp}
-            className="bg-green-500 hover:bg-green-600 text-white py-3 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg"
+            className="bg-green-500 hover:bg-green-600 text-white py-2 md:py-3 px-2 md:px-4 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg text-xs md:text-sm"
           >
-            <i className="fab fa-whatsapp mr-2"></i>
-            WhatsApp
+            <i className="fab fa-whatsapp mr-1 md:mr-2"></i>
+            <span className="hidden sm:inline">WhatsApp</span>
+            <span className="sm:hidden">WA</span>
           </Button>
           <Button
             onClick={handleCall}
-            className="bg-red-500 hover:bg-red-600 text-white py-3 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg"
+            className="bg-red-500 hover:bg-red-600 text-white py-2 md:py-3 px-2 md:px-4 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg text-xs md:text-sm"
           >
-            <i className="fas fa-phone mr-2"></i>
-            Call Now
+            <i className="fas fa-phone mr-1 md:mr-2"></i>
+            <span className="hidden sm:inline">Call Now</span>
+            <span className="sm:hidden">Call</span>
           </Button>
         </div>
         
