@@ -1,27 +1,181 @@
-import { users, type User, type InsertUser } from "@shared/schema";
+import { 
+  vendors, 
+  reviews, 
+  categories, 
+  blogPosts, 
+  businessSubmissions, 
+  contacts,
+  type Vendor, 
+  type InsertVendor,
+  type Review,
+  type InsertReview,
+  type Category,
+  type InsertCategory,
+  type BlogPost,
+  type InsertBlogPost,
+  type BusinessSubmission,
+  type InsertBusinessSubmission,
+  type Contact,
+  type InsertContact
+} from "@shared/schema";
 import { db } from "./db";
-import { eq } from "drizzle-orm";
+import { eq, like, and, desc, sql } from "drizzle-orm";
 
-// keep IStorage the same
+export interface IStorage {
+  // Vendors
+  getVendors(filters: { category?: string; location?: string; search?: string }): Promise<Vendor[]>;
+  getVendor(id: number): Promise<Vendor | undefined>;
+  getFeaturedVendors(): Promise<Vendor[]>;
+  createVendor(vendor: InsertVendor): Promise<Vendor>;
 
-// rewrite MemStorage to DatabaseStorage
+  // Reviews
+  getVendorReviews(vendorId: number): Promise<Review[]>;
+  createReview(review: InsertReview): Promise<Review>;
+
+  // Categories
+  getCategories(): Promise<Category[]>;
+  getCategory(slug: string): Promise<Category | undefined>;
+  createCategory(category: InsertCategory): Promise<Category>;
+
+  // Blog Posts
+  getBlogPosts(published?: boolean): Promise<BlogPost[]>;
+  getBlogPost(slug: string): Promise<BlogPost | undefined>;
+  createBlogPost(post: InsertBlogPost): Promise<BlogPost>;
+
+  // Business Submissions
+  createBusinessSubmission(submission: InsertBusinessSubmission): Promise<BusinessSubmission>;
+
+  // Contacts
+  createContact(contact: InsertContact): Promise<Contact>;
+}
+
 export class DatabaseStorage implements IStorage {
-  async getUser(id: number): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user || undefined;
+  async getVendors(filters: { category?: string; location?: string; search?: string }): Promise<Vendor[]> {
+    let query = db.select().from(vendors);
+    
+    const conditions = [];
+    
+    if (filters.category && filters.category !== 'all') {
+      conditions.push(eq(vendors.category, filters.category));
+    }
+    
+    if (filters.location) {
+      conditions.push(like(vendors.location, `%${filters.location}%`));
+    }
+    
+    if (filters.search) {
+      conditions.push(
+        sql`(${vendors.name} ILIKE ${`%${filters.search}%`} OR ${vendors.description} ILIKE ${`%${filters.search}%`})`
+      );
+    }
+    
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions));
+    }
+    
+    return query.orderBy(desc(vendors.featured), desc(vendors.rating));
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
-    return user || undefined;
+  async getVendor(id: number): Promise<Vendor | undefined> {
+    const [vendor] = await db.select().from(vendors).where(eq(vendors.id, id));
+    return vendor || undefined;
   }
 
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const [user] = await db
-      .insert(users)
-      .values(insertUser)
+  async getFeaturedVendors(): Promise<Vendor[]> {
+    return db.select().from(vendors)
+      .where(eq(vendors.featured, true))
+      .orderBy(desc(vendors.rating))
+      .limit(6);
+  }
+
+  async createVendor(vendor: InsertVendor): Promise<Vendor> {
+    const [newVendor] = await db
+      .insert(vendors)
+      .values(vendor)
       .returning();
-    return user;
+    return newVendor;
+  }
+
+  async getVendorReviews(vendorId: number): Promise<Review[]> {
+    return db.select().from(reviews)
+      .where(eq(reviews.vendorId, vendorId))
+      .orderBy(desc(reviews.createdAt));
+  }
+
+  async createReview(review: InsertReview): Promise<Review> {
+    const [newReview] = await db
+      .insert(reviews)
+      .values(review)
+      .returning();
+    
+    // Update vendor rating and review count
+    const vendorReviews = await this.getVendorReviews(review.vendorId);
+    const avgRating = vendorReviews.reduce((sum, r) => sum + r.rating, 0) / vendorReviews.length;
+    
+    await db.update(vendors)
+      .set({ 
+        rating: avgRating.toFixed(2),
+        reviewCount: vendorReviews.length 
+      })
+      .where(eq(vendors.id, review.vendorId));
+    
+    return newReview;
+  }
+
+  async getCategories(): Promise<Category[]> {
+    return db.select().from(categories).orderBy(categories.name);
+  }
+
+  async getCategory(slug: string): Promise<Category | undefined> {
+    const [category] = await db.select().from(categories).where(eq(categories.slug, slug));
+    return category || undefined;
+  }
+
+  async createCategory(category: InsertCategory): Promise<Category> {
+    const [newCategory] = await db
+      .insert(categories)
+      .values(category)
+      .returning();
+    return newCategory;
+  }
+
+  async getBlogPosts(published?: boolean): Promise<BlogPost[]> {
+    let query = db.select().from(blogPosts);
+    
+    if (published !== undefined) {
+      query = query.where(eq(blogPosts.published, published));
+    }
+    
+    return query.orderBy(desc(blogPosts.createdAt));
+  }
+
+  async getBlogPost(slug: string): Promise<BlogPost | undefined> {
+    const [post] = await db.select().from(blogPosts).where(eq(blogPosts.slug, slug));
+    return post || undefined;
+  }
+
+  async createBlogPost(post: InsertBlogPost): Promise<BlogPost> {
+    const [newPost] = await db
+      .insert(blogPosts)
+      .values(post)
+      .returning();
+    return newPost;
+  }
+
+  async createBusinessSubmission(submission: InsertBusinessSubmission): Promise<BusinessSubmission> {
+    const [newSubmission] = await db
+      .insert(businessSubmissions)
+      .values(submission)
+      .returning();
+    return newSubmission;
+  }
+
+  async createContact(contact: InsertContact): Promise<Contact> {
+    const [newContact] = await db
+      .insert(contacts)
+      .values(contact)
+      .returning();
+    return newContact;
   }
 }
 
