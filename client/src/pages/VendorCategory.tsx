@@ -40,7 +40,7 @@ export default function VendorCategory() {
       case 'rating':
         return Number(b.rating) - Number(a.rating);
       case 'reviews':
-        return b.reviewCount - a.reviewCount;
+        return (b.reviewCount || 0) - (a.reviewCount || 0);
       case 'name':
         return a.name.localeCompare(b.name);
       default:
@@ -84,7 +84,7 @@ export default function VendorCategory() {
                 <SelectValue placeholder="All Locations" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Locations</SelectItem>
+                <SelectItem value="all">All Locations</SelectItem>
                 <SelectItem value="North Goa">North Goa</SelectItem>
                 <SelectItem value="South Goa">South Goa</SelectItem>
                 <SelectItem value="Panaji">Panaji</SelectItem>
