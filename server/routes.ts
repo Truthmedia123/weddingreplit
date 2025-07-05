@@ -151,14 +151,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/weddings", async (req, res) => {
     try {
-      const weddingData = insertWeddingSchema.parse(req.body);
+      console.log("Wedding creation request body:", req.body);
+      
+      // Manual validation and transformation
+      const { weddingDate, rsvpDeadline, ...rest } = req.body;
+      const weddingData = {
+        ...rest,
+        weddingDate: new Date(weddingDate),
+        rsvpDeadline: rsvpDeadline ? new Date(rsvpDeadline) : null,
+        maxGuests: rest.maxGuests || 100,
+        isPublic: rest.isPublic !== false,
+      };
+      
+      console.log("Processed wedding data:", weddingData);
       const wedding = await storage.createWedding(weddingData);
       res.status(201).json(wedding);
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid wedding data", errors: error.errors });
-      }
-      res.status(500).json({ message: "Failed to create wedding" });
+      console.error("Wedding creation error:", error);
+      res.status(500).json({ message: "Failed to create wedding", error: error.message });
     }
   });
 

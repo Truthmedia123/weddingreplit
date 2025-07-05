@@ -160,9 +160,23 @@ export const insertContactSchema = createInsertSchema(contacts).omit({
   createdAt: true,
 });
 
-export const insertWeddingSchema = createInsertSchema(weddings).omit({
-  id: true,
-  createdAt: true,
+export const insertWeddingSchema = z.object({
+  brideName: z.string().min(1),
+  groomName: z.string().min(1),
+  weddingDate: z.string().transform(str => new Date(str)),
+  venue: z.string().min(1),
+  venueAddress: z.string().min(1),
+  ceremonyTime: z.string().min(1),
+  receptionTime: z.string().optional(),
+  coverImage: z.string().optional(),
+  galleryImages: z.array(z.string()).optional(),
+  story: z.string().optional(),
+  slug: z.string().min(1),
+  rsvpDeadline: z.string().optional().transform(str => str ? new Date(str) : null),
+  maxGuests: z.number().optional().default(100),
+  isPublic: z.boolean().optional().default(true),
+  contactEmail: z.string().email(),
+  contactPhone: z.string().optional(),
 });
 
 export const insertRsvpSchema = createInsertSchema(rsvps).omit({
