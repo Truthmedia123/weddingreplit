@@ -13,6 +13,9 @@ A premium wedding vendor directory website for Goa featuring vendor listings, re
 - **2024-12-25**: Removed search box from homepage hero section
 - **2024-12-25**: Enhanced mobile responsiveness across all components
 - **2024-12-25**: Upgraded design with Wedify-inspired aesthetics
+- **2025-01-05**: Successfully migrated from Replit Agent to Replit environment
+- **2025-01-05**: Implemented comprehensive light/dark mode toggle system
+- **2025-01-05**: Updated all components with dark mode support and proper theme switching
 
 ## Project Architecture
 
@@ -47,6 +50,7 @@ A premium wedding vendor directory website for Goa featuring vendor listings, re
 5. **Contact System**: Inquiry and communication management
 6. **Social Media Integration**: Instagram and YouTube content display
 7. **Mobile Optimization**: Responsive design for all devices
+8. **Dark Mode**: Comprehensive light/dark theme toggle with localStorage persistence
 
 ## User Preferences
 - Wedify-inspired elegant design aesthetic

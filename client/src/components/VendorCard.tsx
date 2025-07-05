@@ -21,7 +21,7 @@ export default function VendorCard({ vendor }: VendorCardProps) {
   };
 
   return (
-    <Card className="group cursor-pointer hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 overflow-hidden bg-white border-0 rounded-2xl">
+    <Card className="group cursor-pointer hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 overflow-hidden bg-white dark:bg-gray-800 border-0 rounded-2xl">
       <Link href={`/vendor/${vendor.id}`}>
         <div className="relative overflow-hidden">
           <img 
@@ -61,7 +61,7 @@ export default function VendorCard({ vendor }: VendorCardProps) {
       <CardContent className="p-6">
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-xl font-bold text-slate-800 group-hover:text-red-600 transition-colors duration-300">
+            <h3 className="text-xl font-bold text-slate-800 dark:text-white group-hover:text-red-600 transition-colors duration-300">
               {vendor.name}
             </h3>
             {vendor.priceRange && (
@@ -70,16 +70,16 @@ export default function VendorCard({ vendor }: VendorCardProps) {
               </span>
             )}
           </div>
-          <p className="text-gray-500 text-sm capitalize font-medium">
+          <p className="text-gray-500 dark:text-gray-400 text-sm capitalize font-medium">
             {vendor.category.replace('-', ' ')}
           </p>
         </div>
         
-        <p className="text-gray-600 text-sm mb-4 leading-relaxed line-clamp-2">
+        <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 leading-relaxed line-clamp-2">
           {vendor.description}
         </p>
         
-        <div className="flex items-center mb-6 text-gray-500 text-sm">
+        <div className="flex items-center mb-6 text-gray-500 dark:text-gray-400 text-sm">
           <i className="fas fa-map-marker-alt mr-2 text-red-500"></i>
           <span>{vendor.location}</span>
         </div>
@@ -105,7 +105,7 @@ export default function VendorCard({ vendor }: VendorCardProps) {
         
         {/* View profile link */}
         <Link href={`/vendor/${vendor.id}`}>
-          <div className="mt-4 text-center text-sm text-gray-600 hover:text-red-600 transition-colors cursor-pointer">
+          <div className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400 hover:text-red-600 transition-colors cursor-pointer">
             View Full Profile <i className="fas fa-arrow-right ml-1"></i>
           </div>
         </Link>
