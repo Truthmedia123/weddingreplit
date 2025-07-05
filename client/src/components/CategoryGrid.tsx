@@ -1,54 +1,37 @@
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
-
-const categories = [
-  {
-    name: "Photographers",
-    slug: "photographers",
-    icon: "fas fa-camera",
-    color: "from-red-500 to-red-600",
-    count: "120+"
-  },
-  {
-    name: "Venues",
-    slug: "venues", 
-    icon: "fas fa-map-marker-alt",
-    color: "from-teal-500 to-teal-600",
-    count: "85+"
-  },
-  {
-    name: "Caterers",
-    slug: "caterers",
-    icon: "fas fa-utensils",
-    color: "from-yellow-500 to-yellow-600",
-    count: "95+"
-  },
-  {
-    name: "Bands & DJs",
-    slug: "bands-djs",
-    icon: "fas fa-music",
-    color: "from-purple-500 to-purple-600",
-    count: "45+"
-  },
-  {
-    name: "Makeup Artists",
-    slug: "makeup-artists",
-    icon: "fas fa-cut",
-    color: "from-pink-500 to-rose-500",
-    count: "60+"
-  },
-  {
-    name: "Decor & Florists",
-    slug: "decor-florists",
-    icon: "fas fa-seedling",
-    color: "from-green-500 to-emerald-500",
-    count: "70+"
-  }
-];
+import { useQuery } from "@tanstack/react-query";
+import type { Category } from "@shared/schema";
 
 export default function CategoryGrid() {
+  const { data: categories = [], isLoading } = useQuery<Category[]>({
+    queryKey: ['/api/categories'],
+  });
+
+  if (isLoading) {
+    return (
+      <section className="py-24 bg-gradient-to-b from-slate-50 to-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <div className="animate-pulse">
+              <div className="h-8 bg-gray-200 rounded mx-auto w-48 mb-4"></div>
+              <div className="h-4 bg-gray-200 rounded mx-auto w-96"></div>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="animate-pulse">
+                <div className="bg-gray-200 rounded-xl h-32"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
-    <section className="py-24 bg-gradient-to-b from-slate-50 to-white relative overflow-hidden">
+    <section className="py-24 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800 relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 shell-pattern opacity-30"></div>
       
@@ -57,20 +40,20 @@ export default function CategoryGrid() {
           <p className="wedding-script text-xl md:text-2xl text-red-500 mb-3 md:mb-4">
             Our Services
           </p>
-          <h2 className="text-3xl md:text-4xl lg:text-6xl font-bold text-slate-800 mb-4 md:mb-6 section-title-mobile px-4 sm:px-0">
+          <h2 className="text-3xl md:text-4xl lg:text-6xl font-bold text-slate-800 dark:text-slate-100 mb-4 md:mb-6 section-title-mobile px-4 sm:px-0">
             Wedding Categories
           </h2>
           <div className="w-16 md:w-24 h-1 bg-gradient-to-r from-red-500 to-teal-500 mx-auto mb-4 md:mb-6 rounded-full"></div>
-          <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed section-subtitle-mobile px-4 sm:px-0">
+          <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed section-subtitle-mobile px-4 sm:px-0">
             Discover our handpicked collection of Goa's most talented wedding professionals. 
             Each category features verified vendors who specialize in creating magical moments.
           </p>
         </div>
         
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
-          {categories.map((category, index) => (
+          {categories.map((category) => (
             <Link key={category.slug} href={`/vendors/${category.slug}`}>
-              <Card className="group cursor-pointer hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 bg-white/80 backdrop-blur-sm border-0 overflow-hidden">
+              <Card className="group cursor-pointer hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-0 overflow-hidden">
                 <CardContent className="p-4 md:p-8 text-center relative">
                   {/* Hover background effect */}
                   <div className={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
@@ -84,12 +67,12 @@ export default function CategoryGrid() {
                     <div className={`absolute inset-0 bg-gradient-to-br ${category.color} w-12 h-12 md:w-20 md:h-20 rounded-xl md:rounded-2xl mx-auto opacity-20 blur-xl group-hover:blur-2xl transition-all duration-500`}></div>
                   </div>
                   
-                  <h3 className="font-bold text-sm md:text-lg text-slate-800 mb-2 md:mb-3 group-hover:text-red-600 transition-colors duration-300 leading-tight">
+                  <h3 className="font-bold text-sm md:text-lg text-slate-800 dark:text-slate-100 mb-2 md:mb-3 group-hover:text-red-600 transition-colors duration-300 leading-tight">
                     {category.name}
                   </h3>
                   
-                  <p className="text-xs md:text-sm text-gray-500 mb-2 md:mb-4 leading-relaxed">
-                    {category.count} Professional Vendors
+                  <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 mb-2 md:mb-4 leading-relaxed">
+                    {category.vendorCount || 0} Professional Vendors
                   </p>
                   
                   {/* Decorative line */}
