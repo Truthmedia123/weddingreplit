@@ -105,7 +105,7 @@ export class MemoryStorage implements IStorage {
     {
       id: 3,
       name: "Spice Garden Catering",
-      category: "catering",
+      category: "caterers",
       description: "Authentic Goan cuisine and multi-cuisine catering services for weddings with traditional flavors and modern presentation.",
       phone: "+91 832 234 5678",
       email: "orders@spicegardencatering.com",
