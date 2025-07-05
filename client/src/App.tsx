@@ -14,6 +14,8 @@ import BlogPost from "@/pages/BlogPost";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
 import Couples from "@/pages/Couples";
+import CreateRSVP from "@/pages/CreateRSVP";
+import TrackRSVP from "@/pages/TrackRSVP";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -29,6 +31,8 @@ function Router() {
         <Route path="/about" component={About} />
         <Route path="/contact" component={Contact} />
         <Route path="/couples/:slug" component={Couples} />
+        <Route path="/create-rsvp" component={CreateRSVP} />
+        <Route path="/track/:slug" component={TrackRSVP} />
         <Route component={NotFound} />
       </Switch>
     </Layout>

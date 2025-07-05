@@ -149,6 +149,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/weddings", async (req, res) => {
+    try {
+      const weddingData = insertWeddingSchema.parse(req.body);
+      const wedding = await storage.createWedding(weddingData);
+      res.status(201).json(wedding);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid wedding data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create wedding" });
+    }
+  });
+
   app.get("/api/weddings/:slug", async (req, res) => {
     try {
       const wedding = await storage.getWedding(req.params.slug);
