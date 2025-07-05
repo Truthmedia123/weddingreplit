@@ -80,7 +80,7 @@ export class MemoryStorage implements IStorage {
     {
       id: 2,
       name: "Goa Wedding Photography",
-      category: "photography", 
+      category: "photographers", 
       description: "Award-winning wedding photographers specializing in candid moments and destination weddings across Goa.",
       phone: "+91 832 456 7890",
       email: "info@goaweddingphoto.com",
@@ -151,12 +151,37 @@ export class MemoryStorage implements IStorage {
   ];
 
   private categories: Category[] = [
-    { id: 1, name: "Wedding Photography", slug: "photography", description: "Capture your special moments", icon: "fas fa-camera", color: "from-purple-500 to-pink-500", vendorCount: 25 },
-    { id: 2, name: "Wedding Venues", slug: "venues", description: "Beautiful venues for your dream wedding", icon: "fas fa-building", color: "from-blue-500 to-teal-500", vendorCount: 15 },
-    { id: 3, name: "Catering Services", slug: "catering", description: "Delicious cuisine and catering services", icon: "fas fa-utensils", color: "from-orange-500 to-red-500", vendorCount: 20 },
-    { id: 4, name: "Bridal Makeup", slug: "makeup", description: "Professional bridal makeup and beauty services", icon: "fas fa-palette", color: "from-pink-500 to-rose-500", vendorCount: 30 },
-    { id: 5, name: "Wedding Planning", slug: "planning", description: "Complete wedding planning and coordination services", icon: "fas fa-clipboard-list", color: "from-green-500 to-emerald-500", vendorCount: 12 },
-    { id: 6, name: "Decorations", slug: "decorations", description: "Beautiful decorations and floral arrangements", icon: "fas fa-seedling", color: "from-yellow-500 to-orange-500", vendorCount: 18 }
+    { id: 1, name: "Photographers", slug: "photographers", description: "Capture your special moments with professional wedding photographers", icon: "fas fa-camera", color: "from-purple-500 to-pink-500", vendorCount: 74 },
+    { id: 2, name: "Salons and Makeup Artists", slug: "salons-makeup-artists", description: "Professional bridal makeup and beauty services", icon: "fas fa-palette", color: "from-pink-500 to-rose-500", vendorCount: 87 },
+    { id: 3, name: "Cakes and Confectionery", slug: "cakes-confectionery", description: "Delicious wedding cakes and sweet treats", icon: "fas fa-birthday-cake", color: "from-yellow-500 to-orange-500", vendorCount: 65 },
+    { id: 4, name: "Bands", slug: "bands", description: "Live music bands for your wedding celebration", icon: "fas fa-music", color: "from-blue-500 to-purple-500", vendorCount: 64 },
+    { id: 5, name: "Bridal Accessories", slug: "bridal-accessories", description: "Beautiful accessories and jewelry for the bride", icon: "fas fa-gem", color: "from-pink-400 to-red-400", vendorCount: 54 },
+    { id: 6, name: "Emcee", slug: "emcee", description: "Professional wedding hosts and masters of ceremony", icon: "fas fa-microphone", color: "from-indigo-500 to-blue-500", vendorCount: 49 },
+    { id: 7, name: "Caterers", slug: "caterers", description: "Delicious catering services for your wedding", icon: "fas fa-utensils", color: "from-orange-500 to-red-500", vendorCount: 45 },
+    { id: 8, name: "Decorators", slug: "decorators", description: "Beautiful decorations and floral arrangements", icon: "fas fa-seedling", color: "from-green-500 to-emerald-500", vendorCount: 42 },
+    { id: 9, name: "Venues", slug: "venues", description: "Beautiful wedding venues across Goa", icon: "fas fa-building", color: "from-blue-500 to-teal-500", vendorCount: 40 },
+    { id: 10, name: "Designers", slug: "designers", description: "Fashion designers and wedding attire", icon: "fas fa-tshirt", color: "from-purple-400 to-pink-400", vendorCount: 34 },
+    { id: 11, name: "Wedding Planners", slug: "wedding-planners", description: "Professional wedding planning services", icon: "fas fa-clipboard-list", color: "from-green-500 to-blue-500", vendorCount: 31 },
+    { id: 12, name: "Car Rentals", slug: "car-rentals", description: "Wedding car rentals and transportation services", icon: "fas fa-car", color: "from-gray-500 to-blue-500", vendorCount: 30 },
+    { id: 13, name: "Gifts and Favours", slug: "gifts-favours", description: "Wedding gifts and party favors", icon: "fas fa-gift", color: "from-red-400 to-pink-400", vendorCount: 28 },
+    { id: 14, name: "Professional Services", slug: "professional-services", description: "Other professional wedding services", icon: "fas fa-briefcase", color: "from-gray-600 to-blue-600", vendorCount: 28 },
+    { id: 15, name: "Videographers", slug: "videographers", description: "Professional wedding videography services", icon: "fas fa-video", color: "from-red-500 to-orange-500", vendorCount: 27 },
+    { id: 16, name: "Entertainers & One Man Band", slug: "entertainers-one-man-band", description: "Wedding entertainers and solo performers", icon: "fas fa-guitar", color: "from-yellow-600 to-red-600", vendorCount: 25 },
+    { id: 17, name: "Bar Services", slug: "bar-services", description: "Cocktails and bar services for your wedding", icon: "fas fa-cocktail", color: "from-blue-400 to-green-400", vendorCount: 23 },
+    { id: 18, name: "Mehendi Artists", slug: "mehendi-artists", description: "Traditional henna and mehendi artists", icon: "fas fa-hand-sparkles", color: "from-orange-400 to-yellow-400", vendorCount: 18 },
+    { id: 19, name: "Jewellery", slug: "jewellery", description: "Wedding jewelry and precious accessories", icon: "fas fa-ring", color: "from-yellow-500 to-amber-500", vendorCount: 16 },
+    { id: 20, name: "DJ", slug: "dj", description: "Professional wedding DJs and music services", icon: "fas fa-headphones", color: "from-purple-600 to-blue-600", vendorCount: 16 },
+    { id: 21, name: "Designers and Printers", slug: "designers-printers", description: "Wedding card designers and printers", icon: "fas fa-print", color: "from-indigo-400 to-purple-400", vendorCount: 15 },
+    { id: 22, name: "Tailors and Boutiques", slug: "tailors-boutiques", description: "Wedding attire tailors and boutiques", icon: "fas fa-cut", color: "from-pink-600 to-red-600", vendorCount: 14 },
+    { id: 23, name: "Choirs", slug: "choirs", description: "Wedding choirs and vocal performances", icon: "fas fa-users", color: "from-blue-600 to-indigo-600", vendorCount: 11 },
+    { id: 24, name: "Stays and Hotels", slug: "stays-hotels", description: "Wedding accommodation and guest stays", icon: "fas fa-bed", color: "from-teal-500 to-green-500", vendorCount: 10 },
+    { id: 25, name: "Florist", slug: "florist", description: "Beautiful wedding flowers and arrangements", icon: "fas fa-leaf", color: "from-green-400 to-teal-400", vendorCount: 8 },
+    { id: 26, name: "Sound and Lighting", slug: "sound-lighting", description: "Professional sound and lighting services", icon: "fas fa-lightbulb", color: "from-yellow-400 to-orange-400", vendorCount: 8 },
+    { id: 27, name: "Roce Bands & Wedding Traditions", slug: "roce-bands-traditions", description: "Traditional Goan wedding ceremonies and bands", icon: "fas fa-drum", color: "from-amber-500 to-orange-500", vendorCount: 8 },
+    { id: 28, name: "Choreographers", slug: "choreographers", description: "Wedding dance choreographers and instructors", icon: "fas fa-running", color: "from-pink-500 to-purple-500", vendorCount: 7 },
+    { id: 29, name: "Resorts", slug: "resorts", description: "Wedding resorts and destination venues", icon: "fas fa-umbrella-beach", color: "from-cyan-500 to-blue-500", vendorCount: 6 },
+    { id: 30, name: "Salons and Spa", slug: "salons-spa", description: "Bridal spa and wellness services", icon: "fas fa-spa", color: "from-green-300 to-blue-300", vendorCount: 3 },
+    { id: 31, name: "Restaurants", slug: "restaurants", description: "Wedding dinner venues and restaurants", icon: "fas fa-utensils", color: "from-red-400 to-orange-400", vendorCount: 1 }
   ];
 
   private blogPosts: BlogPost[] = [

@@ -18,6 +18,8 @@ A premium wedding vendor directory website for Goa featuring vendor listings, re
 - **2025-01-05**: Updated all components with dark mode support and proper theme switching
 - **2025-01-05**: Enhanced RSVP system with dynamic page creation and QR code generation
 - **2025-01-05**: Added RSVP tracking dashboard for couples to monitor guest responses
+- **2025-01-05**: Updated vendor categories to match weddingsdegoa.com with 31 comprehensive categories
+- **2025-01-05**: Fixed RSVP creation backend issues - wedding page creation now fully functional
 
 ## Project Architecture
 
