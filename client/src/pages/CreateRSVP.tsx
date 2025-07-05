@@ -26,7 +26,7 @@ const createRSVPSchema = z.object({
   contactPhone: z.string().optional(),
   story: z.string().optional(),
   coverImage: z.string().url().optional().or(z.literal("")),
-  maxGuests: z.number().default(100),
+  maxGuests: z.string().transform((val) => parseInt(val) || 100),
   rsvpDeadline: z.string().optional(),
 });
 
@@ -51,7 +51,7 @@ export default function CreateRSVP() {
       contactPhone: "",
       story: "",
       coverImage: "",
-      maxGuests: 100,
+      maxGuests: "100",
       rsvpDeadline: "",
     },
   });
@@ -357,6 +357,7 @@ export default function CreateRSVP() {
                     {...form.register("maxGuests")}
                     placeholder="100"
                     min="1"
+                    defaultValue="100"
                   />
                 </div>
               </div>

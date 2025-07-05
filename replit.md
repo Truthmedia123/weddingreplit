@@ -16,6 +16,8 @@ A premium wedding vendor directory website for Goa featuring vendor listings, re
 - **2025-01-05**: Successfully migrated from Replit Agent to Replit environment
 - **2025-01-05**: Implemented comprehensive light/dark mode toggle system
 - **2025-01-05**: Updated all components with dark mode support and proper theme switching
+- **2025-01-05**: Enhanced RSVP system with dynamic page creation and QR code generation
+- **2025-01-05**: Added RSVP tracking dashboard for couples to monitor guest responses
 
 ## Project Architecture
 
@@ -51,6 +53,7 @@ A premium wedding vendor directory website for Goa featuring vendor listings, re
 6. **Social Media Integration**: Instagram and YouTube content display
 7. **Mobile Optimization**: Responsive design for all devices
 8. **Dark Mode**: Comprehensive light/dark theme toggle with localStorage persistence
+9. **Enhanced RSVP System**: Dynamic RSVP page creation with QR codes and guest tracking
 
 ## User Preferences
 - Wedify-inspired elegant design aesthetic
