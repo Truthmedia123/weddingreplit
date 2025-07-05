@@ -1,4 +1,5 @@
 import { pgTable, text, serial, integer, boolean, timestamp, decimal, jsonb } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -125,6 +126,29 @@ export const rsvps = pgTable("rsvps", {
   message: text("message"),
   createdAt: timestamp("created_at").defaultNow(),
 });
+
+// Relations
+export const vendorsRelations = relations(vendors, ({ many }) => ({
+  reviews: many(reviews),
+}));
+
+export const reviewsRelations = relations(reviews, ({ one }) => ({
+  vendor: one(vendors, {
+    fields: [reviews.vendorId],
+    references: [vendors.id],
+  }),
+}));
+
+export const weddingsRelations = relations(weddings, ({ many }) => ({
+  rsvps: many(rsvps),
+}));
+
+export const rsvpsRelations = relations(rsvps, ({ one }) => ({
+  wedding: one(weddings, {
+    fields: [rsvps.weddingId],
+    references: [weddings.id],
+  }),
+}));
 
 // Insert schemas
 export const insertVendorSchema = createInsertSchema(vendors).omit({

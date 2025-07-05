@@ -1,8 +1,7 @@
-import { users, vendors, reviews, categories, blogPosts, businessSubmissions, contacts, weddings, rsvps } from "@shared/schema";
+import { vendors, reviews, categories, blogPosts, businessSubmissions, contacts, weddings, rsvps } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, desc, sql, like } from "drizzle-orm";
+import { eq, and, desc, sql, like, or, ilike } from "drizzle-orm";
 import type { 
-  User, InsertUser, 
   Vendor, InsertVendor, 
   Review, InsertReview, 
   Category, InsertCategory,
@@ -412,4 +411,114 @@ export class MemoryStorage implements IStorage {
   }
 }
 
-export const storage = new MemoryStorage();
+export class DatabaseStorage implements IStorage {
+  async getVendors(filters: { category?: string; location?: string; search?: string }): Promise<Vendor[]> {
+    let query = db.select().from(vendors);
+    
+    if (filters.category) {
+      query = query.where(eq(vendors.category, filters.category));
+    }
+    if (filters.location) {
+      query = query.where(eq(vendors.location, filters.location));
+    }
+    if (filters.search) {
+      query = query.where(
+        or(
+          ilike(vendors.name, `%${filters.search}%`),
+          ilike(vendors.description, `%${filters.search}%`)
+        )
+      );
+    }
+    
+    return await query;
+  }
+
+  async getVendor(id: number): Promise<Vendor | undefined> {
+    const [vendor] = await db.select().from(vendors).where(eq(vendors.id, id));
+    return vendor || undefined;
+  }
+
+  async getFeaturedVendors(): Promise<Vendor[]> {
+    return await db.select().from(vendors).where(eq(vendors.featured, true));
+  }
+
+  async createVendor(vendor: InsertVendor): Promise<Vendor> {
+    const [newVendor] = await db.insert(vendors).values(vendor).returning();
+    return newVendor;
+  }
+
+  async getVendorReviews(vendorId: number): Promise<Review[]> {
+    return await db.select().from(reviews).where(eq(reviews.vendorId, vendorId));
+  }
+
+  async createReview(review: InsertReview): Promise<Review> {
+    const [newReview] = await db.insert(reviews).values(review).returning();
+    return newReview;
+  }
+
+  async getCategories(): Promise<Category[]> {
+    return await db.select().from(categories);
+  }
+
+  async getCategory(slug: string): Promise<Category | undefined> {
+    const [category] = await db.select().from(categories).where(eq(categories.slug, slug));
+    return category || undefined;
+  }
+
+  async createCategory(category: InsertCategory): Promise<Category> {
+    const [newCategory] = await db.insert(categories).values(category).returning();
+    return newCategory;
+  }
+
+  async getBlogPosts(published?: boolean): Promise<BlogPost[]> {
+    if (published !== undefined) {
+      return await db.select().from(blogPosts).where(eq(blogPosts.published, published)).orderBy(desc(blogPosts.createdAt));
+    }
+    return await db.select().from(blogPosts).orderBy(desc(blogPosts.createdAt));
+  }
+
+  async getBlogPost(slug: string): Promise<BlogPost | undefined> {
+    const [post] = await db.select().from(blogPosts).where(eq(blogPosts.slug, slug));
+    return post || undefined;
+  }
+
+  async createBlogPost(post: InsertBlogPost): Promise<BlogPost> {
+    const [newPost] = await db.insert(blogPosts).values(post).returning();
+    return newPost;
+  }
+
+  async createBusinessSubmission(submission: InsertBusinessSubmission): Promise<BusinessSubmission> {
+    const [newSubmission] = await db.insert(businessSubmissions).values(submission).returning();
+    return newSubmission;
+  }
+
+  async createContact(contact: InsertContact): Promise<Contact> {
+    const [newContact] = await db.insert(contacts).values(contact).returning();
+    return newContact;
+  }
+
+  async getWeddings(): Promise<Wedding[]> {
+    return await db.select().from(weddings);
+  }
+
+  async getWedding(slug: string): Promise<Wedding | undefined> {
+    const [wedding] = await db.select().from(weddings).where(eq(weddings.slug, slug));
+    return wedding || undefined;
+  }
+
+  async createWedding(wedding: InsertWedding): Promise<Wedding> {
+    const [newWedding] = await db.insert(weddings).values(wedding).returning();
+    return newWedding;
+  }
+
+  async getWeddingRsvps(weddingId: number): Promise<Rsvp[]> {
+    return await db.select().from(rsvps).where(eq(rsvps.weddingId, weddingId));
+  }
+
+  async createRsvp(rsvp: InsertRsvp): Promise<Rsvp> {
+    const [newRsvp] = await db.insert(rsvps).values(rsvp).returning();
+    return newRsvp;
+  }
+}
+
+export const storage = new DatabaseStorage();
