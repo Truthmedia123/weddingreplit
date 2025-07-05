@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Layout from "@/components/Layout";
 import Home from "@/pages/Home";
+import Categories from "@/pages/Categories";
 import VendorCategory from "@/pages/VendorCategory";
 import VendorProfile from "@/pages/VendorProfile";
 import ListBusiness from "@/pages/ListBusiness";
@@ -23,6 +24,7 @@ function Router() {
     <Layout>
       <Switch>
         <Route path="/" component={Home} />
+        <Route path="/categories" component={Categories} />
         <Route path="/vendors/:category" component={VendorCategory} />
         <Route path="/vendor/:id" component={VendorProfile} />
         <Route path="/list-business" component={ListBusiness} />

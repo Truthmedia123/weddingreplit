@@ -25,6 +25,14 @@ A premium wedding vendor directory website for Goa featuring vendor listings, re
 - **2025-01-05**: Integrated PostgreSQL database with full data persistence
 - **2025-01-05**: Migrated from in-memory storage to DatabaseStorage with Drizzle ORM
 - **2025-01-05**: Seeded database with comprehensive vendor, category, and blog data
+- **2025-01-05**: Added new unique categories: Photobooth & 360° Booth Rentals, Kids Entertainment & Nannies
+- **2025-01-05**: Renamed "Cakes and Confectionery" to "Cakes & Traditional Bakers" for uniqueness
+- **2025-01-05**: Updated 19 category names to avoid copy-paste appearance from competitors
+- **2025-01-05**: Enhanced CategoryGrid to show limited categories on homepage with "View All" button
+- **2025-01-05**: Created dedicated /categories page showing all 33 vendor categories
+- **2025-01-05**: Added comprehensive search functionality with magnifying glass icon in header
+- **2025-01-05**: Implemented search bar for both desktop and mobile navigation
+- **2025-01-05**: Updated navigation to prioritize "Categories" over generic "Vendors" link
 
 ## Project Architecture
 

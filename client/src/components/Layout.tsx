@@ -2,6 +2,7 @@ import { Link, useLocation } from "wouter";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Input } from "@/components/ui/input";
 import FloatingButtons from "./FloatingButtons";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -12,14 +13,22 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   const [location] = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const navigation = [
-    { name: "Vendors", href: "/vendors/all" },
+    { name: "Categories", href: "/categories" },
     { name: "Venues", href: "/vendors/venues" },
     { name: "Blog", href: "/blog" },
     { name: "Create RSVP", href: "/create-rsvp" },
     { name: "About", href: "/about" },
   ];
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      window.location.href = `/vendors/all?search=${encodeURIComponent(searchQuery.trim())}`;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -36,8 +45,8 @@ export default function Layout({ children }: LayoutProps) {
               </Link>
             </div>
             
-            <div className="hidden md:block">
-              <div className="ml-10 flex items-baseline space-x-8">
+            <div className="hidden md:flex items-center space-x-6">
+              <div className="flex items-baseline space-x-8">
                 {navigation.map((item) => (
                   <Link
                     key={item.name}
@@ -51,15 +60,35 @@ export default function Layout({ children }: LayoutProps) {
                     {item.name}
                   </Link>
                 ))}
-                <Link href="/list-business">
-                  <Button
-                    className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-full text-sm font-medium transition-all transform hover:scale-105"
-                  >
-                    List Your Business
-                  </Button>
-                </Link>
-                <ThemeToggle />
               </div>
+              
+              {/* Search Bar */}
+              <form onSubmit={handleSearch} className="relative">
+                <div className="relative">
+                  <Input
+                    type="text"
+                    placeholder="Search vendors..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-64 pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-full focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white dark:bg-gray-800"
+                  />
+                  <button
+                    type="submit"
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-500 transition-colors"
+                  >
+                    <i className="fas fa-search text-sm"></i>
+                  </button>
+                </div>
+              </form>
+              
+              <Link href="/list-business">
+                <Button
+                  className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-full text-sm font-medium transition-all transform hover:scale-105"
+                >
+                  List Your Business
+                </Button>
+              </Link>
+              <ThemeToggle />
             </div>
             
             <div className="md:hidden">
@@ -75,6 +104,26 @@ export default function Layout({ children }: LayoutProps) {
                       <h3 className="text-lg font-semibold">Menu</h3>
                       <ThemeToggle />
                     </div>
+                    
+                    {/* Mobile Search */}
+                    <form onSubmit={handleSearch} className="pb-4">
+                      <div className="relative">
+                        <Input
+                          type="text"
+                          placeholder="Search vendors..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-full focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white dark:bg-gray-800"
+                        />
+                        <button
+                          type="submit"
+                          className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-500 transition-colors"
+                        >
+                          <i className="fas fa-search text-sm"></i>
+                        </button>
+                      </div>
+                    </form>
+                    
                     {navigation.map((item) => (
                       <Link
                         key={item.name}

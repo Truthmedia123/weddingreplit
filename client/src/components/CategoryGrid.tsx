@@ -3,10 +3,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import type { Category } from "@shared/schema";
 
-export default function CategoryGrid() {
-  const { data: categories = [], isLoading } = useQuery<Category[]>({
+interface CategoryGridProps {
+  showAll?: boolean;
+  maxCategories?: number;
+}
+
+export default function CategoryGrid({ showAll = false, maxCategories = 8 }: CategoryGridProps) {
+  const { data: allCategories = [], isLoading } = useQuery<Category[]>({
     queryKey: ['/api/categories'],
   });
+
+  const categories = showAll ? allCategories : allCategories.slice(0, maxCategories);
 
   if (isLoading) {
     return (
@@ -89,14 +96,16 @@ export default function CategoryGrid() {
         </div>
         
         {/* Call to action */}
-        <div className="text-center mt-16">
-          <Link href="/vendors/all">
-            <div className="inline-flex items-center gap-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all transform hover:scale-105 shadow-xl hover:shadow-2xl">
-              <span>Explore All Vendors</span>
-              <i className="fas fa-chevron-right"></i>
-            </div>
-          </Link>
-        </div>
+        {!showAll && (
+          <div className="text-center mt-16">
+            <Link href="/categories">
+              <div className="inline-flex items-center gap-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all transform hover:scale-105 shadow-xl hover:shadow-2xl">
+                <span>View All Categories ({allCategories.length})</span>
+                <i className="fas fa-chevron-right"></i>
+              </div>
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   );
