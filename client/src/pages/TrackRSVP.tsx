@@ -134,49 +134,49 @@ export default function TrackRSVP() {
 
         {/* Stats Cards */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="dark:bg-gray-800">
+          <Card>
             <CardContent className="p-6">
               <div className="flex items-center">
                 <Users className="h-8 w-8 text-blue-500" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total RSVPs</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{rsvps.length}</p>
+                  <p className="text-sm font-medium text-gray-600">Total RSVPs</p>
+                  <p className="text-2xl font-bold text-gray-900">{rsvps.length}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="dark:bg-gray-800">
+          <Card>
             <CardContent className="p-6">
               <div className="flex items-center">
                 <Users className="h-8 w-8 text-green-500" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Guests</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{totalGuests}</p>
+                  <p className="text-sm font-medium text-gray-600">Total Guests</p>
+                  <p className="text-2xl font-bold text-gray-900">{totalGuests}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="dark:bg-gray-800">
+          <Card>
             <CardContent className="p-6">
               <div className="flex items-center">
                 <Calendar className="h-8 w-8 text-purple-500" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Ceremony</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{ceremonyAttendees}</p>
+                  <p className="text-sm font-medium text-gray-600">Ceremony</p>
+                  <p className="text-2xl font-bold text-gray-900">{ceremonyAttendees}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="dark:bg-gray-800">
+          <Card>
             <CardContent className="p-6">
               <div className="flex items-center">
                 <Calendar className="h-8 w-8 text-orange-500" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Reception</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{receptionAttendees}</p>
+                  <p className="text-sm font-medium text-gray-600">Reception</p>
+                  <p className="text-2xl font-bold text-gray-900">{receptionAttendees}</p>
                 </div>
               </div>
             </CardContent>
@@ -196,7 +196,7 @@ export default function TrackRSVP() {
         </div>
 
         {/* RSVP List */}
-        <Card className="dark:bg-gray-800">
+        <Card>
           <CardHeader>
             <CardTitle>RSVP Responses</CardTitle>
           </CardHeader>
@@ -205,7 +205,7 @@ export default function TrackRSVP() {
               <div className="text-center py-8">
                 <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">No RSVPs Yet</h3>
-                <p className="text-gray-600 dark:text-gray-400">Share your RSVP page to start receiving responses.</p>
+                <p className="text-gray-600">Share your RSVP page to start receiving responses.</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -214,15 +214,15 @@ export default function TrackRSVP() {
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
-                          <h4 className="font-medium text-gray-900 dark:text-white">{rsvp.guestName}</h4>
+                          <h4 className="font-medium text-gray-900">{rsvp.guestName}</h4>
                           <Badge variant="secondary">{rsvp.numberOfGuests || 1} guest{(rsvp.numberOfGuests || 1) > 1 ? 's' : ''}</Badge>
                           {rsvp.attendingCeremony && (
-                            <Badge className="bg-green-100 text-green-800 dark:text-green-200">
+                            <Badge className="bg-green-100 text-green-800">
                               Ceremony
                             </Badge>
                           )}
                           {rsvp.attendingReception && (
-                            <Badge className="bg-blue-100 text-blue-800 dark:text-blue-200">
+                            <Badge className="bg-blue-100 text-blue-800">
                               Reception
                             </Badge>
                           )}

@@ -90,14 +90,14 @@ export default function ListBusiness() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-gray-900 py-12">
+    <div className="min-h-screen bg-slate-50 py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-800 dark:text-white mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-800 mb-4">
             List Your Business
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Join Goa's premier wedding vendor directory and connect with couples planning their dream wedding
           </p>
         </div>
@@ -273,7 +273,7 @@ export default function ListBusiness() {
                   {submitMutation.isPending ? "Submitting..." : "Submit Business Listing"}
                 </Button>
                 
-                <p className="text-sm text-gray-500 dark:text-gray-400 text-center mt-4">
+                <p className="text-sm text-gray-500 text-center mt-4">
                   By submitting, you agree to our terms and conditions. We'll review your submission within 2-3 business days.
                 </p>
               </div>

@@ -49,6 +49,8 @@ A premium wedding vendor directory website for Goa operating as a public directo
 - **2025-07-06**: Completely removed all dark mode classes from all components (CategoryGrid, Categories page, CreateRSVP, TrackRSVP)
 - **2025-07-06**: Fixed RSVP creation functionality - added missing database columns and updated schema
 - **2025-07-06**: RSVP system now fully operational with wedding page creation and guest management
+- **2025-07-06**: Successfully completed project migration from Replit Agent to Replit environment
+- **2025-07-06**: Completely removed all dark mode classes from entire codebase as requested
 
 ## Project Architecture
 
