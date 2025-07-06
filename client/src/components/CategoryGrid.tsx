@@ -44,9 +44,6 @@ export default function CategoryGrid({ showAll = false, maxCategories = 8 }: Cat
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div className="text-center mb-12 md:mb-20">
-          <p className="wedding-script text-xl md:text-2xl text-red-500 mb-3 md:mb-4">
-            Our Services
-          </p>
           <h2 className="text-3xl md:text-4xl lg:text-6xl font-bold text-slate-800 dark:text-slate-100 mb-4 md:mb-6 section-title-mobile px-4 sm:px-0">
             Wedding Categories
           </h2>
