@@ -100,20 +100,20 @@ export default function CreateRSVP() {
     const trackUrl = `${window.location.origin}/track/${createdWedding.slug}`;
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-12">
+      <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-blue-50 py-12">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
             <Heart className="h-16 w-16 text-red-500 mx-auto mb-4" />
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">
               RSVP Page Created Successfully!
             </h1>
-            <p className="text-lg text-gray-600 dark:text-gray-300">
+            <p className="text-lg text-gray-600">
               Your wedding RSVP page is now live and ready to share
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
-            <Card className="dark:bg-gray-800">
+            <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Heart className="h-5 w-5 text-red-500" />
@@ -170,7 +170,7 @@ export default function CreateRSVP() {
               </CardContent>
             </Card>
 
-            <Card className="dark:bg-gray-800">
+            <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <MapPin className="h-5 w-5 text-blue-500" />
@@ -181,7 +181,7 @@ export default function CreateRSVP() {
                 <div className="bg-white p-4 rounded-lg">
                   <QRCodeSVG value={rsvpUrl} size={200} />
                 </div>
-                <p className="text-sm text-gray-600 dark:text-gray-400 text-center">
+                <p className="text-sm text-gray-600 text-center">
                   Share this QR code on your wedding invitations or social media
                 </p>
               </CardContent>
@@ -199,19 +199,19 @@ export default function CreateRSVP() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-blue-50 py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8">
           <Heart className="h-16 w-16 text-red-500 mx-auto mb-4" />
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">
             Create Your Wedding RSVP Page
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300">
+          <p className="text-lg text-gray-600">
             Share your special day with guests through a beautiful, personalized RSVP page
           </p>
         </div>
 
-        <Card className="dark:bg-gray-800">
+        <Card>
           <CardHeader>
             <CardTitle>Wedding Details</CardTitle>
           </CardHeader>

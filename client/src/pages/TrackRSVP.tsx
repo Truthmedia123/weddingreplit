@@ -23,10 +23,10 @@ export default function TrackRSVP() {
 
   if (weddingLoading || rsvpsLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-red-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600 dark:text-gray-400">Loading RSVP data...</p>
+          <p className="mt-4 text-gray-600">Loading RSVP data...</p>
         </div>
       </div>
     );
@@ -34,10 +34,10 @@ export default function TrackRSVP() {
 
   if (!wedding) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">RSVP Not Found</h1>
-          <p className="text-gray-600 dark:text-gray-400">The RSVP page you're looking for doesn't exist.</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">RSVP Not Found</h1>
+          <p className="text-gray-600">The RSVP page you're looking for doesn't exist.</p>
         </div>
       </div>
     );
@@ -88,18 +88,18 @@ export default function TrackRSVP() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+    <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
             {wedding.brideName} & {wedding.groomName}'s Wedding
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">RSVP Dashboard</p>
+          <p className="text-gray-600">RSVP Dashboard</p>
         </div>
 
         {/* Wedding Info */}
-        <Card className="mb-8 dark:bg-gray-800">
+        <Card className="mb-8">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Calendar className="h-5 w-5 text-red-500" />
@@ -204,7 +204,7 @@ export default function TrackRSVP() {
             {rsvps.length === 0 ? (
               <div className="text-center py-8">
                 <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No RSVPs Yet</h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No RSVPs Yet</h3>
                 <p className="text-gray-600 dark:text-gray-400">Share your RSVP page to start receiving responses.</p>
               </div>
             ) : (
@@ -217,17 +217,17 @@ export default function TrackRSVP() {
                           <h4 className="font-medium text-gray-900 dark:text-white">{rsvp.guestName}</h4>
                           <Badge variant="secondary">{rsvp.numberOfGuests || 1} guest{(rsvp.numberOfGuests || 1) > 1 ? 's' : ''}</Badge>
                           {rsvp.attendingCeremony && (
-                            <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                            <Badge className="bg-green-100 text-green-800 dark:text-green-200">
                               Ceremony
                             </Badge>
                           )}
                           {rsvp.attendingReception && (
-                            <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                            <Badge className="bg-blue-100 text-blue-800 dark:text-blue-200">
                               Reception
                             </Badge>
                           )}
                         </div>
-                        <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                        <div className="text-sm text-gray-600 space-y-1">
                           <p><strong>Email:</strong> {rsvp.guestEmail}</p>
                           {rsvp.guestPhone && <p><strong>Phone:</strong> {rsvp.guestPhone}</p>}
                           {rsvp.dietaryRestrictions && <p><strong>Dietary Restrictions:</strong> {rsvp.dietaryRestrictions}</p>}

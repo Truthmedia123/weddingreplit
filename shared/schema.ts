@@ -104,7 +104,6 @@ export const weddings = pgTable("weddings", {
   ceremonyTime: text("ceremony_time").notNull(),
   receptionTime: text("reception_time"),
   coverImage: text("cover_image"),
-  galleryImages: text("gallery_images").array(),
   story: text("story"),
   slug: text("slug").notNull(),
   rsvpDeadline: timestamp("rsvp_deadline"),

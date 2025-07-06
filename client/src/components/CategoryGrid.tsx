@@ -38,17 +38,17 @@ export default function CategoryGrid({ showAll = false, maxCategories = 8 }: Cat
   }
 
   return (
-    <section className="py-24 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800 relative overflow-hidden">
+    <section className="py-24 bg-gradient-to-b from-slate-50 to-white relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 shell-pattern opacity-30"></div>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div className="text-center mb-12 md:mb-20">
-          <h2 className="text-3xl md:text-4xl lg:text-6xl font-bold text-slate-800 dark:text-slate-100 mb-4 md:mb-6 section-title-mobile px-4 sm:px-0">
+          <h2 className="text-3xl md:text-4xl lg:text-6xl font-bold text-slate-800 mb-4 md:mb-6 section-title-mobile px-4 sm:px-0">
             Wedding Categories
           </h2>
           <div className="w-16 md:w-24 h-1 bg-gradient-to-r from-red-500 to-teal-500 mx-auto mb-4 md:mb-6 rounded-full"></div>
-          <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed section-subtitle-mobile px-4 sm:px-0">
+          <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed section-subtitle-mobile px-4 sm:px-0">
             Discover our handpicked collection of Goa's most talented wedding professionals. 
             Each category features verified vendors who specialize in creating magical moments.
           </p>
@@ -57,7 +57,7 @@ export default function CategoryGrid({ showAll = false, maxCategories = 8 }: Cat
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
           {categories.map((category) => (
             <Link key={category.slug} href={`/vendors/${category.slug}`}>
-              <Card className="group cursor-pointer hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-0 overflow-hidden">
+              <Card className="group cursor-pointer hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 bg-white/80 backdrop-blur-sm border-0 overflow-hidden">
                 <CardContent className="p-4 md:p-8 text-center relative">
                   {/* Hover background effect */}
                   <div className={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
@@ -71,11 +71,11 @@ export default function CategoryGrid({ showAll = false, maxCategories = 8 }: Cat
                     <div className={`absolute inset-0 bg-gradient-to-br ${category.color} w-12 h-12 md:w-20 md:h-20 rounded-xl md:rounded-2xl mx-auto opacity-20 blur-xl group-hover:blur-2xl transition-all duration-500`}></div>
                   </div>
                   
-                  <h3 className="font-bold text-sm md:text-lg text-slate-800 dark:text-slate-100 mb-2 md:mb-3 group-hover:text-red-600 transition-colors duration-300 leading-tight">
+                  <h3 className="font-bold text-sm md:text-lg text-slate-800 mb-2 md:mb-3 group-hover:text-red-600 transition-colors duration-300 leading-tight">
                     {category.name}
                   </h3>
                   
-                  <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 mb-2 md:mb-4 leading-relaxed">
+                  <p className="text-xs md:text-sm text-gray-500 mb-2 md:mb-4 leading-relaxed">
                     {category.vendorCount || 0} Professional Vendors
                   </p>
                   

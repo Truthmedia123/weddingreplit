@@ -44,6 +44,11 @@ A premium wedding vendor directory website for Goa operating as a public directo
 - **2025-07-06**: Set up PostgreSQL database with proper schema and sample data
 - **2025-07-06**: Removed dark mode system completely at user request (ThemeProvider, ThemeToggle, CSS variables)
 - **2025-07-06**: All core functionality verified working with database integration
+- **2025-07-06**: Added all 33 wedding vendor categories to database (was only showing 8)
+- **2025-07-06**: Fixed blog posts API and database schema compatibility issues
+- **2025-07-06**: Completely removed all dark mode classes from all components (CategoryGrid, Categories page, CreateRSVP, TrackRSVP)
+- **2025-07-06**: Fixed RSVP creation functionality - added missing database columns and updated schema
+- **2025-07-06**: RSVP system now fully operational with wedding page creation and guest management
 
 ## Project Architecture
 
