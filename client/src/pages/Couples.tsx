@@ -315,14 +315,7 @@ export default function Couples() {
                   </a>
                 </div>
 
-                {wedding.contactPhone && (
-                  <div className="flex items-center gap-3">
-                    <i className="fas fa-phone text-teal-500"></i>
-                    <a href={`tel:${wedding.contactPhone}`} className="text-gray-600 hover:text-teal-500">
-                      {wedding.contactPhone}
-                    </a>
-                  </div>
-                )}
+
               </CardContent>
             </Card>
           </div>

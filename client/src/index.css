@@ -4,6 +4,35 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Mobile optimization - smooth scrolling and touch interactions */
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  touch-action: manipulation;
+}
+
+/* Improved tap targets for mobile */
+button, [role="button"], input, textarea, select {
+  touch-action: manipulation;
+}
+
+/* Loading states */
+.loading-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 :root {
   --background: hsl(60, 100%, 99%);
   --foreground: hsl(210, 11%, 15%);

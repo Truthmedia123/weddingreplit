@@ -167,9 +167,7 @@ export default function Layout({ children }: LayoutProps) {
                 <a href="#" className="text-gray-300 hover:text-red-500 transition-colors">
                   <i className="fab fa-instagram text-xl"></i>
                 </a>
-                <a href="https://wa.me/919769661682" className="text-gray-300 hover:text-red-500 transition-colors">
-                  <i className="fab fa-whatsapp text-xl"></i>
-                </a>
+
               </div>
             </div>
             

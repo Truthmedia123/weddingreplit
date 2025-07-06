@@ -135,11 +135,14 @@ export default function BlogPostPage() {
                       <i className="fab fa-twitter mr-2"></i>Twitter
                     </Button>
                     <Button 
-                      onClick={() => window.open(`https://wa.me/?text=${post.title} ${window.location.href}`, '_blank')}
+                      onClick={() => {
+                        navigator.clipboard.writeText(window.location.href);
+                        // Could show a toast notification here
+                      }}
                       size="sm" 
                       variant="outline"
                     >
-                      <i className="fab fa-whatsapp mr-2"></i>WhatsApp
+                      <i className="fas fa-copy mr-2"></i>Copy Link
                     </Button>
                   </div>
                 </div>

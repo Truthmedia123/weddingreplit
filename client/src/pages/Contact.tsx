@@ -208,7 +208,7 @@ export default function Contact() {
                 <div className="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
                   <p className="text-sm text-yellow-800">
                     <i className="fas fa-info-circle mr-2"></i>
-                    We're available 24/7 via WhatsApp for urgent wedding planning needs!
+                    We're available via email for all your wedding planning needs!
                   </p>
                 </div>
               </CardContent>
@@ -238,7 +238,7 @@ export default function Contact() {
                   <div>
                     <h4 className="font-semibold text-slate-800 mb-2">How can I book vendors?</h4>
                     <p className="text-sm text-gray-600">
-                      You can contact vendors directly through WhatsApp, phone calls, or email. All contact information is provided on vendor profiles.
+                      You can contact vendors directly through email. All contact information is provided on vendor profiles.
                     </p>
                   </div>
                 </div>

@@ -264,10 +264,10 @@ export default function About() {
                   <i className="fas fa-envelope mr-2"></i>Get in Touch
                 </a>
                 <a 
-                  href="https://wa.me/919769661682"
-                  className="bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all transform hover:scale-105 shadow-lg inline-block"
+                  href="/list-business"
+                  className="bg-teal-500 hover:bg-teal-600 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all transform hover:scale-105 shadow-lg inline-block"
                 >
-                  <i className="fab fa-whatsapp mr-2"></i>WhatsApp Us
+                  <i className="fas fa-plus mr-2"></i>List Your Business
                 </a>
               </div>
             </CardContent>
