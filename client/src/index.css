@@ -36,36 +36,7 @@
   --goan-deep-gray: hsl(210, 11%, 15%);
 }
 
-.dark {
-  --background: hsl(240, 10%, 3.9%);
-  --foreground: hsl(0, 0%, 98%);
-  --muted: hsl(240, 3.7%, 15.9%);
-  --muted-foreground: hsl(240, 5%, 64.9%);
-  --popover: hsl(240, 10%, 3.9%);
-  --popover-foreground: hsl(0, 0%, 98%);
-  --card: hsl(240, 10%, 3.9%);
-  --card-foreground: hsl(0, 0%, 98%);
-  --border: hsl(240, 3.7%, 15.9%);
-  --input: hsl(240, 3.7%, 15.9%);
-  --primary: hsl(174, 64%, 56%);
-  --primary-foreground: hsl(210, 100%, 99%);
-  --secondary: hsl(240, 3.7%, 15.9%);
-  --secondary-foreground: hsl(0, 0%, 98%);
-  --accent: hsl(240, 3.7%, 15.9%);
-  --accent-foreground: hsl(0, 0%, 98%);
-  --destructive: hsl(0, 62.8%, 30.6%);
-  --destructive-foreground: hsl(0, 0%, 98%);
-  --ring: hsl(240, 4.9%, 83.9%);
 
-  /* Goan Wedding Dark Theme Colors */
-  --goan-ivory: hsl(240, 10%, 3.9%);
-  --goan-coral: hsl(0, 79%, 65%);
-  --goan-sea-blue: hsl(174, 64%, 56%);
-  --goan-gold: hsl(51, 100%, 50%);
-  --goan-warm-gold: hsl(43, 89%, 38%);
-  --goan-warm-gray: hsl(240, 3.7%, 15.9%);
-  --goan-deep-gray: hsl(0, 0%, 98%);
-}
 
 @layer base {
   * {

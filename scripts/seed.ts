@@ -77,6 +77,7 @@ async function seed() {
   const vendorData = [
     {
       name: "Coastal Dreams Photography",
+      slug: "coastal-dreams-photography",
       category: "photographers",
       description: "Specializing in beach weddings and capturing the natural beauty of Goan ceremonies. Our team has over 10 years of experience in wedding photography across North and South Goa.",
       phone: "+91 9876543210",
@@ -103,6 +104,7 @@ async function seed() {
     },
     {
       name: "Paradise Beach Resort",
+      slug: "paradise-beach-resort",
       category: "venues",
       description: "Luxury beachfront resort offering stunning wedding venues with panoramic ocean views. Perfect for destination weddings with accommodation for guests.",
       phone: "+91 9876543211",
@@ -127,6 +129,7 @@ async function seed() {
     },
     {
       name: "Spice Route Catering",
+      slug: "spice-route-catering",
       category: "caterers",
       description: "Authentic Goan cuisine specialists serving traditional dishes with a modern twist. From fish curry rice to bebinca, we bring the flavors of Goa to your celebration.",
       phone: "+91 9876543212",
@@ -144,6 +147,7 @@ async function seed() {
     },
     {
       name: "Elegant Events Goa",
+      slug: "elegant-events-goa",
       category: "wedding-planners",
       description: "Full-service wedding planning company specializing in destination weddings in Goa. We handle everything from venue selection to coordination on your special day.",
       phone: "+91 9876543213",
@@ -161,6 +165,7 @@ async function seed() {
     },
     {
       name: "Radiant Bridal Studio",
+      slug: "radiant-bridal-studio",
       category: "makeup-artists",
       description: "Professional bridal makeup and hairstyling services. Our team specializes in both traditional Indian and contemporary bridal looks using premium cosmetics.",
       phone: "+91 9876543214",
@@ -178,6 +183,7 @@ async function seed() {
     },
     {
       name: "Sunset Beats",
+      slug: "sunset-beats",
       category: "bands-djs",
       description: "Popular DJ and live band services for weddings and events. We play a mix of Bollywood, international hits, and traditional Goan music to keep the celebration alive.",
       phone: "+91 9876543215",

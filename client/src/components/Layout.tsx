@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 import FloatingButtons from "./FloatingButtons";
-import { ThemeToggle } from "./ThemeToggle";
+
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -33,12 +33,12 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Sticky Navigation */}
-      <nav className="sticky top-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg border-b border-yellow-500/20 nav-mobile">
+      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-lg border-b border-yellow-500/20 nav-mobile">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-14 md:h-16">
             <div className="flex items-center">
               <Link href="/" className="flex-shrink-0">
-                <h1 className="text-xl md:text-2xl font-bold text-slate-800 dark:text-white">
+                <h1 className="text-xl md:text-2xl font-bold text-slate-800">
                   <span style={{ color: "var(--goan-coral)" }}>TheGoan</span>
                   <span style={{ color: "var(--goan-sea-blue)" }}>Wedding</span>
                 </h1>
@@ -54,7 +54,7 @@ export default function Layout({ children }: LayoutProps) {
                     className={`px-3 py-2 text-sm font-medium transition-colors ${
                       location.startsWith(item.href)
                         ? "text-red-500"
-                        : "text-slate-700 hover:text-red-500 dark:text-slate-300 dark:hover:text-red-400"
+                        : "text-slate-700 hover:text-red-500"
                     }`}
                   >
                     {item.name}
@@ -70,7 +70,7 @@ export default function Layout({ children }: LayoutProps) {
                     placeholder="Search vendors..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-64 pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-full focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white dark:bg-gray-800"
+                    className="w-64 pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-full focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white"
                   />
                   <button
                     type="submit"
@@ -88,21 +88,19 @@ export default function Layout({ children }: LayoutProps) {
                   List Your Business
                 </Button>
               </Link>
-              <ThemeToggle />
             </div>
             
             <div className="md:hidden">
               <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="sm">
-                    <i className="fas fa-bars text-xl text-slate-700 dark:text-slate-300"></i>
+                    <i className="fas fa-bars text-xl text-slate-700"></i>
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-[300px] sm:w-[400px]">
                   <div className="flex flex-col space-y-4 mt-8">
                     <div className="flex justify-between items-center pb-4">
                       <h3 className="text-lg font-semibold">Menu</h3>
-                      <ThemeToggle />
                     </div>
                     
                     {/* Mobile Search */}
@@ -113,7 +111,7 @@ export default function Layout({ children }: LayoutProps) {
                           placeholder="Search vendors..."
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
-                          className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-full focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white dark:bg-gray-800"
+                          className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-full focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white"
                         />
                         <button
                           type="submit"
@@ -129,7 +127,7 @@ export default function Layout({ children }: LayoutProps) {
                         key={item.name}
                         href={item.href}
                         onClick={() => setIsMenuOpen(false)}
-                        className="text-lg font-medium text-slate-700 hover:text-red-500 dark:text-slate-300 dark:hover:text-red-400 transition-colors"
+                        className="text-lg font-medium text-slate-700 hover:text-red-500 transition-colors"
                       >
                         {item.name}
                       </Link>
@@ -151,7 +149,7 @@ export default function Layout({ children }: LayoutProps) {
       <main>{children}</main>
 
       {/* Footer */}
-      <footer className="bg-slate-800 dark:bg-slate-900 text-white">
+      <footer className="bg-slate-800 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div>

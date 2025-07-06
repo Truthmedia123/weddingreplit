@@ -40,6 +40,10 @@ A premium wedding vendor directory website for Goa operating as a public directo
 - **2025-01-06**: Updated all vendor contact forms to use email-only communication
 - **2025-01-06**: Updated floating contact button to show email instead of WhatsApp/phone
 - **2025-01-06**: Removed phone/WhatsApp fields from business listing submission form
+- **2025-07-06**: Successfully migrated project from Replit Agent to Replit environment
+- **2025-07-06**: Set up PostgreSQL database with proper schema and sample data
+- **2025-07-06**: Removed dark mode system completely at user request (ThemeProvider, ThemeToggle, CSS variables)
+- **2025-07-06**: All core functionality verified working with database integration
 
 ## Project Architecture
 
