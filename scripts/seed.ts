@@ -211,9 +211,9 @@ async function seed() {
       slug: "top-10-goan-wedding-trends-this-year",
       excerpt: "Discover the latest wedding trends that are defining Goan celebrations this year, from sustainable practices to cultural fusion ceremonies.",
       content: "Full content about wedding trends...",
+      author: "Maria D'Souza",
       featuredImage: "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=600",
-      category: "Wedding Trends",
-      tags: ["trends", "2024", "goan-weddings", "beach-weddings"],
+      tags: "trends,2024,goan-weddings,beach-weddings",
       published: true
     },
     {
@@ -221,9 +221,9 @@ async function seed() {
       slug: "planning-perfect-beach-wedding-goa",
       excerpt: "A comprehensive guide to planning an unforgettable beach wedding in Goa, including venue selection, permits, and weather considerations.",
       content: "Full content about beach wedding planning...",
+      author: "Joaquim Fernandes",
       featuredImage: "https://images.unsplash.com/photo-1520637736862-4d197d17c90a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=600",
-      category: "Planning Tips",
-      tags: ["beach-wedding", "planning", "venues", "permits"],
+      tags: "beach-wedding,planning,venues,permits",
       published: true
     },
     {
@@ -231,9 +231,9 @@ async function seed() {
       slug: "traditional-goan-wedding-customs-rituals",
       excerpt: "Explore the rich cultural heritage of Goan weddings, from Portuguese influences to Hindu traditions that make these celebrations unique.",
       content: "Full content about traditions...",
+      author: "Priya Kamat",
       featuredImage: "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=600",
-      category: "Goan Culture",
-      tags: ["traditions", "culture", "customs", "heritage"],
+      tags: "traditions,culture,customs,heritage",
       published: true
     }
   ];
@@ -244,21 +244,21 @@ async function seed() {
   // Insert sample reviews
   const reviewData = [
     {
-      vendorId: 1,
+      vendorId: 7,
       customerName: "Priya & Arjun",
       customerEmail: "priya.arjun@email.com",
       rating: 5,
       comment: "Coastal Dreams Photography exceeded our expectations! They captured every emotion beautifully and the beach shots were absolutely stunning. Highly recommended!"
     },
     {
-      vendorId: 1,
+      vendorId: 7,
       customerName: "Maria & Carlos",
       customerEmail: "maria.carlos@email.com",
       rating: 5,
       comment: "Professional team with great attention to detail. The photos came out amazing and they were very accommodating throughout the entire process."
     },
     {
-      vendorId: 2,
+      vendorId: 8,
       customerName: "Rohan & Kavya",
       customerEmail: "rohan.kavya@email.com",
       rating: 5,
