@@ -53,16 +53,7 @@ export default function VendorProfile() {
     },
   });
 
-  const handleWhatsApp = () => {
-    if (!vendor) return;
-    const message = encodeURIComponent(`Hi! I found your business ${vendor.name} on TheGoanWedding.com and would like to know more about your services.`);
-    window.open(`https://wa.me/${vendor.whatsapp}?text=${message}`, '_blank');
-  };
 
-  const handleCall = () => {
-    if (!vendor) return;
-    window.location.href = `tel:${vendor.phone}`;
-  };
 
   const handleSubmitReview = (e: React.FormEvent) => {
     e.preventDefault();
@@ -384,26 +375,12 @@ export default function VendorProfile() {
                 )}
 
                 <div className="space-y-2">
-                  <Button 
-                    onClick={handleWhatsApp}
-                    className="w-full bg-green-500 hover:bg-green-600 text-white"
-                  >
-                    <i className="fab fa-whatsapp mr-2"></i>WhatsApp
-                  </Button>
-                  <Button 
-                    onClick={handleCall}
-                    className="w-full bg-red-500 hover:bg-red-600 text-white"
-                  >
-                    <i className="fas fa-phone mr-2"></i>Call Now
-                  </Button>
-                  
                   {vendor.email && (
                     <Button 
                       onClick={() => window.location.href = `mailto:${vendor.email}`}
-                      variant="outline" 
-                      className="w-full"
+                      className="w-full bg-red-500 hover:bg-red-600 text-white"
                     >
-                      <i className="fas fa-envelope mr-2"></i>Send Email
+                      <i className="fas fa-envelope mr-2"></i>Contact via Email
                     </Button>
                   )}
                 </div>

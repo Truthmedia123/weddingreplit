@@ -1,18 +1,20 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { useLocation } from "wouter";
 
 const categories = [
-  "photographers", "venues", "caterers", "wedding-planners", "makeup-artists",
-  "bands-djs", "decor-florists", "bridal-wear", "groom-wear", "cakes-sweets",
-  "priests-religious", "car-rentals", "mehndi-artists", "entertainment"
+  "photographers", "venues", "caterers", "decorators", "makeup-artists", 
+  "wedding-planners", "musicians", "djs", "florists", "bakers", 
+  "jewelers", "fashion-designers", "priests-religious", "car-rentals", 
+  "mehndi-artists", "entertainment"
 ];
 
 const priceRanges = [
@@ -27,9 +29,7 @@ export default function ListBusiness() {
     name: "",
     category: "",
     description: "",
-    phone: "",
     email: "",
-    whatsapp: "",
     location: "",
     address: "",
     website: "",
@@ -90,21 +90,21 @@ export default function ListBusiness() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 py-12">
+    <div className="min-h-screen bg-slate-50 dark:bg-gray-900 py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-800 mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-800 dark:text-white mb-4">
             List Your Business
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
             Join Goa's premier wedding vendor directory and connect with couples planning their dream wedding
           </p>
         </div>
 
-        <Card>
+        <Card className="shadow-xl">
           <CardHeader>
-            <CardTitle>Business Information</CardTitle>
+            <CardTitle className="text-2xl">Business Information</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -149,38 +149,13 @@ export default function ListBusiness() {
               </div>
 
               {/* Contact Information */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <Label htmlFor="phone">Phone Number *</Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="email">Email Address *</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
-                    required
-                  />
-                </div>
-              </div>
-
               <div>
-                <Label htmlFor="whatsapp">WhatsApp Number *</Label>
+                <Label htmlFor="email">Email Address *</Label>
                 <Input
-                  id="whatsapp"
-                  type="tel"
-                  value={formData.whatsapp}
-                  onChange={(e) => setFormData({...formData, whatsapp: e.target.value})}
-                  placeholder="e.g., 919876543210"
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({...formData, email: e.target.value})}
                   required
                 />
               </div>
@@ -231,40 +206,7 @@ export default function ListBusiness() {
                 />
               </div>
 
-              {/* Services */}
-              <div>
-                <Label>Services Offered</Label>
-                <div className="flex gap-2 mt-1">
-                  <Input
-                    value={serviceInput}
-                    onChange={(e) => setServiceInput(e.target.value)}
-                    placeholder="Add a service"
-                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addService())}
-                  />
-                  <Button type="button" onClick={addService} variant="outline">Add</Button>
-                </div>
-                {formData.services.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {formData.services.map((service) => (
-                      <span 
-                        key={service}
-                        className="bg-slate-100 px-3 py-1 rounded-full text-sm flex items-center gap-1"
-                      >
-                        {service}
-                        <button 
-                          type="button"
-                          onClick={() => removeService(service)}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          ×
-                        </button>
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Social Media */}
+              {/* Social Media & Website */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
                   <Label htmlFor="website">Website</Label>
@@ -273,6 +215,7 @@ export default function ListBusiness() {
                     type="url"
                     value={formData.website}
                     onChange={(e) => setFormData({...formData, website: e.target.value})}
+                    placeholder="https://..."
                   />
                 </div>
                 
@@ -280,9 +223,9 @@ export default function ListBusiness() {
                   <Label htmlFor="instagram">Instagram</Label>
                   <Input
                     id="instagram"
-                    type="url"
                     value={formData.instagram}
                     onChange={(e) => setFormData({...formData, instagram: e.target.value})}
+                    placeholder="@username or full URL"
                   />
                 </div>
                 
@@ -290,10 +233,34 @@ export default function ListBusiness() {
                   <Label htmlFor="facebook">Facebook</Label>
                   <Input
                     id="facebook"
-                    type="url"
                     value={formData.facebook}
                     onChange={(e) => setFormData({...formData, facebook: e.target.value})}
+                    placeholder="Page name or full URL"
                   />
+                </div>
+              </div>
+
+              {/* Services */}
+              <div>
+                <Label htmlFor="services">Services Offered</Label>
+                <div className="flex gap-2 mb-4">
+                  <Input
+                    id="services"
+                    value={serviceInput}
+                    onChange={(e) => setServiceInput(e.target.value)}
+                    placeholder="Add a service..."
+                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addService())}
+                  />
+                  <Button type="button" onClick={addService} variant="outline">
+                    Add
+                  </Button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {formData.services.map((service) => (
+                    <Badge key={service} variant="secondary" className="cursor-pointer" onClick={() => removeService(service)}>
+                      {service} ×
+                    </Badge>
+                  ))}
                 </div>
               </div>
 
@@ -306,7 +273,7 @@ export default function ListBusiness() {
                   {submitMutation.isPending ? "Submitting..." : "Submit Business Listing"}
                 </Button>
                 
-                <p className="text-sm text-gray-500 text-center mt-4">
+                <p className="text-sm text-gray-500 dark:text-gray-400 text-center mt-4">
                   By submitting, you agree to our terms and conditions. We'll review your submission within 2-3 business days.
                 </p>
               </div>

@@ -48,14 +48,7 @@ export default function Contact() {
     contactMutation.mutate(formData);
   };
 
-  const handleWhatsApp = () => {
-    const message = encodeURIComponent("Hi! I'd like to get in touch regarding TheGoanWedding.com services.");
-    window.open(`https://wa.me/919769661682?text=${message}`, '_blank');
-  };
 
-  const handleCall = () => {
-    window.location.href = "tel:+919769661682";
-  };
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -168,16 +161,6 @@ export default function Contact() {
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="bg-green-500 w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0">
-                    <i className="fas fa-phone text-white"></i>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-slate-800 mb-1">Phone</h3>
-                    <p className="text-gray-600">+91 9769661682</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
                   <div className="bg-teal-500 w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0">
                     <i className="fas fa-map-marker-alt text-white"></i>
                   </div>
@@ -191,16 +174,10 @@ export default function Contact() {
                   <h3 className="font-semibold text-slate-800 mb-4">Quick Contact</h3>
                   <div className="space-y-3">
                     <Button 
-                      onClick={handleWhatsApp}
-                      className="w-full bg-green-500 hover:bg-green-600 text-white"
-                    >
-                      <i className="fab fa-whatsapp mr-2"></i>WhatsApp Us
-                    </Button>
-                    <Button 
-                      onClick={handleCall}
+                      onClick={() => window.location.href = "mailto:info@thegoanwedding.com"}
                       className="w-full bg-red-500 hover:bg-red-600 text-white"
                     >
-                      <i className="fas fa-phone mr-2"></i>Call Now
+                      <i className="fas fa-envelope mr-2"></i>Send Email
                     </Button>
                   </div>
                 </div>

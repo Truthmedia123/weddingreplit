@@ -182,13 +182,13 @@ export default function About() {
 
                 <div className="flex items-start gap-4">
                   <div className="bg-yellow-500 w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <i className="fas fa-phone text-white text-sm"></i>
+                    <i className="fas fa-envelope text-white text-sm"></i>
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-slate-800 mb-2">Direct Communication</h3>
                     <p className="text-gray-600">
-                      Connect directly with vendors through WhatsApp, phone calls, or email 
-                      for seamless coordination and planning.
+                      Connect directly with vendors through email for seamless coordination 
+                      and professional planning discussions.
                     </p>
                   </div>
                 </div>

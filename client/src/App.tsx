@@ -17,6 +17,9 @@ import Contact from "@/pages/Contact";
 import Couples from "@/pages/Couples";
 import CreateRSVP from "@/pages/CreateRSVP";
 import TrackRSVP from "@/pages/TrackRSVP";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import TermsConditions from "@/pages/TermsConditions";
+import CookiePolicy from "@/pages/CookiePolicy";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -35,6 +38,9 @@ function Router() {
         <Route path="/couples/:slug" component={Couples} />
         <Route path="/create-rsvp" component={CreateRSVP} />
         <Route path="/track/:slug" component={TrackRSVP} />
+        <Route path="/privacy-policy" component={PrivacyPolicy} />
+        <Route path="/terms-conditions" component={TermsConditions} />
+        <Route path="/cookie-policy" component={CookiePolicy} />
         <Route component={NotFound} />
       </Switch>
     </Layout>

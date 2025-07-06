@@ -192,8 +192,9 @@ export default function Layout({ children }: LayoutProps) {
                 <li><Link href="/about" className="hover:text-red-500 transition-colors">About Us</Link></li>
                 <li><Link href="/list-business" className="hover:text-red-500 transition-colors">List Your Business</Link></li>
                 <li><Link href="/blog" className="hover:text-red-500 transition-colors">Blog</Link></li>
-                <li><a href="/privacy-policy" className="hover:text-red-500 transition-colors">Privacy Policy</a></li>
-                <li><a href="/terms-conditions" className="hover:text-red-500 transition-colors">Terms & Conditions</a></li>
+                <li><Link href="/privacy-policy" className="hover:text-red-500 transition-colors">Privacy Policy</Link></li>
+                <li><Link href="/terms-conditions" className="hover:text-red-500 transition-colors">Terms & Conditions</Link></li>
+                <li><Link href="/cookie-policy" className="hover:text-red-500 transition-colors">Cookie Policy</Link></li>
               </ul>
             </div>
             
@@ -203,10 +204,6 @@ export default function Layout({ children }: LayoutProps) {
                 <div className="flex items-center">
                   <i className="fas fa-envelope mr-3 text-red-500"></i>
                   <span>info@thegoanwedding.com</span>
-                </div>
-                <div className="flex items-center">
-                  <i className="fas fa-phone mr-3 text-red-500"></i>
-                  <span>+91 9769661682</span>
                 </div>
                 <div className="flex items-center">
                   <i className="fas fa-map-marker-alt mr-3 text-red-500"></i>

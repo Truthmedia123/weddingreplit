@@ -9,15 +9,9 @@ interface VendorCardProps {
 }
 
 export default function VendorCard({ vendor }: VendorCardProps) {
-  const handleWhatsApp = (e: React.MouseEvent) => {
+  const handleEmail = (e: React.MouseEvent) => {
     e.preventDefault();
-    const message = encodeURIComponent(`Hi! I found your business ${vendor.name} on TheGoanWedding.com and would like to know more about your services.`);
-    window.open(`https://wa.me/${vendor.whatsapp}?text=${message}`, '_blank');
-  };
-
-  const handleCall = (e: React.MouseEvent) => {
-    e.preventDefault();
-    window.location.href = `tel:${vendor.phone}`;
+    window.location.href = `mailto:${vendor.email}`;
   };
 
   return (
@@ -84,22 +78,13 @@ export default function VendorCard({ vendor }: VendorCardProps) {
           <span>{vendor.location}</span>
         </div>
         
-        <div className="grid grid-cols-2 gap-2 md:gap-3">
+        <div className="flex justify-center">
           <Button
-            onClick={handleWhatsApp}
-            className="bg-green-500 hover:bg-green-600 text-white py-2 md:py-3 px-2 md:px-4 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg text-xs md:text-sm"
+            onClick={handleEmail}
+            className="bg-red-500 hover:bg-red-600 text-white py-2 md:py-3 px-4 md:px-6 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg text-xs md:text-sm w-full max-w-xs"
           >
-            <i className="fab fa-whatsapp mr-1 md:mr-2"></i>
-            <span className="hidden sm:inline">WhatsApp</span>
-            <span className="sm:hidden">WA</span>
-          </Button>
-          <Button
-            onClick={handleCall}
-            className="bg-red-500 hover:bg-red-600 text-white py-2 md:py-3 px-2 md:px-4 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg text-xs md:text-sm"
-          >
-            <i className="fas fa-phone mr-1 md:mr-2"></i>
-            <span className="hidden sm:inline">Call Now</span>
-            <span className="sm:hidden">Call</span>
+            <i className="fas fa-envelope mr-1 md:mr-2"></i>
+            <span>Contact via Email</span>
           </Button>
         </div>
         

@@ -1,7 +1,7 @@
 # TheGoanWedding.com Project Documentation
 
 ## Overview
-A premium wedding vendor directory website for Goa featuring vendor listings, reviews, blog content, business submission forms, and an elegant RSVP wedding tool. Built with React frontend, Node.js backend, and PostgreSQL database.
+A premium wedding vendor directory website for Goa operating as a public directory with vendor information sourced from the internet. Features vendor listings, reviews, blog content, business submission forms, and an elegant RSVP wedding tool. Vendors can request listing additions or removals. Built with React frontend, Node.js backend, and PostgreSQL database. AdSense-compatible with email-only communication.
 
 ## Recent Changes
 - **2024-06-24**: Resolved database connection issues by implementing stable in-memory storage
@@ -33,6 +33,13 @@ A premium wedding vendor directory website for Goa featuring vendor listings, re
 - **2025-01-05**: Added comprehensive search functionality with magnifying glass icon in header
 - **2025-01-05**: Implemented search bar for both desktop and mobile navigation
 - **2025-01-05**: Updated navigation to prioritize "Categories" over generic "Vendors" link
+- **2025-01-06**: Removed all WhatsApp and phone contact methods, keeping only email communication
+- **2025-01-06**: Created comprehensive AdSense-compatible Privacy Policy page
+- **2025-01-06**: Created detailed Terms & Conditions page for public directory service
+- **2025-01-06**: Created Cookie Policy page with Google AdSense compliance
+- **2025-01-06**: Updated all vendor contact forms to use email-only communication
+- **2025-01-06**: Updated floating contact button to show email instead of WhatsApp/phone
+- **2025-01-06**: Removed phone/WhatsApp fields from business listing submission form
 
 ## Project Architecture
 
