@@ -95,7 +95,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const posts = await storage.getBlogPosts(true);
       res.json(posts);
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch blog posts" });
+      console.error("Blog posts API error:", error);
+      res.status(500).json({ message: "Failed to fetch blog posts", error: error.message });
     }
   });
 

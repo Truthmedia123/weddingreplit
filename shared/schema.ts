@@ -56,11 +56,13 @@ export const blogPosts = pgTable("blog_posts", {
   slug: text("slug").notNull().unique(),
   excerpt: text("excerpt").notNull(),
   content: text("content").notNull(),
+  imageUrl: text("image_url"),
   featuredImage: text("featured_image"),
-  category: text("category").notNull(),
-  tags: text("tags").array(),
+  author: text("author").notNull(),
+  tags: text("tags"),
   published: boolean("published").default(false),
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export const businessSubmissions = pgTable("business_submissions", {
