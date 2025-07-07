@@ -210,7 +210,7 @@ export default function Layout({ children }: LayoutProps) {
           </div>
           
           <div className="border-t border-gray-700 mt-12 pt-8 text-center text-gray-300">
-            <p>&copy; 2024 TheGoanWedding.com. All rights reserved. Founded by Noel Fernandes.</p>
+            <p>&copy; 2025 TheGoanWedding.com. All rights reserved.</p>
           </div>
         </div>
       </footer>
