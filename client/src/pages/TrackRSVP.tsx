@@ -195,52 +195,28 @@ export default function TrackRSVP() {
           </Button>
         </div>
 
-        {/* RSVP List */}
+        {/* RSVP Summary - Guest details are private */}
         <Card>
           <CardHeader>
-            <CardTitle>RSVP Responses</CardTitle>
+            <CardTitle>RSVP Summary</CardTitle>
           </CardHeader>
           <CardContent>
-            {rsvps.length === 0 ? (
-              <div className="text-center py-8">
-                <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No RSVPs Yet</h3>
-                <p className="text-gray-600">Share your RSVP page to start receiving responses.</p>
+            <div className="text-center py-8">
+              <Users className="h-12 w-12 text-blue-500 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                {rsvps.length === 0 ? 'No RSVPs Yet' : `${rsvps.length} RSVP${rsvps.length > 1 ? 's' : ''} Received`}
+              </h3>
+              <p className="text-gray-600 mb-4">
+                {rsvps.length === 0 
+                  ? 'Share your RSVP page to start receiving responses.' 
+                  : `Total of ${totalGuests} guest${totalGuests > 1 ? 's' : ''} expected to attend your wedding.`
+                }
+              </p>
+              <div className="text-sm text-gray-500">
+                <p>Guest details are kept private for privacy and security.</p>
+                <p>Use the "Export to CSV" button above to download full guest information.</p>
               </div>
-            ) : (
-              <div className="space-y-4">
-                {rsvps.map((rsvp, index) => (
-                  <div key={rsvp.id}>
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <h4 className="font-medium text-gray-900">{rsvp.guestName}</h4>
-                          <Badge variant="secondary">{rsvp.numberOfGuests || 1} guest{(rsvp.numberOfGuests || 1) > 1 ? 's' : ''}</Badge>
-                          {rsvp.attendingCeremony && (
-                            <Badge className="bg-green-100 text-green-800">
-                              Ceremony
-                            </Badge>
-                          )}
-                          {rsvp.attendingReception && (
-                            <Badge className="bg-blue-100 text-blue-800">
-                              Reception
-                            </Badge>
-                          )}
-                        </div>
-                        <div className="text-sm text-gray-600 space-y-1">
-                          <p><strong>Email:</strong> {rsvp.guestEmail}</p>
-                          {rsvp.guestPhone && <p><strong>Phone:</strong> {rsvp.guestPhone}</p>}
-                          {rsvp.dietaryRestrictions && <p><strong>Dietary Restrictions:</strong> {rsvp.dietaryRestrictions}</p>}
-                          {rsvp.message && <p><strong>Message:</strong> {rsvp.message}</p>}
-                          <p><strong>RSVP Date:</strong> {rsvp.createdAt ? new Date(rsvp.createdAt).toLocaleDateString() : 'Unknown'}</p>
-                        </div>
-                      </div>
-                    </div>
-                    {index < rsvps.length - 1 && <Separator className="mt-4" />}
-                  </div>
-                ))}
-              </div>
-            )}
+            </div>
           </CardContent>
         </Card>
       </div>

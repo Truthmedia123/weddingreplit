@@ -52,6 +52,9 @@ A premium wedding vendor directory website for Goa operating as a public directo
 - **2025-07-06**: Successfully completed project migration from Replit Agent to Replit environment
 - **2025-07-06**: Completely removed all dark mode classes from entire codebase as requested
 - **2025-07-06**: Removed founder attribution and updated copyright year to 2025
+- **2025-07-15**: Enhanced RSVP privacy - guest list details are now hidden in tracking dashboard
+- **2025-07-15**: Added image upload functionality to RSVP creation (replaces cover image URL field)
+- **2025-07-15**: RSVP system now supports base64 image storage with 5MB limit and validation
 
 ## Project Architecture
 

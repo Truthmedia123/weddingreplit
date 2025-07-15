@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Calendar, Clock, MapPin, Heart, Users, Mail, Phone } from "lucide-react";
+import { Calendar, Clock, MapPin, Heart, Users, Mail, Phone, Upload, X } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -25,7 +25,7 @@ const createRSVPSchema = z.object({
   contactEmail: z.string().email("Valid email is required"),
   contactPhone: z.string().optional(),
   story: z.string().optional(),
-  coverImage: z.string().url().optional().or(z.literal("")),
+  coverImage: z.string().optional(),
   maxGuests: z.string().transform((val) => parseInt(val) || 100),
   rsvpDeadline: z.string().optional(),
 });
@@ -34,6 +34,8 @@ type CreateRSVPForm = z.infer<typeof createRSVPSchema>;
 
 export default function CreateRSVP() {
   const [createdWedding, setCreatedWedding] = useState<any>(null);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -56,9 +58,52 @@ export default function CreateRSVP() {
     },
   });
 
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Check file size (limit to 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          title: "Error",
+          description: "Image size must be less than 5MB",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Check file type
+      if (!file.type.startsWith('image/')) {
+        toast({
+          title: "Error",
+          description: "Please select a valid image file",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setSelectedImage(file);
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setSelectedImage(null);
+    setImagePreview("");
+    form.setValue("coverImage", "");
+  };
+
   const createWeddingMutation = useMutation({
     mutationFn: async (data: CreateRSVPForm) => {
       const slug = `${data.brideName.toLowerCase().replace(/\s+/g, '-')}-${data.groomName.toLowerCase().replace(/\s+/g, '-')}-${new Date(data.weddingDate).getFullYear()}`;
+      
+      // Use the image preview (base64) as the cover image if available
+      const coverImageUrl = imagePreview || "";
       
       const response = await fetch("/api/weddings", {
         method: "POST",
@@ -66,6 +111,7 @@ export default function CreateRSVP() {
         body: JSON.stringify({
           ...data,
           slug,
+          coverImage: coverImageUrl,
           weddingDate: new Date(data.weddingDate).toISOString(),
           rsvpDeadline: data.rsvpDeadline ? new Date(data.rsvpDeadline).toISOString() : null,
         }),
@@ -340,13 +386,48 @@ export default function CreateRSVP() {
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <Label htmlFor="coverImage">Cover Image URL</Label>
-                  <Input
-                    id="coverImage"
-                    type="url"
-                    {...form.register("coverImage")}
-                    placeholder="https://example.com/image.jpg"
-                  />
+                  <Label htmlFor="coverImage">Cover Image</Label>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-center w-full">
+                      <label
+                        htmlFor="coverImage"
+                        className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
+                      >
+                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                          <Upload className="w-8 h-8 mb-2 text-gray-500" />
+                          <p className="mb-2 text-sm text-gray-500">
+                            <span className="font-semibold">Click to upload</span> or drag and drop
+                          </p>
+                          <p className="text-xs text-gray-500">PNG, JPG, JPEG (Max 5MB)</p>
+                        </div>
+                        <Input
+                          id="coverImage"
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageUpload}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+                    {imagePreview && (
+                      <div className="relative">
+                        <img
+                          src={imagePreview}
+                          alt="Cover preview"
+                          className="w-full h-32 object-cover rounded-lg"
+                        />
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          className="absolute top-2 right-2"
+                          onClick={removeImage}
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div>
