@@ -127,10 +127,7 @@ export default function CategoryGrid({ showAll = false, maxCategories = 8 }: Cat
                   <div className="relative mb-3 md:mb-6">
                     <div className={`bg-gradient-to-br ${category.color} w-12 h-12 md:w-20 md:h-20 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg`}>
                       {(() => {
-                        const IconComponent = iconMap[category.icon];
-                        if (!IconComponent) {
-                          return <div className="text-white text-xs">{category.icon}</div>;
-                        }
+                        const IconComponent = iconMap[category.icon] || Camera;
                         return <IconComponent className="text-white w-6 h-6 md:w-8 md:h-8" />;
                       })()}
                     </div>
