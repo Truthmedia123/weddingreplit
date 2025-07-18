@@ -2,11 +2,33 @@ import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import type { Category } from "@shared/schema";
+import { 
+  Camera, 
+  MapPin, 
+  Utensils, 
+  Calendar, 
+  Scissors, 
+  Music, 
+  Flower, 
+  Shirt 
+} from "lucide-react";
 
 interface CategoryGridProps {
   showAll?: boolean;
   maxCategories?: number;
 }
+
+// Icon mapping for categories
+const iconMap: { [key: string]: React.ComponentType<any> } = {
+  "fas fa-camera": Camera,
+  "fas fa-map-marker-alt": MapPin,
+  "fas fa-utensils": Utensils,
+  "fas fa-calendar-alt": Calendar,
+  "fas fa-cut": Scissors,
+  "fas fa-music": Music,
+  "fas fa-seedling": Flower,
+  "fas fa-tshirt": Shirt,
+};
 
 export default function CategoryGrid({ showAll = false, maxCategories = 8 }: CategoryGridProps) {
   const { data: allCategories = [], isLoading } = useQuery<Category[]>({
@@ -65,7 +87,10 @@ export default function CategoryGrid({ showAll = false, maxCategories = 8 }: Cat
                   {/* Icon container */}
                   <div className="relative mb-3 md:mb-6">
                     <div className={`bg-gradient-to-br ${category.color} w-12 h-12 md:w-20 md:h-20 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg`}>
-                      <i className={`${category.icon} text-white text-lg md:text-2xl`}></i>
+                      {(() => {
+                        const IconComponent = iconMap[category.icon] || Camera;
+                        return <IconComponent className="text-white w-6 h-6 md:w-8 md:h-8" />;
+                      })()}
                     </div>
                     {/* Floating effect */}
                     <div className={`absolute inset-0 bg-gradient-to-br ${category.color} w-12 h-12 md:w-20 md:h-20 rounded-xl md:rounded-2xl mx-auto opacity-20 blur-xl group-hover:blur-2xl transition-all duration-500`}></div>
@@ -84,7 +109,7 @@ export default function CategoryGrid({ showAll = false, maxCategories = 8 }: Cat
                   
                   {/* Arrow indicator */}
                   <div className="mt-2 md:mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <i className="fas fa-arrow-right text-red-500 text-xs md:text-sm"></i>
+                    <div className="text-red-500 text-xs md:text-sm">→</div>
                   </div>
                 </CardContent>
               </Card>
@@ -98,7 +123,7 @@ export default function CategoryGrid({ showAll = false, maxCategories = 8 }: Cat
             <Link href="/categories">
               <div className="inline-flex items-center gap-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all transform hover:scale-105 shadow-xl hover:shadow-2xl">
                 <span>View All Categories ({allCategories.length})</span>
-                <i className="fas fa-chevron-right"></i>
+                <div>→</div>
               </div>
             </Link>
           </div>
