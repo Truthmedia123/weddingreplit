@@ -9,12 +9,12 @@ export default function Categories() {
             Complete Collection
           </p>
           <h1 className="text-4xl md:text-6xl font-bold text-slate-800 mb-6">
-            All Wedding Categories
+            Wedding Categories
           </h1>
           <div className="w-24 h-1 bg-gradient-to-r from-red-500 to-teal-500 mx-auto mb-6 rounded-full"></div>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Browse through our comprehensive collection of wedding service providers. 
-            From traditional ceremonies to modern celebrations, find the perfect vendors for your special day.
+            Discover our handpicked collection of Goa's most talented wedding professionals. 
+            Each category features verified vendors who specialize in creating magical moments.
           </p>
         </div>
         
