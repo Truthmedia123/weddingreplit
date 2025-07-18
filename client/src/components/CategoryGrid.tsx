@@ -10,7 +10,31 @@ import {
   Scissors, 
   Music, 
   Flower, 
-  Shirt 
+  Shirt,
+  Palette,
+  Cake,
+  Gem,
+  Mic,
+  Building,
+  ClipboardList,
+  Car,
+  Gift,
+  Briefcase,
+  Video,
+  Guitar,
+  Martini,
+  Hand,
+  Crown,
+  Headphones,
+  Printer,
+  Users,
+  Bed,
+  Leaf,
+  Lightbulb,
+  Drum,
+  User,
+  Umbrella,
+  Sparkles
 } from "lucide-react";
 
 interface CategoryGridProps {
@@ -28,6 +52,30 @@ const iconMap: { [key: string]: React.ComponentType<any> } = {
   "fas fa-music": Music,
   "fas fa-seedling": Flower,
   "fas fa-tshirt": Shirt,
+  "fas fa-palette": Palette,
+  "fas fa-birthday-cake": Cake,
+  "fas fa-gem": Gem,
+  "fas fa-microphone": Mic,
+  "fas fa-building": Building,
+  "fas fa-clipboard-list": ClipboardList,
+  "fas fa-car": Car,
+  "fas fa-gift": Gift,
+  "fas fa-briefcase": Briefcase,
+  "fas fa-video": Video,
+  "fas fa-guitar": Guitar,
+  "fas fa-cocktail": Martini,
+  "fas fa-hand-sparkles": Hand,
+  "fas fa-ring": Crown,
+  "fas fa-headphones": Headphones,
+  "fas fa-print": Printer,
+  "fas fa-users": Users,
+  "fas fa-bed": Bed,
+  "fas fa-leaf": Leaf,
+  "fas fa-lightbulb": Lightbulb,
+  "fas fa-drum": Drum,
+  "fas fa-running": User,
+  "fas fa-umbrella-beach": Umbrella,
+  "fas fa-spa": Sparkles,
 };
 
 export default function CategoryGrid({ showAll = false, maxCategories = 8 }: CategoryGridProps) {
@@ -65,16 +113,7 @@ export default function CategoryGrid({ showAll = false, maxCategories = 8 }: Cat
       <div className="absolute inset-0 shell-pattern opacity-30"></div>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div className="text-center mb-12 md:mb-20">
-          <h2 className="text-3xl md:text-4xl lg:text-6xl font-bold text-slate-800 mb-4 md:mb-6 section-title-mobile px-4 sm:px-0">
-            Wedding Categories
-          </h2>
-          <div className="w-16 md:w-24 h-1 bg-gradient-to-r from-red-500 to-teal-500 mx-auto mb-4 md:mb-6 rounded-full"></div>
-          <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed section-subtitle-mobile px-4 sm:px-0">
-            Discover our handpicked collection of Goa's most talented wedding professionals. 
-            Each category features verified vendors who specialize in creating magical moments.
-          </p>
-        </div>
+
         
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
           {categories.map((category) => (

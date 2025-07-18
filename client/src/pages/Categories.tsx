@@ -9,7 +9,7 @@ export default function Categories() {
             Complete Collection
           </p>
           <h1 className="text-4xl md:text-6xl font-bold text-slate-800 mb-6">
-            Wedding Categories
+            Browse All Categories
           </h1>
           <div className="w-24 h-1 bg-gradient-to-r from-red-500 to-teal-500 mx-auto mb-6 rounded-full"></div>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
