@@ -22,7 +22,7 @@ import {
   Briefcase,
   Video,
   Guitar,
-  Martini,
+  Wine,
   Hand,
   Crown,
   Headphones,
@@ -42,41 +42,43 @@ interface CategoryGridProps {
   maxCategories?: number;
 }
 
-// Icon mapping for categories
-const iconMap: { [key: string]: React.ComponentType<any> } = {
-  "fas fa-camera": Camera,
-  "fas fa-map-marker-alt": MapPin,
-  "fas fa-utensils": Utensils,
-  "fas fa-calendar-alt": Calendar,
-  "fas fa-cut": Scissors,
-  "fas fa-music": Music,
-  "fas fa-seedling": Flower,
-  "fas fa-tshirt": Shirt,
-  "fas fa-palette": Palette,
-  "fas fa-birthday-cake": Cake,
-  "fas fa-gem": Gem,
-  "fas fa-microphone": Mic,
-  "fas fa-building": Building,
-  "fas fa-clipboard-list": ClipboardList,
-  "fas fa-car": Car,
-  "fas fa-gift": Gift,
-  "fas fa-briefcase": Briefcase,
-  "fas fa-video": Video,
-  "fas fa-guitar": Guitar,
-  "fas fa-cocktail": Martini,
-  "fas fa-hand-sparkles": Hand,
-  "fas fa-ring": Crown,
-  "fas fa-headphones": Headphones,
-  "fas fa-print": Printer,
-  "fas fa-users": Users,
-  "fas fa-bed": Bed,
-  "fas fa-leaf": Leaf,
-  "fas fa-lightbulb": Lightbulb,
-  "fas fa-drum": Drum,
-  "fas fa-running": User,
-  "fas fa-umbrella-beach": Umbrella,
-  "fas fa-spa": Sparkles,
-};
+// Simple function to get icon by category name
+function getCategoryIcon(iconName: string) {
+  const iconMap: { [key: string]: React.ComponentType<any> } = {
+    "fas fa-camera": Camera,
+    "fas fa-palette": Palette,
+    "fas fa-birthday-cake": Cake,
+    "fas fa-music": Music,
+    "fas fa-gem": Gem,
+    "fas fa-microphone": Mic,
+    "fas fa-utensils": Utensils,
+    "fas fa-seedling": Flower,
+    "fas fa-building": Building,
+    "fas fa-tshirt": Shirt,
+    "fas fa-clipboard-list": ClipboardList,
+    "fas fa-car": Car,
+    "fas fa-gift": Gift,
+    "fas fa-briefcase": Briefcase,
+    "fas fa-video": Video,
+    "fas fa-guitar": Guitar,
+    "fas fa-cocktail": Wine,
+    "fas fa-hand-sparkles": Hand,
+    "fas fa-ring": Crown,
+    "fas fa-headphones": Headphones,
+    "fas fa-print": Printer,
+    "fas fa-cut": Scissors,
+    "fas fa-users": Users,
+    "fas fa-bed": Bed,
+    "fas fa-leaf": Leaf,
+    "fas fa-lightbulb": Lightbulb,
+    "fas fa-drum": Drum,
+    "fas fa-running": User,
+    "fas fa-umbrella-beach": Umbrella,
+    "fas fa-spa": Sparkles,
+  };
+  
+  return iconMap[iconName] || Camera;
+}
 
 export default function CategoryGrid({ showAll = false, maxCategories = 8 }: CategoryGridProps) {
   const { data: allCategories = [], isLoading } = useQuery<Category[]>({
@@ -127,7 +129,7 @@ export default function CategoryGrid({ showAll = false, maxCategories = 8 }: Cat
                   <div className="relative mb-3 md:mb-6">
                     <div className={`bg-gradient-to-br ${category.color} w-12 h-12 md:w-20 md:h-20 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg`}>
                       {(() => {
-                        const IconComponent = iconMap[category.icon] || Camera;
+                        const IconComponent = getCategoryIcon(category.icon);
                         return <IconComponent className="text-white w-6 h-6 md:w-8 md:h-8" />;
                       })()}
                     </div>
