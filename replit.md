@@ -65,6 +65,10 @@ A premium wedding vendor directory website for Goa operating as a public directo
 - **2025-07-18**: Fixed category icons display by ensuring Font Awesome icons are properly loaded
 - **2025-07-18**: Updated Categories page to remove "All Wedding Categories" heading and description
 - **2025-07-18**: Verified all API endpoints working correctly (categories, vendors, blog, RSVP system)
+- **2025-07-20**: Added WhatsApp and call functionality to vendor contact system
+- **2025-07-20**: Enhanced VendorProfile and VendorCard with WhatsApp, phone, and email contact options
+- **2025-07-20**: WhatsApp integration includes pre-filled message "Hi! We got your contact info from TheGoanWedding.com"
+- **2025-07-20**: Call functionality opens phone dialer directly when "Call Now" is clicked
 
 ## Project Architecture
 

@@ -383,6 +383,27 @@ export default function VendorProfile() {
                       <i className="fas fa-envelope mr-2"></i>Contact via Email
                     </Button>
                   )}
+                  
+                  {vendor.whatsapp && (
+                    <Button 
+                      onClick={() => {
+                        const message = encodeURIComponent("Hi! We got your contact info from TheGoanWedding.com and would like to inquire about your services.");
+                        window.open(`https://wa.me/${vendor.whatsapp.replace(/[^\d]/g, '')}?text=${message}`, '_blank');
+                      }}
+                      className="w-full bg-green-500 hover:bg-green-600 text-white"
+                    >
+                      <i className="fab fa-whatsapp mr-2"></i>Contact via WhatsApp
+                    </Button>
+                  )}
+                  
+                  {vendor.phone && (
+                    <Button 
+                      onClick={() => window.location.href = `tel:${vendor.phone}`}
+                      className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+                    >
+                      <i className="fas fa-phone mr-2"></i>Call Now
+                    </Button>
+                  )}
                 </div>
 
                 {(vendor.website || vendor.instagram || vendor.youtube || vendor.facebook) && (

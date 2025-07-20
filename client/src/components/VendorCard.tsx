@@ -14,6 +14,17 @@ export default function VendorCard({ vendor }: VendorCardProps) {
     window.location.href = `mailto:${vendor.email}`;
   };
 
+  const handleWhatsApp = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const message = encodeURIComponent("Hi! We got your contact info from TheGoanWedding.com and would like to inquire about your services.");
+    window.open(`https://wa.me/${vendor.whatsapp.replace(/[^\d]/g, '')}?text=${message}`, '_blank');
+  };
+
+  const handleCall = (e: React.MouseEvent) => {
+    e.preventDefault();
+    window.location.href = `tel:${vendor.phone}`;
+  };
+
   return (
     <Card className="group cursor-pointer hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 overflow-hidden bg-white border-0 rounded-2xl">
       <Link href={`/vendor/${vendor.id}`}>
@@ -78,14 +89,38 @@ export default function VendorCard({ vendor }: VendorCardProps) {
           <span>{vendor.location}</span>
         </div>
         
-        <div className="flex justify-center">
-          <Button
-            onClick={handleEmail}
-            className="bg-red-500 hover:bg-red-600 text-white py-2 md:py-3 px-4 md:px-6 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg text-xs md:text-sm w-full max-w-xs"
-          >
-            <i className="fas fa-envelope mr-1 md:mr-2"></i>
-            <span>Contact via Email</span>
-          </Button>
+        <div className="space-y-2">
+          {vendor.email && (
+            <Button
+              onClick={handleEmail}
+              className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg text-xs w-full"
+            >
+              <i className="fas fa-envelope mr-2"></i>
+              <span>Email</span>
+            </Button>
+          )}
+          
+          <div className="grid grid-cols-2 gap-2">
+            {vendor.whatsapp && (
+              <Button
+                onClick={handleWhatsApp}
+                className="bg-green-500 hover:bg-green-600 text-white py-2 px-3 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg text-xs"
+              >
+                <i className="fab fa-whatsapp mr-1"></i>
+                <span>WhatsApp</span>
+              </Button>
+            )}
+            
+            {vendor.phone && (
+              <Button
+                onClick={handleCall}
+                className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-3 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg text-xs"
+              >
+                <i className="fas fa-phone mr-1"></i>
+                <span>Call</span>
+              </Button>
+            )}
+          </div>
         </div>
         
         {/* View profile link */}
