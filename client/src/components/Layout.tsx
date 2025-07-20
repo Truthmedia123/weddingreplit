@@ -40,37 +40,40 @@ export default function Layout({ children }: LayoutProps) {
               <Link href="/" className="flex-shrink-0">
                 <h1 className="text-xl md:text-2xl font-bold text-slate-800">
                   <span style={{ color: "var(--goan-coral)" }}>TheGoan</span>
-                  <span style={{ color: "var(--goan-sea-blue)" }}>Wedding</span>
+                  <span style={{ color: "var(--goan-ocean-blue)" }}>Wedding</span>
                 </h1>
               </Link>
             </div>
             
             <div className="hidden md:flex items-center space-x-6">
-              <div className="flex items-baseline space-x-8">
-                {navigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className={`px-3 py-2 text-sm font-medium transition-colors ${
-                      location.startsWith(item.href)
-                        ? "text-red-500"
-                        : "text-slate-700 hover:text-red-500"
-                    }`}
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-              </div>
+              <nav role="navigation" aria-label="Main navigation">
+                <div className="flex items-baseline space-x-8">
+                  {navigation.map((item) => (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className={`px-3 py-2 text-sm font-medium transition-colors hover-lift ${
+                        location.startsWith(item.href)
+                          ? "text-red-500"
+                          : "text-slate-700 hover:text-red-500"
+                      }`}
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                </div>
+              </nav>
               
               {/* Search Bar */}
               <form onSubmit={handleSearch} className="relative">
                 <div className="relative">
                   <Input
                     type="text"
-                    placeholder="Search vendors..."
+                    placeholder="Search wedding vendors in Goa..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-64 pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-full focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white"
+                    aria-label="Search for wedding vendors, venues, and services in Goa"
                   />
                   <button
                     type="submit"
@@ -83,7 +86,9 @@ export default function Layout({ children }: LayoutProps) {
               
               <Link href="/list-business">
                 <Button
-                  className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-full text-sm font-medium transition-all transform hover:scale-105"
+                  className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-full text-sm font-medium transition-all transform hover:scale-105 btn-ripple hover-lift"
+                  style={{ backgroundColor: 'var(--goan-coral)' }}
+                  aria-label="List your wedding business on TheGoanWedding.com"
                 >
                   List Your Business
                 </Button>

@@ -1,0 +1,84 @@
+1. Design & User Experience
+Adopt a Consistent Design System
+
+Define a color palette inspired by Goa’s landscape (ocean-blue, palm-green, sunset-orange) and apply it consistently to buttons, links, headings, and background elements.
+
+Use a single webfont pairing (e.g., a serif for headings and a sans-serif for body text) to improve readability and visual hierarchy.
+
+Enhance Responsiveness
+
+Implement a mobile-first CSS approach with flexible grid or CSS Flexbox for vendor cards and content sections.
+
+Ensure touch targets (buttons, links) are at least 44×44 px per WCAG guidelines.
+
+Polish Visuals
+
+Replace placeholder images with optimized, high-resolution Goa wedding photos and serve them via <picture> with WebP fallbacks.
+
+Add subtle micro-interactions (hover states, button ripples) using CSS transitions to make the UI feel interactive.
+
+2. Content Strategy & SEO
+Improve On-Page SEO
+
+Write unique, keyword-rich <title> tags and meta descriptions for each page (e.g., “Top Goa Beach Wedding Photographers | WeddingVendorHub”).
+
+Structure headings (H1–H3) hierarchically: H1 for page title, H2 for major sections (Venues, Catering), H3 for sublists.
+
+Add alt attributes to images with descriptive text (e.g., “Goa beachfront mandap setup”).
+
+Expand & Organize Content
+
+Break long vendor lists into categorized pages (e.g., “Venues,” “Photography,” “Catering”) and link via a clear navigation menu.
+
+Include 150–200-word vendor profiles with local insights, and display ratings or testimonials to build trust.
+
+Create a blog section covering local tips (“Best Monsoon Wedding Venues in Goa,” “Top Goan Wedding Traditions”) to target long-tail keywords.
+
+Implement Structured Data
+
+Use JSON-LD Schema.org markup for local business and reviews on each vendor profile to enhance SERP features.
+
+3. Performance Optimization
+Asset Optimization
+
+Compress and lazy-load images with loading="lazy" and serve responsive sizes via <picture>.
+
+Minify CSS and JavaScript; combine smaller files to reduce HTTP requests.
+
+Leverage Modern Web Practices
+
+Use HTTP/2 or HTTP/3 if supported by your hosting for multiplexed requests.
+
+Preload critical CSS and defer nonessential scripts to prevent render-blocking.
+
+Audit & Monitor
+
+Run Lighthouse audits and aim for >90 scores in Performance, Accessibility, and Best Practices; address flagged issues promptly.
+
+4. Functionality & Interactivity
+Client-Side Filtering & Search
+
+Implement JavaScript-based filters (budget, category, availability) so users can refine results without page reloads.
+
+Add a live search input with debounced queries to filter vendors as the user types.
+
+Interactive Map Integration
+
+Embed a Leaflet.js map showing vendor locations around key Goan areas (Panaji, Baga, Anjuna), with clickable markers displaying vendor snippets.
+
+Contact & Inquiry Forms
+
+Integrate a dynamic contact form (e.g., using Formspree or a serverless function) that captures date, guest count, and budget, then emails you automatically.
+
+5. Accessibility & Compliance
+Ensure Keyboard Navigation
+
+Verify that all interactive elements (menus, buttons, forms) are reachable and operable via keyboard alone.
+
+Improve Contrast & Readability
+
+Use contrast-checker tools to ensure text meets a minimum 4.5:1 ratio against background colors.
+
+ARIA & Semantic HTML
+
+Add appropriate ARIA roles (e.g., role="navigation" for nav bars) and landmarks (<main>, <aside>) to aid screen readers.

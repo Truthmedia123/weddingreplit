@@ -26,14 +26,21 @@ export default function VendorCard({ vendor }: VendorCardProps) {
   };
 
   return (
-    <Card className="group cursor-pointer hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 overflow-hidden bg-white border-0 rounded-2xl">
+    <Card className="group cursor-pointer hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 overflow-hidden bg-white border-0 rounded-2xl hover-lift">
       <Link href={`/vendor/${vendor.id}`}>
         <div className="relative overflow-hidden">
-          <img 
-            src={vendor.profileImage || "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500"} 
-            alt={vendor.name}
-            className="w-full h-72 object-cover group-hover:scale-110 transition-transform duration-700" 
-          />
+          <picture>
+            <source 
+              srcSet={`${vendor.profileImage || "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500&fm=webp"}&fm=webp`}
+              type="image/webp" 
+            />
+            <img 
+              src={vendor.profileImage || "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500"} 
+              alt={`${vendor.name} - ${vendor.category} in ${vendor.location}, Goa`}
+              className="w-full h-72 object-cover group-hover:scale-110 transition-transform duration-700"
+              loading="lazy"
+            />
+          </picture>
           
           {/* Gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -93,7 +100,9 @@ export default function VendorCard({ vendor }: VendorCardProps) {
           {vendor.email && (
             <Button
               onClick={handleEmail}
-              className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg text-xs w-full"
+              className="btn-ripple hover-lift text-white py-2 px-4 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg text-xs w-full"
+              style={{ backgroundColor: 'var(--goan-coral)' }}
+              aria-label={`Contact ${vendor.name} via email`}
             >
               <i className="fas fa-envelope mr-2"></i>
               <span>Email</span>
@@ -104,7 +113,9 @@ export default function VendorCard({ vendor }: VendorCardProps) {
             {vendor.whatsapp && (
               <Button
                 onClick={handleWhatsApp}
-                className="bg-green-500 hover:bg-green-600 text-white py-2 px-3 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg text-xs"
+                className="btn-ripple hover-lift text-white py-2 px-3 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg text-xs"
+                style={{ backgroundColor: 'var(--goan-palm-green)' }}
+                aria-label={`Contact ${vendor.name} via WhatsApp`}
               >
                 <i className="fab fa-whatsapp mr-1"></i>
                 <span>WhatsApp</span>
@@ -114,7 +125,9 @@ export default function VendorCard({ vendor }: VendorCardProps) {
             {vendor.phone && (
               <Button
                 onClick={handleCall}
-                className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-3 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg text-xs"
+                className="btn-ripple hover-lift text-white py-2 px-3 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg text-xs"
+                style={{ backgroundColor: 'var(--goan-ocean-blue)' }}
+                aria-label={`Call ${vendor.name} directly`}
               >
                 <i className="fas fa-phone mr-1"></i>
                 <span>Call</span>

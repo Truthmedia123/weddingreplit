@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "wouter";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import SEOHead from "@/components/SEOHead";
 import type { Vendor, Review } from "@shared/schema";
 
 export default function VendorProfile() {
@@ -60,30 +61,69 @@ export default function VendorProfile() {
     createReviewMutation.mutate(reviewForm);
   };
 
+  // SEO data for this vendor
+  const seoData = vendor ? {
+    title: `${vendor.name} - ${vendor.category} in ${vendor.location} | TheGoanWedding.com`,
+    description: `${vendor.description.slice(0, 150)}... Book ${vendor.name} for your wedding in Goa. Verified vendor with ${vendor.reviewCount} reviews and ${vendor.rating} star rating.`,
+    keywords: `${vendor.name}, ${vendor.category}, ${vendor.location}, Goa wedding vendor, wedding services Goa`,
+    ogImage: vendor.profileImage || vendor.coverImage,
+    ogUrl: `https://thegoanwedding.com/vendor/${vendor.id}`,
+    schemaData: {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": vendor.name,
+      "description": vendor.description,
+      "image": vendor.profileImage || vendor.coverImage,
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": vendor.location,
+        "addressRegion": "Goa",
+        "addressCountry": "India"
+      },
+      "telephone": vendor.phone,
+      "email": vendor.email,
+      "url": vendor.website,
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": vendor.rating,
+        "reviewCount": vendor.reviewCount
+      },
+      "priceRange": vendor.priceRange
+    }
+  } : null;
+
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-red-500"></div>
-      </div>
+      <>
+        <SEOHead title="Loading Vendor Profile..." />
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-red-500"></div>
+        </div>
+      </>
     );
   }
 
   if (!vendor) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <Card className="w-full max-w-md">
-          <CardContent className="pt-6 text-center">
-            <i className="fas fa-exclamation-triangle text-6xl text-red-500 mb-4"></i>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Vendor Not Found</h2>
-            <p className="text-gray-600">The vendor you're looking for doesn't exist.</p>
-          </CardContent>
-        </Card>
-      </div>
+      <>
+        <SEOHead title="Vendor Not Found | TheGoanWedding.com" />
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+          <Card className="w-full max-w-md">
+            <CardContent className="pt-6 text-center">
+              <i className="fas fa-exclamation-triangle text-6xl text-red-500 mb-4"></i>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Vendor Not Found</h2>
+              <p className="text-gray-600">The vendor you're looking for doesn't exist.</p>
+            </CardContent>
+          </Card>
+        </div>
+      </>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <>
+      <SEOHead {...seoData} />
+      <div className="min-h-screen bg-slate-50">
       {/* Hero Section */}
       <section className="relative h-96">
         <img 
@@ -467,6 +507,7 @@ export default function VendorProfile() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

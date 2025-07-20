@@ -40,6 +40,7 @@ import {
 interface CategoryGridProps {
   showAll?: boolean;
   maxCategories?: number;
+  searchFilter?: string;
 }
 
 // Simple function to get icon by category name
@@ -80,12 +81,22 @@ function getCategoryIcon(iconName: string) {
   return iconMap[iconName] || Camera;
 }
 
-export default function CategoryGrid({ showAll = false, maxCategories = 8 }: CategoryGridProps) {
+export default function CategoryGrid({ showAll = false, maxCategories = 8, searchFilter = "" }: CategoryGridProps) {
   const { data: allCategories = [], isLoading } = useQuery<Category[]>({
     queryKey: ['/api/categories'],
   });
 
-  const categories = showAll ? allCategories : allCategories.slice(0, maxCategories);
+  let filteredCategories = allCategories;
+  
+  // Apply search filter if provided
+  if (searchFilter.trim()) {
+    filteredCategories = allCategories.filter(category => 
+      category.name.toLowerCase().includes(searchFilter.toLowerCase()) ||
+      category.description?.toLowerCase().includes(searchFilter.toLowerCase())
+    );
+  }
+
+  const categories = showAll ? filteredCategories : filteredCategories.slice(0, maxCategories);
 
   if (isLoading) {
     return (
