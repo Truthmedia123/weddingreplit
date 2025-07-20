@@ -69,14 +69,7 @@ A premium wedding vendor directory website for Goa operating as a public directo
 - **2025-07-20**: Enhanced VendorProfile and VendorCard with WhatsApp, phone, and email contact options
 - **2025-07-20**: WhatsApp integration includes pre-filled message "Hi! We got your contact info from TheGoanWedding.com"
 - **2025-07-20**: Call functionality opens phone dialer directly when "Call Now" is clicked
-- **2025-07-20**: Implemented comprehensive design system with Goa-inspired color palette (coral, ocean-blue, palm-green)
-- **2025-07-20**: Enhanced accessibility with WCAG-compliant 44px touch targets and proper ARIA labels
-- **2025-07-20**: Added micro-interactions and hover effects with CSS animations for better UX
-- **2025-07-20**: Optimized images with WebP format support and lazy loading for performance
-- **2025-07-20**: Enhanced SEO with structured data (Schema.org) and dynamic meta tags
-- **2025-07-20**: Added search functionality to Categories page with real-time filtering
-- **2025-07-20**: Implemented SEOHead component for dynamic page optimization
-- **2025-07-20**: Added descriptive alt tags and proper semantic HTML structure
+- **2025-07-20**: Reverted design system changes per user request, keeping original styling
 
 ## Project Architecture
 

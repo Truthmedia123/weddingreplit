@@ -16,51 +16,9 @@ body {
   touch-action: manipulation;
 }
 
-/* Improved tap targets for mobile - WCAG 44x44px minimum */
+/* Improved tap targets for mobile */
 button, [role="button"], input, textarea, select {
   touch-action: manipulation;
-  min-height: 44px;
-  min-width: 44px;
-}
-
-/* Ensure interactive elements have proper focus states */
-button:focus, [role="button"]:focus, input:focus, textarea:focus, select:focus {
-  outline: 2px solid var(--goan-ocean-blue);
-  outline-offset: 2px;
-}
-
-/* Micro-interactions and hover states */
-.hover-lift {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.hover-lift:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-}
-
-/* Button ripple effect */
-@keyframes ripple {
-  0% { transform: scale(0); opacity: 1; }
-  100% { transform: scale(4); opacity: 0; }
-}
-
-.btn-ripple {
-  position: relative;
-  overflow: hidden;
-}
-
-.btn-ripple::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.5);
-  transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s;
 }
 
 /* Loading states */
@@ -97,14 +55,12 @@ button:focus, [role="button"]:focus, input:focus, textarea:focus, select:focus {
   --ring: hsl(210, 11%, 15%);
   --radius: 0.75rem;
 
-  /* Goan Wedding Theme Colors - Inspired by Goa's landscape */
+  /* Goan Wedding Theme Colors */
   --goan-ivory: hsl(60, 100%, 99%);
-  --goan-coral: hsl(16, 85%, 55%);        /* Sunset orange-coral */
-  --goan-ocean-blue: hsl(203, 89%, 53%);  /* Ocean blue */
-  --goan-palm-green: hsl(142, 69%, 58%);  /* Palm green */
-  --goan-sunset-orange: hsl(31, 100%, 65%); /* Sunset orange */
-  --goan-sand-beige: hsl(43, 74%, 91%);   /* Beach sand */
-  --goan-deep-teal: hsl(174, 64%, 36%);   /* Deep ocean */
+  --goan-coral: hsl(0, 79%, 65%);
+  --goan-sea-blue: hsl(174, 64%, 56%);
+  --goan-gold: hsl(51, 100%, 50%);
+  --goan-warm-gold: hsl(43, 89%, 38%);
   --goan-warm-gray: hsl(45, 25%, 97%);
   --goan-deep-gray: hsl(210, 11%, 15%);
 }
