@@ -314,7 +314,7 @@ export default function CreateRSVP() {
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <Label htmlFor="ceremonyTime">Ceremony Time *</Label>
+                  <Label htmlFor="ceremonyTime">Nuptials Time *</Label>
                   <Input
                     id="ceremonyTime"
                     type="time"

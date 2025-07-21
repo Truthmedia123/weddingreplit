@@ -7,6 +7,16 @@ import { Separator } from "@/components/ui/separator";
 import { Users, Calendar, MapPin, Mail, Phone, Download, Share } from "lucide-react";
 import type { Wedding, Rsvp } from "@shared/schema";
 
+// Utility function to convert 24-hour time to 12-hour format
+const formatTime12Hour = (time24: string): string => {
+  if (!time24) return '';
+  const [hours, minutes] = time24.split(':');
+  const hour = parseInt(hours, 10);
+  const ampm = hour >= 12 ? 'PM' : 'AM';
+  const hour12 = hour % 12 || 12;
+  return `${hour12}:${minutes} ${ampm}`;
+};
+
 export default function TrackRSVP() {
   const [, params] = useRoute("/track/:slug");
   const slug = params?.slug;
@@ -115,6 +125,16 @@ export default function TrackRSVP() {
                 </span>
               </div>
               <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-gray-500" />
+                <span className="text-sm">Nuptials: {formatTime12Hour(wedding.ceremonyTime)}</span>
+              </div>
+              {wedding.receptionTime && (
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-gray-500" />
+                  <span className="text-sm">Reception: {formatTime12Hour(wedding.receptionTime)}</span>
+                </div>
+              )}
+              <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-gray-500" />
                 <span className="text-sm">{wedding.venue}</span>
               </div>
@@ -163,7 +183,7 @@ export default function TrackRSVP() {
               <div className="flex items-center">
                 <Calendar className="h-8 w-8 text-purple-500" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Ceremony</p>
+                  <p className="text-sm font-medium text-gray-600">Nuptials</p>
                   <p className="text-2xl font-bold text-gray-900">{ceremonyAttendees}</p>
                 </div>
               </div>

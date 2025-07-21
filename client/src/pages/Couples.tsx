@@ -12,6 +12,16 @@ import { useToast } from "@/hooks/use-toast";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import type { Wedding, Rsvp } from "@shared/schema";
 
+// Utility function to convert 24-hour time to 12-hour format
+const formatTime12Hour = (time24: string): string => {
+  if (!time24) return '';
+  const [hours, minutes] = time24.split(':');
+  const hour = parseInt(hours, 10);
+  const ampm = hour >= 12 ? 'PM' : 'AM';
+  const hour12 = hour % 12 || 12;
+  return `${hour12}:${minutes} ${ampm}`;
+};
+
 export default function Couples() {
   const { slug } = useParams();
   const { toast } = useToast();
@@ -136,7 +146,7 @@ export default function Couples() {
               
               <div className="text-center">
                 <i className="fas fa-clock text-teal-500 text-2xl mb-2"></i>
-                <p className="font-semibold">{wedding.ceremonyTime}</p>
+                <p className="font-semibold">{formatTime12Hour(wedding.ceremonyTime)}</p>
               </div>
               
               <div className="text-center">
@@ -205,35 +215,7 @@ export default function Couples() {
               </Card>
             )}
 
-            {/* RSVP List */}
-            <Card className="border-0 shadow-2xl">
-              <CardHeader>
-                <CardTitle className="text-3xl font-bold text-center wedding-script text-red-600">
-                  Who's Coming?
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {rsvps?.map((rsvp) => (
-                    <div key={rsvp.id} className="bg-gradient-to-r from-red-50 to-teal-50 p-4 rounded-xl border">
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-semibold text-gray-800">{rsvp.guestName}</h4>
-                        <Badge variant="secondary">{rsvp.numberOfGuests} guest{rsvp.numberOfGuests > 1 ? 's' : ''}</Badge>
-                      </div>
-                      {rsvp.message && (
-                        <p className="text-sm text-gray-600 italic">"{rsvp.message}"</p>
-                      )}
-                    </div>
-                  ))}
-                  
-                  {!rsvps?.length && (
-                    <p className="text-gray-500 text-center col-span-2 py-8">
-                      Be the first to RSVP!
-                    </p>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+
           </div>
 
           {/* Sidebar */}
@@ -262,8 +244,8 @@ export default function Couples() {
                 <div className="flex items-start gap-3">
                   <i className="fas fa-clock text-teal-500 mt-1"></i>
                   <div>
-                    <p className="font-semibold">Ceremony</p>
-                    <p className="text-gray-600">{wedding.ceremonyTime}</p>
+                    <p className="font-semibold">Nuptials</p>
+                    <p className="text-gray-600">{formatTime12Hour(wedding.ceremonyTime)}</p>
                   </div>
                 </div>
 
@@ -272,7 +254,7 @@ export default function Couples() {
                     <i className="fas fa-glass-cheers text-yellow-500 mt-1"></i>
                     <div>
                       <p className="font-semibold">Reception</p>
-                      <p className="text-gray-600">{wedding.receptionTime}</p>
+                      <p className="text-gray-600">{formatTime12Hour(wedding.receptionTime)}</p>
                     </div>
                   </div>
                 )}
@@ -397,7 +379,7 @@ export default function Couples() {
                         setRsvpForm({...rsvpForm, attendingCeremony: checked as boolean})
                       }
                     />
-                    <Label htmlFor="attendingCeremony">I will attend the wedding ceremony</Label>
+                    <Label htmlFor="attendingCeremony">I will attend the nuptials ceremony</Label>
                   </div>
                   
                   {wedding.receptionTime && (
