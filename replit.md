@@ -70,6 +70,10 @@ A premium wedding vendor directory website for Goa operating as a public directo
 - **2025-07-20**: WhatsApp integration includes pre-filled message "Hi! We got your contact info from TheGoanWedding.com"
 - **2025-07-20**: Call functionality opens phone dialer directly when "Call Now" is clicked
 - **2025-07-20**: Reverted design system changes per user request, keeping original styling
+- **2025-07-21**: Successfully completed migration from Replit Agent to Replit environment
+- **2025-07-21**: Created PostgreSQL database and applied all database migrations
+- **2025-07-21**: Fixed main page hero image loading issues with better Unsplash URLs and fallback
+- **2025-07-21**: Resolved TypeScript errors in blog post component
 
 ## Project Architecture
 

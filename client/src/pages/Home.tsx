@@ -24,9 +24,12 @@ export default function Home() {
         {/* Background with parallax effect */}
         <div className="absolute inset-0 z-0">
           <img 
-            src="https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&h=1380" 
+            src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" 
             alt="Beautiful Goan beach wedding ceremony" 
             className="w-full h-full object-cover scale-110" 
+            onError={(e) => {
+              e.currentTarget.src = "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80";
+            }}
           />
           <div className="absolute inset-0 hero-overlay"></div>
         </div>
@@ -190,7 +193,7 @@ export default function Home() {
                   />
                   <CardContent className="p-6">
                     <div className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-semibold mb-3 inline-block uppercase">
-                      {post.category}
+                      {post.tags || 'Wedding Tips'}
                     </div>
                     <h3 className="text-xl font-semibold text-slate-800 mb-3 group-hover:text-red-500 transition-colors">
                       {post.title}
