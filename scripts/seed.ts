@@ -10,63 +10,147 @@ async function seed() {
   await db.delete(categories);
   await db.delete(blogPosts);
 
-  // Insert categories
+  // Insert categories with redesigned Lucide icons
   const categoryData = [
     {
       name: "Wedding Photographers",
       slug: "photographers",
       description: "Capture your special moments with professional wedding photographers",
-      icon: "fas fa-camera",
-      color: "from-red-500 to-red-600"
+      icon: "Camera",
+      color: "from-rose-500 to-pink-600"
     },
     {
       name: "Wedding Venues",
-      slug: "venues",
+      slug: "venues", 
       description: "Beautiful venues for your dream wedding ceremony",
-      icon: "fas fa-map-marker-alt",
-      color: "from-teal-500 to-teal-600"
+      icon: "MapPin",
+      color: "from-emerald-500 to-teal-600"
     },
     {
-      name: "Caterers",
+      name: "Caterers & Food Services",
       slug: "caterers",
       description: "Delicious Goan cuisine for your wedding celebration",
-      icon: "fas fa-utensils",
-      color: "from-yellow-500 to-yellow-600"
+      icon: "ChefHat",
+      color: "from-orange-500 to-red-500"
     },
     {
       name: "Wedding Planners",
       slug: "wedding-planners",
       description: "Expert planners to make your wedding stress-free",
-      icon: "fas fa-calendar-alt",
-      color: "from-purple-500 to-purple-600"
+      icon: "Calendar",
+      color: "from-purple-500 to-violet-600"
     },
     {
-      name: "Makeup Artists",
+      name: "Makeup & Beauty Artists",
       slug: "makeup-artists",
       description: "Professional bridal makeup and styling services",
-      icon: "fas fa-cut",
+      icon: "Sparkles",
       color: "from-pink-500 to-rose-500"
     },
     {
-      name: "Bands & DJs",
+      name: "Live Music & DJs",
       slug: "bands-djs",
       description: "Live music and DJ services for your celebration",
-      icon: "fas fa-music",
-      color: "from-indigo-500 to-indigo-600"
+      icon: "Music",
+      color: "from-indigo-500 to-purple-600"
     },
     {
       name: "Decor & Florists",
-      slug: "decor-florists",
+      slug: "decor-florists", 
       description: "Beautiful floral arrangements and wedding decorations",
-      icon: "fas fa-seedling",
+      icon: "Flower2",
       color: "from-green-500 to-emerald-500"
     },
     {
-      name: "Bridal Wear",
+      name: "Bridal Fashion",
       slug: "bridal-wear",
       description: "Stunning bridal outfits and accessories",
-      icon: "fas fa-tshirt",
-      color: "from-rose-500 to-pink-500"
+      icon: "Shirt",
+      color: "from-fuchsia-500 to-pink-500"
+    },
+    {
+      name: "Wedding Jewelry",
+      slug: "jewelry",
+      description: "Exquisite jewelry for brides and grooms",
+      icon: "Gem",
+      color: "from-yellow-500 to-amber-500"
+    },
+    {
+      name: "Transportation & Cars",
+      slug: "transportation",
+      description: "Luxury cars and transport services for weddings",
+      icon: "Car",
+      color: "from-slate-500 to-gray-600"
+    },
+    {
+      name: "Wedding Videography",
+      slug: "videographers",
+      description: "Professional wedding videography and cinematography",
+      icon: "Video",
+      color: "from-cyan-500 to-blue-600"
+    },
+    {
+      name: "Mehendi Artists",
+      slug: "mehendi-artists",
+      description: "Traditional and contemporary mehendi designs",
+      icon: "Paintbrush",
+      color: "from-amber-600 to-orange-600"
+    },
+    {
+      name: "Wedding Cakes & Desserts",
+      slug: "cakes-desserts",
+      description: "Custom wedding cakes and sweet treats",
+      icon: "CakeSlice",
+      color: "from-pink-400 to-rose-400"
+    },
+    {
+      name: "Wedding Invitations",
+      slug: "invitations",
+      description: "Beautiful wedding cards and invitation designs",
+      icon: "Mail",
+      color: "from-blue-500 to-indigo-500"
+    },
+    {
+      name: "Honeymoon Planners",
+      slug: "honeymoon-planners",
+      description: "Plan your perfect romantic getaway",
+      icon: "Heart",
+      color: "from-red-500 to-rose-500"
+    },
+    {
+      name: "Wedding Security",
+      slug: "security",
+      description: "Professional security services for wedding events",
+      icon: "Shield",
+      color: "from-gray-600 to-slate-700"
+    },
+    {
+      name: "Priests & Officiants",
+      slug: "priests-officiants",
+      description: "Wedding ceremonies and religious services",
+      icon: "Crown",
+      color: "from-yellow-600 to-orange-500"
+    },
+    {
+      name: "Wedding Gifts & Favors",
+      slug: "gifts-favors",
+      description: "Unique wedding gifts and guest favors",
+      icon: "Gift",
+      color: "from-teal-500 to-cyan-500"
+    },
+    {
+      name: "Sound & Lighting",
+      slug: "sound-lighting",
+      description: "Professional audio and lighting equipment",
+      icon: "Lightbulb",
+      color: "from-yellow-500 to-amber-600"
+    },
+    {
+      name: "Wedding Tents & Canopies",
+      slug: "tents-canopies",
+      description: "Elegant tent rentals and outdoor setups",
+      icon: "Tent",
+      color: "from-green-600 to-teal-600"
     }
   ];
 
