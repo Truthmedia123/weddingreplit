@@ -22,12 +22,12 @@ export default function TrackRSVP() {
   const slug = params?.slug;
 
   const { data: wedding, isLoading: weddingLoading } = useQuery<Wedding>({
-    queryKey: ["/api/weddings", slug],
+    queryKey: [`/api/weddings/${slug}`],
     enabled: !!slug,
   });
 
   const { data: rsvps = [], isLoading: rsvpsLoading } = useQuery<Rsvp[]>({
-    queryKey: ["/api/weddings", wedding?.id, "rsvps"],
+    queryKey: [`/api/weddings/${wedding?.id}/rsvps`],
     enabled: !!wedding?.id,
   });
 
