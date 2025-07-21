@@ -24,7 +24,6 @@ export default function Layout({ children }: LayoutProps) {
     { name: "Venues", href: "/vendors/venues" },
     { name: "Blog", href: "/blog" },
     { name: "Create RSVP", href: "/create-rsvp" },
-    { name: "About", href: "/about" },
   ];
 
   const handleSearch = (e: React.FormEvent) => {

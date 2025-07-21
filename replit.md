@@ -88,6 +88,7 @@ A premium wedding vendor directory website for Goa operating as a public directo
 - **2025-07-21**: Removed "Find Your Perfect Vendors" search box section from homepage per user request
 - **2025-07-21**: Removed category display badges from blog posts on homepage and blog page per user request
 - **2025-07-21**: Removed "View Full Profile" buttons from vendor cards for cleaner design per user request
+- **2025-07-21**: Removed "About" link from navigation header per user request
 - **2025-07-21**: Successfully completed migration from Replit Agent to Replit environment
 - **2025-07-21**: Created PostgreSQL database and applied all database migrations
 - **2025-07-21**: Fixed main page hero image loading issues with better Unsplash URLs and fallback
