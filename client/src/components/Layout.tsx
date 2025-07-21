@@ -3,6 +3,9 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Heart } from "lucide-react";
+import { useWishlist } from "@/hooks/use-wishlist";
 import FloatingButtons from "./FloatingButtons";
 
 
@@ -14,6 +17,7 @@ export default function Layout({ children }: LayoutProps) {
   const [location] = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const { wishlistCount } = useWishlist();
 
   const navigation = [
     { name: "Categories", href: "/categories" },
@@ -81,6 +85,22 @@ export default function Layout({ children }: LayoutProps) {
                 </div>
               </form>
               
+              {/* Wishlist Button */}
+              <Link href="/wishlist">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="relative p-2 hover:bg-red-50 transition-colors"
+                >
+                  <Heart className={`w-5 h-5 ${wishlistCount > 0 ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
+                  {wishlistCount > 0 && (
+                    <Badge className="absolute -top-1 -right-1 bg-red-500 text-white text-xs h-5 w-5 rounded-full p-0 flex items-center justify-center">
+                      {wishlistCount}
+                    </Badge>
+                  )}
+                </Button>
+              </Link>
+              
               <Link href="/list-business">
                 <Button
                   className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-full text-sm font-medium transition-all transform hover:scale-105"
@@ -121,6 +141,21 @@ export default function Layout({ children }: LayoutProps) {
                         </button>
                       </div>
                     </form>
+                    
+                    {/* Mobile Wishlist */}
+                    <Link href="/wishlist" onClick={() => setIsMenuOpen(false)}>
+                      <div className="flex items-center justify-between py-3 px-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+                        <div className="flex items-center gap-3">
+                          <Heart className={`w-5 h-5 ${wishlistCount > 0 ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
+                          <span className="font-medium">My Wishlist</span>
+                        </div>
+                        {wishlistCount > 0 && (
+                          <Badge className="bg-red-500 text-white text-xs">
+                            {wishlistCount}
+                          </Badge>
+                        )}
+                      </div>
+                    </Link>
                     
                     {navigation.map((item) => (
                       <Link

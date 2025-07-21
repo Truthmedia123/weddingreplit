@@ -2,6 +2,9 @@ import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Heart, Share2, Phone, Mail } from "lucide-react";
+import { useWishlist } from "@/hooks/use-wishlist";
+import { useToast } from "@/hooks/use-toast";
 import type { Vendor } from "@shared/schema";
 
 interface VendorCardProps {
@@ -9,20 +12,69 @@ interface VendorCardProps {
 }
 
 export default function VendorCard({ vendor }: VendorCardProps) {
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const { toast } = useToast();
+
   const handleEmail = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     window.location.href = `mailto:${vendor.email}`;
   };
 
   const handleWhatsApp = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     const message = encodeURIComponent("Hi! We got your contact info from TheGoanWedding.com and would like to inquire about your services.");
     window.open(`https://wa.me/${vendor.whatsapp.replace(/[^\d]/g, '')}?text=${message}`, '_blank');
   };
 
   const handleCall = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     window.location.href = `tel:${vendor.phone}`;
+  };
+
+  const handleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (isInWishlist(vendor.id)) {
+      removeFromWishlist(vendor.id);
+      toast({
+        title: "Removed from wishlist",
+        description: `${vendor.name} has been removed from your wishlist.`,
+      });
+    } else {
+      addToWishlist(vendor);
+      toast({
+        title: "Added to wishlist",
+        description: `${vendor.name} has been saved to your wishlist.`,
+      });
+    }
+  };
+
+  const handleShare = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: vendor.name,
+          text: `Check out ${vendor.name} on TheGoanWedding.com`,
+          url: `${window.location.origin}/vendor/${vendor.id}`,
+        });
+      } catch (error) {
+        // User cancelled share
+      }
+    } else {
+      // Fallback to copying URL
+      await navigator.clipboard.writeText(`${window.location.origin}/vendor/${vendor.id}`);
+      toast({
+        title: "Link copied",
+        description: "Vendor link has been copied to clipboard.",
+      });
+    }
   };
 
   return (
@@ -38,18 +90,42 @@ export default function VendorCard({ vendor }: VendorCardProps) {
           {/* Gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
           
-          {/* Badges */}
+          {/* Badges and Actions */}
           <div className="absolute top-4 left-4 right-4 flex justify-between">
-            {vendor.verified && (
-              <Badge className="bg-green-500/90 backdrop-blur-sm text-white border-0 shadow-lg">
-                <i className="fas fa-shield-check mr-1"></i>Verified
-              </Badge>
-            )}
-            {vendor.featured && (
-              <Badge className="bg-red-500/90 backdrop-blur-sm text-white border-0 shadow-lg">
-                <i className="fas fa-star mr-1"></i>Featured
-              </Badge>
-            )}
+            <div className="flex gap-2">
+              {vendor.verified && (
+                <Badge className="bg-green-500/90 backdrop-blur-sm text-white border-0 shadow-lg">
+                  <i className="fas fa-shield-check mr-1"></i>Verified
+                </Badge>
+              )}
+              {vendor.featured && (
+                <Badge className="bg-red-500/90 backdrop-blur-sm text-white border-0 shadow-lg">
+                  <i className="fas fa-star mr-1"></i>Featured
+                </Badge>
+              )}
+            </div>
+            
+            {/* Action buttons */}
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={handleWishlist}
+                className="h-8 w-8 p-0 bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg"
+              >
+                <Heart 
+                  className={`h-4 w-4 ${isInWishlist(vendor.id) ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} 
+                />
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={handleShare}
+                className="h-8 w-8 p-0 bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg"
+              >
+                <Share2 className="h-4 w-4 text-gray-600" />
+              </Button>
+            </div>
           </div>
           
           {/* Rating overlay */}
@@ -89,38 +165,45 @@ export default function VendorCard({ vendor }: VendorCardProps) {
           <span>{vendor.location}</span>
         </div>
         
+        {/* Enhanced Contact Options */}
         <div className="space-y-2">
-          {vendor.email && (
-            <Button
-              onClick={handleEmail}
-              className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg text-xs w-full"
-            >
-              <i className="fas fa-envelope mr-2"></i>
-              <span>Email</span>
-            </Button>
-          )}
-          
-          <div className="grid grid-cols-2 gap-2">
-            {vendor.whatsapp && (
-              <Button
-                onClick={handleWhatsApp}
-                className="bg-green-500 hover:bg-green-600 text-white py-2 px-3 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg text-xs"
-              >
-                <i className="fab fa-whatsapp mr-1"></i>
-                <span>WhatsApp</span>
-              </Button>
-            )}
-            
+          <div className="grid grid-cols-3 gap-2">
             {vendor.phone && (
               <Button
                 onClick={handleCall}
-                className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-3 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg text-xs"
+                className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-2 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg text-xs flex items-center justify-center"
               >
-                <i className="fas fa-phone mr-1"></i>
-                <span>Call</span>
+                <Phone className="w-3 h-3" />
+              </Button>
+            )}
+            
+            {vendor.whatsapp && (
+              <Button
+                onClick={handleWhatsApp}
+                className="bg-green-500 hover:bg-green-600 text-white py-2 px-2 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg text-xs flex items-center justify-center"
+              >
+                <i className="fab fa-whatsapp text-sm"></i>
+              </Button>
+            )}
+            
+            {vendor.email && (
+              <Button
+                onClick={handleEmail}
+                className="bg-red-500 hover:bg-red-600 text-white py-2 px-2 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg text-xs flex items-center justify-center"
+              >
+                <Mail className="w-3 h-3" />
               </Button>
             )}
           </div>
+          
+          {/* View Profile Button */}
+          <Link href={`/vendor/${vendor.id}`}>
+            <Button
+              className="w-full bg-slate-700 hover:bg-slate-800 text-white py-2 px-4 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg text-xs"
+            >
+              View Full Profile
+            </Button>
+          </Link>
         </div>
         
         {/* View profile link */}

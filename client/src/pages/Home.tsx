@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import SearchBar from "@/components/SearchBar";
+import EnhancedSearchBar from "@/components/EnhancedSearchBar";
 import CategoryGrid from "@/components/CategoryGrid";
 import VendorCard from "@/components/VendorCard";
 import TestimonialSlider from "@/components/TestimonialSlider";
@@ -97,6 +97,13 @@ export default function Home() {
           <div className="w-6 h-10 border-2 border-white rounded-full flex justify-center">
             <div className="w-1 h-3 bg-white rounded-full mt-2 animate-pulse"></div>
           </div>
+        </div>
+      </section>
+
+      {/* Enhanced Search Section */}
+      <section className="py-16 bg-white relative">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <EnhancedSearchBar className="relative" />
         </div>
       </section>
 
