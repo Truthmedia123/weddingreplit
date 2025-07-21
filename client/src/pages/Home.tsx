@@ -192,9 +192,6 @@ export default function Home() {
                     className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500" 
                   />
                   <CardContent className="p-6">
-                    <div className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-semibold mb-3 inline-block uppercase">
-                      {post.tags || 'Wedding Tips'}
-                    </div>
                     <h3 className="text-xl font-semibold text-slate-800 mb-3 group-hover:text-red-500 transition-colors">
                       {post.title}
                     </h3>
