@@ -53,7 +53,7 @@ export default function Home() {
               {/* Main heading with ornaments */}
               <h1 className="text-3xl sm:text-4xl md:text-7xl lg:text-8xl font-bold text-white mb-4 md:mb-6 leading-tight px-2 sm:px-0">
                 <span className="block mb-1 md:mb-2">Celebrate Your</span>
-                <span className="goan-text-gradient ornament wedding-script text-4xl sm:text-5xl md:text-8xl lg:text-9xl">
+                <span className="goan-text-gradient wedding-script text-4xl sm:text-5xl md:text-8xl lg:text-9xl">
                   Perfect Day
                 </span>
                 <span className="block text-2xl sm:text-3xl md:text-5xl lg:text-6xl mt-2 md:mt-4 text-teal-300">
