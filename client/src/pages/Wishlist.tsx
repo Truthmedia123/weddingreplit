@@ -241,11 +241,7 @@ export default function Wishlist() {
                           )}
                         </div>
                         
-                        <Link href={`/vendor/${item.vendor.id}`}>
-                          <Button className="w-full bg-slate-700 hover:bg-slate-800 text-white py-2 px-4 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg text-xs">
-                            View Full Profile
-                          </Button>
-                        </Link>
+
                       </div>
                     </CardContent>
                   </Card>

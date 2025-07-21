@@ -196,14 +196,7 @@ export default function VendorCard({ vendor }: VendorCardProps) {
             )}
           </div>
           
-          {/* View Profile Button */}
-          <Link href={`/vendor/${vendor.id}`}>
-            <Button
-              className="w-full bg-slate-700 hover:bg-slate-800 text-white py-2 px-4 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg text-xs"
-            >
-              View Full Profile
-            </Button>
-          </Link>
+
         </div>
         
         {/* View profile link */}
