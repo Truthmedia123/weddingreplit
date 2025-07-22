@@ -328,21 +328,21 @@ async function seed() {
   // Insert sample reviews
   const reviewData = [
     {
-      vendorId: 7,
+      vendorId: 1,
       customerName: "Priya & Arjun",
       customerEmail: "priya.arjun@email.com",
       rating: 5,
       comment: "Coastal Dreams Photography exceeded our expectations! They captured every emotion beautifully and the beach shots were absolutely stunning. Highly recommended!"
     },
     {
-      vendorId: 7,
+      vendorId: 1,
       customerName: "Maria & Carlos",
       customerEmail: "maria.carlos@email.com",
       rating: 5,
       comment: "Professional team with great attention to detail. The photos came out amazing and they were very accommodating throughout the entire process."
     },
     {
-      vendorId: 8,
+      vendorId: 2,
       customerName: "Rohan & Kavya",
       customerEmail: "rohan.kavya@email.com",
       rating: 5,
@@ -350,8 +350,8 @@ async function seed() {
     }
   ];
 
-  await db.insert(reviews).values(reviewData);
-  console.log("Reviews inserted");
+  // await db.insert(reviews).values(reviewData);
+  // console.log("Reviews inserted");
 
   console.log("Database seeding completed successfully!");
 }
