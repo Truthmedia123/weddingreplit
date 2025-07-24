@@ -23,6 +23,7 @@ import TrackRSVP from "@/pages/TrackRSVP";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import TermsConditions from "@/pages/TermsConditions";
 import CookiePolicy from "@/pages/CookiePolicy";
+import IconsDownload from "@/pages/IconsDownload";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -45,6 +46,7 @@ function Router() {
         <Route path="/privacy-policy" component={PrivacyPolicy} />
         <Route path="/terms-conditions" component={TermsConditions} />
         <Route path="/cookie-policy" component={CookiePolicy} />
+        <Route path="/icons-download" component={IconsDownload} />
         <Route component={NotFound} />
       </Switch>
     </Layout>
