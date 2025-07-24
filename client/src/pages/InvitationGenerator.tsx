@@ -10,6 +10,13 @@ import { Badge } from '@/components/ui/badge';
 import { Download, Heart, Calendar, MapPin, MessageSquare, Palette, Loader2 } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 
+// Import template images
+import whiteFloralImg from '@assets/white-floral.jpg';
+import botanicalImg from '@assets/botanical-watercolor.png';
+import pinkModernImg from '@assets/pink-modern.png';
+import lavenderCoupleImg from '@assets/lavender-couple.png';
+import saveTheDateImg from '@assets/save-the-date.png';
+
 interface Template {
   name: string;
   description: string;
@@ -151,6 +158,15 @@ export default function InvitationGenerator() {
 
   const selectedTemplate = templates && formData.templateId ? templates[formData.templateId] : null;
 
+  // Template image mapping
+  const templateImages: { [key: string]: string } = {
+    'white-floral': whiteFloralImg,
+    'botanical-watercolor': botanicalImg,
+    'pink-modern': pinkModernImg,
+    'lavender-couple': lavenderCoupleImg,
+    'save-the-date-floral': saveTheDateImg
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
@@ -189,20 +205,16 @@ export default function InvitationGenerator() {
                       onClick={() => handleInputChange('templateId', key)}
                     >
                       {/* Template thumbnail */}
-                      {template.thumbnail && (
-                        <div className="relative h-48 bg-gray-100">
+                      <div className="relative h-48 bg-gray-100">
+                        {templateImages[key] ? (
                           <img
-                            src={`/@assets/${template.thumbnail}`}
+                            src={templateImages[key]}
                             alt={template.name}
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
-                              // Fallback to color preview if image fails to load
-                              (e.target as HTMLImageElement).style.display = 'none';
-                              (e.target as HTMLImageElement).nextElementSibling!.classList.remove('hidden');
-                            }}
+                            className="w-full h-full object-cover rounded-t-lg"
                           />
+                        ) : (
                           <div 
-                            className="absolute inset-0 hidden"
+                            className="absolute inset-0"
                             style={{
                               background: `linear-gradient(135deg, ${template.colors.secondary}, ${template.colors.accent})`
                             }}
@@ -239,16 +251,16 @@ export default function InvitationGenerator() {
                               </div>
                             </div>
                           </div>
-                          
-                          {formData.templateId === key && (
-                            <div className="absolute top-2 right-2">
-                              <Badge variant="default" className="bg-rose-500 text-white">
-                                Selected
-                              </Badge>
-                            </div>
-                          )}
-                        </div>
-                      )}
+                        )}
+                        
+                        {formData.templateId === key && (
+                          <div className="absolute top-2 right-2">
+                            <Badge variant="default" className="bg-rose-500 text-white">
+                              Selected
+                            </Badge>
+                          </div>
+                        )}
+                      </div>
                       
                       <div className="p-4 space-y-3">
                         <div>
