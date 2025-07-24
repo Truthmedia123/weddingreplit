@@ -1,103 +1,92 @@
 import { createCanvas, loadImage } from 'canvas';
 import crypto from 'crypto';
 
-// Template definitions with six distinct wedding invitation styles
+// Template definitions based on the provided wedding invitation designs
 export const INVITATION_TEMPLATES = {
-  'elegant-script': {
-    name: 'Elegant Script',
-    description: 'Timeless white background with black script fonts, delicate flourishes, and minimal gold accents',
+  'white-floral': {
+    name: 'White Floral Elegance',
+    description: 'Luxurious white background with pink and beige paper flowers framing elegant script typography',
     colors: {
-      primary: '#D4AF37', // Gold accent
-      secondary: '#FFFFFF', // White background
-      text: '#000000', // Black text
-      accent: '#F8F8F8' // Light gray for subtle elements
+      primary: '#B8860B', // Golden brown for accent text
+      secondary: '#FFFFFF', // Pure white background
+      text: '#2F2F2F', // Dark charcoal text
+      accent: '#DDA0DD' // Soft plum for flowers
     },
     fonts: {
-      title: 'Dancing Script, cursive',
+      title: 'Great Vibes, cursive',
       body: 'Playfair Display, serif'
     },
-    layout: 'elegant-script',
-    customizable: ['primaryColor', 'scriptFont', 'foilTrim']
+    layout: 'white-floral',
+    customizable: ['primaryColor', 'floralColor', 'scriptFont'],
+    thumbnail: 'white-floral-wedding-invitations-card-us-lega-design-template-09746b5c70be85388525b75e4824402f_screen_1753373016100.jpg'
   },
   'botanical-watercolor': {
     name: 'Botanical Watercolor',
-    description: 'Soft watercolor foliage in green and blush framing the text area, modern serif headline',
+    description: 'Soft watercolor foliage frame with natural green leaves and delicate branch details',
     colors: {
-      primary: '#8FBC8F', // Sage green
-      secondary: '#F5F5F5', // Off-white background
-      text: '#2F4F2F', // Dark green text
-      accent: '#F4C2C2' // Blush accent
+      primary: '#8B4513', // Brown for accent
+      secondary: '#F8F8FF', // Ghost white background
+      text: '#2F4F4F', // Dark slate gray
+      accent: '#9ACD32' // Yellow green for leaves
     },
     fonts: {
-      title: 'Playfair Display, serif',
-      body: 'Source Sans Pro, sans-serif'
+      title: 'Dancing Script, cursive',
+      body: 'Crimson Text, serif'
     },
-    layout: 'botanical',
-    customizable: ['foliageColor', 'serifFont', 'backgroundTint']
+    layout: 'botanical-watercolor',
+    customizable: ['foliageColor', 'backgroundTint', 'scriptFont'],
+    thumbnail: 'Untitled (2)_1753373016101.png'
   },
-  'modern-minimalist': {
-    name: 'Modern Minimalist',
-    description: 'Clean sans-serif type on a solid pastel background, geometric line elements at borders',
+  'pink-modern': {
+    name: 'Pink Modern Romance',
+    description: 'Contemporary pink theme with illustrated couple and floral corner accents',
     colors: {
-      primary: '#B19CD9', // Lavender
-      secondary: '#F0F8FF', // Light background
-      text: '#2C3E50', // Dark navy text
-      accent: '#E8E8E8' // Light gray lines
+      primary: '#E91E63', // Bright pink
+      secondary: '#FFFFFF', // White background
+      text: '#2C3E50', // Dark blue gray
+      accent: '#FFC0CB' // Light pink
     },
     fonts: {
       title: 'Montserrat, sans-serif',
       body: 'Open Sans, sans-serif'
     },
-    layout: 'minimalist',
-    customizable: ['backgroundHue', 'sansSerifFont', 'geometricElements']
+    layout: 'pink-modern',
+    customizable: ['primaryColor', 'coupleIllustration', 'floralAccents'],
+    thumbnail: 'Untitled-1_1753373016102.png'
   },
-  'rustic-vintage': {
-    name: 'Rustic Vintage',
-    description: 'Kraft-paper texture with dark floral silhouettes, classic serif headline, and hand-lettered script',
+  'lavender-couple': {
+    name: 'Lavender Couple Portrait',
+    description: 'Soft lavender background with illustrated bride and groom silhouette and eucalyptus leaves',
     colors: {
-      primary: '#654321', // Dark brown
-      secondary: '#D2B48C', // Kraft paper color
-      text: '#2F2F2F', // Dark charcoal
-      accent: '#8B4513' // Saddle brown
+      primary: '#FF7F50', // Coral for accent text
+      secondary: '#E6E6FA', // Lavender background
+      text: '#2F4F4F', // Dark slate gray
+      accent: '#90EE90' // Light green for leaves
     },
     fonts: {
-      title: 'Merriweather, serif',
-      body: 'Kalam, cursive'
+      title: 'Playfair Display, serif',
+      body: 'Source Sans Pro, sans-serif'
     },
-    layout: 'rustic',
-    customizable: ['textureType', 'floralColor', 'scriptFont']
+    layout: 'lavender-couple',
+    customizable: ['backgroundColor', 'coupleColors', 'accentColor'],
+    thumbnail: 'Untitled (1)_1753373016103.png'
   },
-  'traditional-indian': {
-    name: 'Traditional Indian',
-    description: 'Ornate gold borders inspired by Indian motifs on a deep red or navy canvas, formal serif text',
+  'save-the-date-floral': {
+    name: 'Save the Date Floral',
+    description: 'Romantic pink hibiscus flowers with overlapping rings design and script typography',
     colors: {
-      primary: '#FFD700', // Gold
-      secondary: '#8B0000', // Deep red
-      text: '#FFD700', // Gold text
-      accent: '#FFA500' // Orange accent
-    },
-    fonts: {
-      title: 'Cinzel, serif',
-      body: 'Crimson Text, serif'
-    },
-    layout: 'traditional-indian',
-    customizable: ['borderColor', 'backgroundColor', 'serifFont']
-  },
-  'floral-photo': {
-    name: 'Floral Photo',
-    description: 'Full-bleed photo background with translucent text panel, floral corner motifs, and modern cursive',
-    colors: {
-      primary: '#FF69B4', // Hot pink
-      secondary: 'rgba(255, 255, 255, 0.9)', // Translucent white
-      text: '#2C3E50', // Dark navy
-      accent: '#FFB6C1' // Light pink
+      primary: '#DA70D6', // Orchid purple
+      secondary: '#FFF8DC', // Cornsilk background
+      text: '#696969', // Dim gray
+      accent: '#FF69B4' // Hot pink for flowers
     },
     fonts: {
       title: 'Great Vibes, cursive',
-      body: 'Lato, sans-serif'
+      body: 'Lora, serif'
     },
-    layout: 'floral-photo',
-    customizable: ['photoUpload', 'cornerMotifColor', 'cursiveFont']
+    layout: 'save-the-date-floral',
+    customizable: ['primaryColor', 'floralColor', 'ringColor'],
+    thumbnail: 'Untitled_1753373016105.png'
   }
 };
 

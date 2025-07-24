@@ -25,6 +25,7 @@ interface Template {
   };
   layout: string;
   customizable: string[];
+  thumbnail?: string;
 }
 
 interface Templates {
@@ -56,6 +57,7 @@ export default function InvitationGenerator() {
 
   const [downloadUrl, setDownloadUrl] = useState<string>('');
   const [isDownloading, setIsDownloading] = useState(false);
+  const [autoGenerateEnabled, setAutoGenerateEnabled] = useState(false);
 
   // Fetch available templates
   const { data: templates, isLoading: templatesLoading } = useQuery<Templates>({
@@ -79,10 +81,16 @@ export default function InvitationGenerator() {
   });
 
   const handleInputChange = (field: keyof InvitationData, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    setFormData(prev => {
+      const newData = { ...prev, [field]: value };
+      
+      // Auto-generate invitation if all required fields are filled and auto-generate is enabled
+      if (autoGenerateEnabled && newData.templateId && newData.coupleNames && newData.weddingDate && newData.venue) {
+        setTimeout(() => generateMutation.mutate(newData), 500); // Debounce
+      }
+      
+      return newData;
+    });
   };
 
   const handleCustomizationChange = (field: string, value: string) => {
@@ -169,50 +177,108 @@ export default function InvitationGenerator() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {templates && Object.entries(templates).map(([key, template]) => (
                     <div
                       key={key}
-                      className={`p-4 border rounded-lg cursor-pointer transition-all ${
+                      className={`border rounded-lg cursor-pointer transition-all overflow-hidden ${
                         formData.templateId === key
-                          ? 'border-rose-500 bg-rose-50 shadow-md'
-                          : 'border-gray-200 hover:border-rose-300 hover:shadow-sm'
+                          ? 'border-rose-500 bg-rose-50 shadow-lg ring-2 ring-rose-200'
+                          : 'border-gray-200 hover:border-rose-300 hover:shadow-md'
                       }`}
                       onClick={() => handleInputChange('templateId', key)}
                     >
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between">
-                          <h3 className="font-semibold text-lg">{template.name}</h3>
+                      {/* Template thumbnail */}
+                      {template.thumbnail && (
+                        <div className="relative h-48 bg-gray-100">
+                          <img
+                            src={`/@assets/${template.thumbnail}`}
+                            alt={template.name}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              // Fallback to color preview if image fails to load
+                              (e.target as HTMLImageElement).style.display = 'none';
+                              (e.target as HTMLImageElement).nextElementSibling!.classList.remove('hidden');
+                            }}
+                          />
+                          <div 
+                            className="absolute inset-0 hidden"
+                            style={{
+                              background: `linear-gradient(135deg, ${template.colors.secondary}, ${template.colors.accent})`
+                            }}
+                          >
+                            <div className="flex items-center justify-center h-full">
+                              <div className="text-center space-y-2">
+                                <div 
+                                  className="text-2xl font-bold"
+                                  style={{ 
+                                    color: template.colors.text,
+                                    fontFamily: template.fonts.title
+                                  }}
+                                >
+                                  Sample
+                                </div>
+                                <div 
+                                  className="text-lg"
+                                  style={{ 
+                                    color: template.colors.primary,
+                                    fontFamily: template.fonts.body
+                                  }}
+                                >
+                                  &
+                                </div>
+                                <div 
+                                  className="text-2xl font-bold"
+                                  style={{ 
+                                    color: template.colors.text,
+                                    fontFamily: template.fonts.title
+                                  }}
+                                >
+                                  Names
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
                           {formData.templateId === key && (
-                            <Badge variant="default">Selected</Badge>
+                            <div className="absolute top-2 right-2">
+                              <Badge variant="default" className="bg-rose-500 text-white">
+                                Selected
+                              </Badge>
+                            </div>
                           )}
                         </div>
-                        
-                        <p className="text-sm text-gray-600 leading-relaxed">
-                          {template.description}
-                        </p>
+                      )}
+                      
+                      <div className="p-4 space-y-3">
+                        <div>
+                          <h3 className="font-semibold text-lg">{template.name}</h3>
+                          <p className="text-sm text-gray-600 leading-relaxed mt-1">
+                            {template.description}
+                          </p>
+                        </div>
                         
                         {/* Color palette preview */}
                         <div className="flex items-center gap-2">
                           <span className="text-xs text-gray-500">Colors:</span>
                           <div className="flex gap-1">
                             <div
-                              className="w-5 h-5 rounded-full border border-gray-300 shadow-sm"
+                              className="w-4 h-4 rounded-full border border-gray-300 shadow-sm"
                               style={{ backgroundColor: template.colors.primary }}
                               title="Primary"
                             />
                             <div
-                              className="w-5 h-5 rounded-full border border-gray-300 shadow-sm"
+                              className="w-4 h-4 rounded-full border border-gray-300 shadow-sm"
                               style={{ backgroundColor: template.colors.secondary }}
                               title="Background"
                             />
                             <div
-                              className="w-5 h-5 rounded-full border border-gray-300 shadow-sm"
+                              className="w-4 h-4 rounded-full border border-gray-300 shadow-sm"
                               style={{ backgroundColor: template.colors.text }}
                               title="Text"
                             />
                             <div
-                              className="w-5 h-5 rounded-full border border-gray-300 shadow-sm"
+                              className="w-4 h-4 rounded-full border border-gray-300 shadow-sm"
                               style={{ backgroundColor: template.colors.accent }}
                               title="Accent"
                             />
@@ -221,11 +287,16 @@ export default function InvitationGenerator() {
                         
                         {/* Customizable options */}
                         <div className="flex flex-wrap gap-1">
-                          {template.customizable.map((option) => (
+                          {template.customizable.slice(0, 3).map((option) => (
                             <Badge key={option} variant="outline" className="text-xs">
                               {option.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
                             </Badge>
                           ))}
+                          {template.customizable.length > 3 && (
+                            <Badge variant="outline" className="text-xs">
+                              +{template.customizable.length - 3} more
+                            </Badge>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -484,19 +555,38 @@ export default function InvitationGenerator() {
                   </div>
                 )}
 
-                <Button
-                  onClick={handleGenerate}
-                  disabled={!formData.templateId || !formData.coupleNames || !formData.weddingDate || !formData.venue || generateMutation.isPending}
-                  className="w-full"
-                  size="lg"
-                >
-                  {generateMutation.isPending ? (
-                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                  ) : (
-                    <Heart className="h-4 w-4 mr-2" />
-                  )}
-                  Generate Invitation
-                </Button>
+                <div className="space-y-3">
+                  {/* Auto-generate toggle */}
+                  <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                    <div>
+                      <p className="font-medium text-sm">Auto-Generate</p>
+                      <p className="text-xs text-gray-600">Automatically generate invitation when details change</p>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={autoGenerateEnabled}
+                        onChange={(e) => setAutoGenerateEnabled(e.target.checked)}
+                        className="sr-only peer"
+                      />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
+                  </div>
+
+                  <Button
+                    onClick={handleGenerate}
+                    disabled={!formData.templateId || !formData.coupleNames || !formData.weddingDate || !formData.venue || generateMutation.isPending}
+                    className="w-full"
+                    size="lg"
+                  >
+                    {generateMutation.isPending ? (
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    ) : (
+                      <Heart className="h-4 w-4 mr-2" />
+                    )}
+                    Generate Invitation
+                  </Button>
+                </div>
 
                 {generateMutation.error && (
                   <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
