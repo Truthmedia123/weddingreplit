@@ -68,7 +68,8 @@ export default function InvitationGenerator() {
   // Generate invitation mutation
   const generateMutation = useMutation({
     mutationFn: async (data: InvitationData) => {
-      return apiRequest('/api/invite/generate', 'POST', data);
+      const response = await apiRequest('POST', '/api/invite/generate', data);
+      return response.json();
     },
     onSuccess: (data) => {
       setDownloadUrl(data.downloadUrl);
