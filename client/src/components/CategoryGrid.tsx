@@ -89,7 +89,6 @@ function getCategoryIcon(iconName: string) {
     Wine,
     Cake,
     Baby,
-    Flower,
     Zap,
     Leaf,
     Mic,
@@ -117,6 +116,11 @@ function getCategoryIcon(iconName: string) {
   };
   
 
+  
+  // Debug: log if icon is not found
+  if (!iconMap[iconName]) {
+    console.warn(`Icon not found: ${iconName}`);
+  }
   
   return iconMap[iconName] || Camera;
 }
