@@ -203,235 +203,260 @@ function generateWhiteFloralInvitation(canvas: any, ctx: any, data: InvitationDa
   return canvas.toBuffer('image/png');
 }
 
-// Botanical Watercolor template - natural green foliage frame
+// Botanical Watercolor template - natural green foliage frame (Together with Families style)
 function generateBotanicalInvitation(canvas: any, ctx: any, data: InvitationData, template: any): Buffer {
-  // Light background with watercolor effect
+  // Soft mint green gradient background matching your examples
   const gradient = ctx.createLinearGradient(0, 0, 800, 1200);
-  gradient.addColorStop(0, '#F8F8FF');
-  gradient.addColorStop(1, '#F0F8F0');
+  gradient.addColorStop(0, '#E0F0E0');
+  gradient.addColorStop(0.5, '#D3F4D3');
+  gradient.addColorStop(1, '#C8E6C8');
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, 800, 1200);
 
-  // Watercolor leaf border effects
-  ctx.fillStyle = template.colors.accent;
-  ctx.globalAlpha = 0.3;
+  // Coral/orange border frame matching your examples
+  ctx.strokeStyle = '#FF7F50';
+  ctx.lineWidth = 8;
+  ctx.strokeRect(60, 60, 680, 1080);
   
-  // Top left foliage
-  ctx.beginPath();
-  ctx.ellipse(100, 150, 80, 40, Math.PI / 4, 0, 2 * Math.PI);
-  ctx.fill();
-  ctx.ellipse(150, 120, 60, 30, -Math.PI / 6, 0, 2 * Math.PI);
-  ctx.fill();
-  
-  // Top right foliage
-  ctx.ellipse(700, 150, 80, 40, -Math.PI / 4, 0, 2 * Math.PI);
-  ctx.fill();
-  ctx.ellipse(650, 120, 60, 30, Math.PI / 6, 0, 2 * Math.PI);
-  ctx.fill();
+  // Inner border
+  ctx.strokeStyle = '#FF8C69';
+  ctx.lineWidth = 4;
+  ctx.strokeRect(80, 80, 640, 1040);
 
-  // Bottom decorative leaves
-  ctx.ellipse(150, 1050, 70, 35, Math.PI / 3, 0, 2 * Math.PI);
-  ctx.fill();
-  ctx.ellipse(650, 1050, 70, 35, -Math.PI / 3, 0, 2 * Math.PI);
-  ctx.fill();
-
-  ctx.globalAlpha = 1.0;
-
-  // Main text content
-  ctx.fillStyle = template.colors.text;
-  ctx.font = 'italic 20px serif';
+  // Decorative watercolor hearts at top
+  ctx.fillStyle = '#FF7F50';
+  ctx.font = '24px serif';
   ctx.textAlign = 'center';
-  ctx.fillText('TOGETHER', 400, 250);
-  ctx.fillText('WITH THEIR FAMILIES', 400, 280);
+  ctx.fillText('♥ ——————————— ♥', 400, 180);
 
-  // Couple names in elegant script
+  // "Together with our families" header
+  ctx.fillStyle = '#8B4513';
+  ctx.font = 'italic 24px serif';
+  ctx.fillText('Together with our families', 400, 240);
+
+  // Couple names in large elegant text
   const names = data.coupleNames.split(/\s+(?:and|&)\s+/i);
-  ctx.fillStyle = template.colors.primary;
-  ctx.font = 'italic 58px serif';
+  ctx.fillStyle = '#2F4F4F';
+  ctx.font = 'bold 56px serif';
   if (names.length >= 2) {
-    ctx.fillText(names[0], 400, 400);
-    // Heart symbol
-    ctx.fillStyle = template.colors.accent;
-    ctx.font = '32px serif';
-    ctx.fillText('♥', 400, 450);
-    ctx.fillStyle = template.colors.primary;
-    ctx.font = 'italic 58px serif';
-    ctx.fillText(names[1], 400, 520);
+    ctx.fillText(names[0], 400, 340);
+    ctx.font = 'bold 40px serif';
+    ctx.fillText('and', 400, 390);
+    ctx.font = 'bold 56px serif';
+    ctx.fillText(names[1], 400, 450);
   } else {
-    ctx.fillText(data.coupleNames, 400, 450);
+    ctx.fillText(data.coupleNames, 400, 380);
   }
 
-  // Invitation text
-  ctx.fillStyle = template.colors.text;
-  ctx.font = 'italic 18px serif';
-  ctx.fillText('we invite you to join our wedding', 400, 620);
+  // Request invitation text
+  ctx.fillStyle = '#2F4F4F';
+  ctx.font = 'italic 22px serif';
+  ctx.fillText('request the pleasure of your company', 400, 540);
+  ctx.fillText('at their wedding celebration', 400, 570);
 
-  // Date styling
+  // Date in coral color
+  ctx.fillStyle = '#FF7F50';
   ctx.font = 'bold 36px serif';
-  const dateParts = data.weddingDate.split(' ');
-  if (dateParts.length >= 3) {
-    ctx.fillText(dateParts.slice(0, 2).join(' '), 400, 720);
-    ctx.fillText(dateParts[2], 400, 760);
-  } else {
-    ctx.fillText(data.weddingDate, 400, 740);
-  }
+  ctx.fillText(data.weddingDate, 400, 670);
 
-  // Time and venue
+  // "at" connector
+  ctx.fillStyle = '#2F4F4F';
   ctx.font = 'italic 20px serif';
-  ctx.fillText('ONE O\'CLOCK IN THE AFTERNOON', 400, 820);
-  ctx.font = 'bold 18px serif';
-  ctx.fillText(`Venue: ${data.venue}`, 400, 880);
+  ctx.fillText('at', 400, 720);
+
+  // Venue
+  ctx.fillStyle = '#2F4F4F';
+  ctx.font = 'bold 28px serif';
+  ctx.fillText(data.venue, 400, 770);
+
+  // Join us message
+  ctx.fillStyle = '#2F4F4F';
+  ctx.font = 'italic 18px serif';
+  ctx.fillText('Join us in celebration', 400, 850);
+
+  // Decorative hearts at bottom
+  ctx.fillStyle = '#FF7F50';
+  ctx.font = '24px serif';
+  ctx.fillText('♥ ——————————— ♥', 400, 950);
 
   return canvas.toBuffer('image/png');
 }
 
 // Pink Modern Romance template - contemporary with couple illustration
 function generatePinkModernInvitation(canvas: any, ctx: any, data: InvitationData, template: any): Buffer {
-  // White background
+  // Clean white background
   ctx.fillStyle = '#FFFFFF';
   ctx.fillRect(0, 0, 800, 1200);
 
-  // Pink border frame
-  ctx.strokeStyle = template.colors.primary;
-  ctx.lineWidth = 8;
-  ctx.strokeRect(40, 40, 720, 1120);
+  // Pink border frame matching your examples
+  ctx.strokeStyle = '#E91E63';
+  ctx.lineWidth = 12;
+  ctx.strokeRect(50, 50, 700, 1100);
 
   // "Invitation" header in large pink text
-  ctx.fillStyle = template.colors.primary;
-  ctx.font = 'bold 48px sans-serif';
+  ctx.fillStyle = '#E91E63';
+  ctx.font = 'bold 52px sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText('Invitation', 400, 180);
 
-  // Decorative heart divider
-  ctx.fillStyle = template.colors.primary;
-  ctx.font = '24px serif';
-  ctx.fillText('>>> ♥ <<<', 400, 220);
+  // Decorative heart divider with arrows
+  ctx.fillStyle = '#E91E63';
+  ctx.font = '28px serif';
+  ctx.fillText('>>> ♥ <<<', 400, 230);
 
-  // Couple names
+  // Couple names in modern typography
   const names = data.coupleNames.split(/\s+(?:and|&)\s+/i);
-  ctx.fillStyle = template.colors.text;
-  ctx.font = 'bold 42px sans-serif';
+  ctx.fillStyle = '#2C3E50';
+  ctx.font = 'bold 48px sans-serif';
   if (names.length >= 2) {
-    ctx.fillText(names[0], 320, 320);
-    ctx.fillStyle = template.colors.primary;
-    ctx.font = 'bold 48px sans-serif';
+    ctx.fillText(names[0], 280, 320);
+    ctx.fillStyle = '#E91E63';
+    ctx.font = 'bold 56px sans-serif';
     ctx.fillText('&', 400, 320);
-    ctx.fillStyle = template.colors.text;
-    ctx.font = 'bold 42px sans-serif';
-    ctx.fillText(names[1], 480, 320);
+    ctx.fillStyle = '#2C3E50';
+    ctx.font = 'bold 48px sans-serif';
+    ctx.fillText(names[1], 520, 320);
   } else {
     ctx.fillText(data.coupleNames, 400, 320);
   }
 
   // Date styling
-  ctx.fillStyle = template.colors.text;
-  ctx.font = '20px sans-serif';
+  ctx.fillStyle = '#2C3E50';
+  ctx.font = 'bold 24px sans-serif';
   ctx.fillText(data.weddingDate, 400, 420);
 
-  // Simple couple illustration placeholder
-  ctx.fillStyle = template.colors.accent;
+  // Modern couple illustration - bride and groom circles
+  ctx.fillStyle = '#FFC0CB';
   ctx.beginPath();
-  ctx.arc(350, 550, 40, 0, 2 * Math.PI); // Bride
-  ctx.arc(450, 550, 40, 0, 2 * Math.PI); // Groom
+  ctx.arc(350, 550, 45, 0, 2 * Math.PI); // Bride head
+  ctx.arc(450, 550, 45, 0, 2 * Math.PI); // Groom head
   ctx.fill();
 
-  // Wedding dress and suit representation
-  ctx.fillStyle = '#FFFFFF';
-  ctx.fillRect(330, 580, 40, 80); // Dress
-  ctx.fillStyle = template.colors.text;
-  ctx.fillRect(430, 580, 40, 80); // Suit
+  // Dress representation (simple rectangle)
+  ctx.fillStyle = '#2C3E50';
+  ctx.fillRect(345, 590, 10, 60); // Dress silhouette
 
   // Venue and details
-  ctx.fillStyle = template.colors.text;
-  ctx.font = 'bold 24px sans-serif';
-  ctx.fillText(data.venue, 400, 750);
+  ctx.fillStyle = '#2C3E50';
+  ctx.font = 'bold 28px sans-serif';
+  ctx.fillText(data.venue, 400, 720);
 
-  // Decorative flowers at bottom
-  ctx.fillStyle = template.colors.primary;
+  // Decorative pink circles at bottom in a line (modern design)
+  ctx.fillStyle = '#E91E63';
   ctx.beginPath();
-  ctx.arc(150, 1000, 25, 0, 2 * Math.PI);
-  ctx.arc(200, 1020, 20, 0, 2 * Math.PI);
-  ctx.arc(600, 1020, 20, 0, 2 * Math.PI);
-  ctx.arc(650, 1000, 25, 0, 2 * Math.PI);
+  ctx.arc(200, 950, 20, 0, 2 * Math.PI);
+  ctx.arc(250, 970, 15, 0, 2 * Math.PI);
+  ctx.fill();
+  
+  // Pink line connector
+  ctx.strokeStyle = '#E91E63';
+  ctx.lineWidth = 6;
+  ctx.beginPath();
+  ctx.moveTo(280, 965);
+  ctx.lineTo(520, 965);
+  ctx.stroke();
+  
+  ctx.fillStyle = '#E91E63';
+  ctx.beginPath();
+  ctx.arc(550, 970, 15, 0, 2 * Math.PI);
+  ctx.arc(600, 950, 20, 0, 2 * Math.PI);
   ctx.fill();
 
   return canvas.toBuffer('image/png');
 }
 
-// Lavender Couple Portrait template - soft background with couple silhouette
+// Lavender Couple Portrait template - soft background with couple silhouette (Save the Date style)
 function generateLavenderCoupleInvitation(canvas: any, ctx: any, data: InvitationData, template: any): Buffer {
-  // Lavender gradient background
+  // Beautiful lavender gradient background matching your examples
   const gradient = ctx.createLinearGradient(0, 0, 800, 1200);
   gradient.addColorStop(0, '#E6E6FA');
+  gradient.addColorStop(0.5, '#DDA0DD');
   gradient.addColorStop(1, '#D8BFD8');
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, 800, 1200);
 
-  // Decorative eucalyptus leaves
-  ctx.fillStyle = template.colors.accent;
-  ctx.globalAlpha = 0.4;
+  // Decorative green eucalyptus leaves at top corners
+  ctx.fillStyle = '#90EE90';
+  ctx.globalAlpha = 0.7;
   
-  // Top corners
+  // Top left eucalyptus
   ctx.beginPath();
-  ctx.ellipse(100, 100, 60, 20, Math.PI / 4, 0, 2 * Math.PI);
-  ctx.ellipse(700, 100, 60, 20, -Math.PI / 4, 0, 2 * Math.PI);
+  ctx.ellipse(120, 120, 80, 25, Math.PI / 6, 0, 2 * Math.PI);
+  ctx.fill();
+  ctx.ellipse(80, 90, 60, 20, Math.PI / 4, 0, 2 * Math.PI);
+  ctx.fill();
+  
+  // Top right eucalyptus
+  ctx.beginPath();
+  ctx.ellipse(680, 120, 80, 25, -Math.PI / 6, 0, 2 * Math.PI);
+  ctx.fill();
+  ctx.ellipse(720, 90, 60, 20, -Math.PI / 4, 0, 2 * Math.PI);
   ctx.fill();
 
   ctx.globalAlpha = 1.0;
 
-  // "SAVE THE DATE FOR" header
-  ctx.fillStyle = template.colors.text;
-  ctx.font = 'bold 20px serif';
+  // "SAVE THE DATE FOR" header - elegant typography
+  ctx.fillStyle = '#2F4F4F';
+  ctx.font = 'bold 24px serif';
   ctx.textAlign = 'center';
-  ctx.fillText('SAVE THE DATE FOR', 400, 200);
-  ctx.fillText('THE WEDDING OF', 400, 230);
+  ctx.fillText('SAVE THE DATE FOR', 400, 220);
+  ctx.fillText('THE WEDDING OF', 400, 250);
 
-  // Couple names in elegant style
+  // Couple names in large coral/orange text matching your examples
   const names = data.coupleNames.split(/\s+(?:and|&)\s+/i);
-  ctx.fillStyle = template.colors.primary;
-  ctx.font = 'bold 52px serif';
+  ctx.fillStyle = '#FF7F50';
+  ctx.font = 'bold 72px serif';
   if (names.length >= 2) {
-    ctx.fillText(names[0].toUpperCase(), 400, 350);
-    ctx.font = 'bold 32px serif';
-    ctx.fillText('&', 400, 400);
-    ctx.font = 'bold 52px serif';
-    ctx.fillText(names[1].toUpperCase(), 400, 450);
+    ctx.fillText(names[0].toUpperCase(), 400, 360);
+    ctx.font = 'bold 48px serif';
+    ctx.fillText('&', 400, 420);
+    ctx.font = 'bold 72px serif';
+    ctx.fillText(names[1].toUpperCase(), 400, 490);
   } else {
-    ctx.fillText(data.coupleNames.toUpperCase(), 400, 400);
+    ctx.fillText(data.coupleNames.toUpperCase(), 400, 420);
   }
 
-  // Couple silhouette representation
-  ctx.fillStyle = template.colors.text;
-  // Bride silhouette
-  ctx.beginPath();
-  ctx.arc(350, 600, 30, 0, 2 * Math.PI); // Head
-  ctx.fill();
-  ctx.fillRect(320, 620, 60, 100); // Dress
+  // Couple silhouette illustration matching your design
+  ctx.fillStyle = '#2F4F4F';
   
-  // Groom silhouette  
+  // Bride silhouette (left figure)
   ctx.beginPath();
-  ctx.arc(450, 600, 30, 0, 2 * Math.PI); // Head
+  ctx.arc(320, 650, 35, 0, 2 * Math.PI); // Head
   ctx.fill();
-  ctx.fillRect(430, 620, 40, 100); // Suit
+  // Dress shape - more elegant
+  ctx.beginPath();
+  ctx.moveTo(320, 680);
+  ctx.quadraticCurveTo(280, 720, 290, 780);
+  ctx.lineTo(350, 780);
+  ctx.quadraticCurveTo(360, 720, 320, 680);
+  ctx.fill();
+  
+  // Groom silhouette (right figure)  
+  ctx.beginPath();
+  ctx.arc(480, 650, 35, 0, 2 * Math.PI); // Head
+  ctx.fill();
+  // Suit shape
+  ctx.fillRect(455, 680, 50, 100);
 
-  // Wedding details
-  ctx.fillStyle = template.colors.text;
-  ctx.font = 'italic 18px serif';
-  ctx.fillText('Join us for an evening of celebration, architecture,', 400, 800);
-  ctx.fillText('and connections, followed by high tea and a guided', 400, 825);
-  ctx.fillText('site walkthrough.', 400, 850);
+  // Wedding celebration message
+  ctx.fillStyle = '#2F4F4F';
+  ctx.font = 'italic 20px serif';
+  ctx.fillText('Join us for an evening of celebration, architecture,', 400, 870);
+  ctx.fillText('and connections, followed by high tea and a guided', 400, 900);
+  ctx.fillText('site walkthrough.', 400, 930);
 
-  // Date and venue
-  ctx.fillStyle = template.colors.primary;
+  // Date in coral/orange matching your examples
+  ctx.fillStyle = '#FF7F50';
+  ctx.font = 'bold 36px serif';
+  ctx.fillText(data.weddingDate.toUpperCase(), 400, 1000);
   ctx.font = 'bold 28px serif';
-  ctx.fillText(data.weddingDate.toUpperCase(), 400, 920);
-  ctx.fillText(data.venue.toUpperCase(), 400, 960);
+  ctx.fillText(data.venue.toUpperCase(), 400, 1040);
 
   // Family signature
-  ctx.fillStyle = template.colors.text;
-  ctx.font = 'italic 16px serif';
-  ctx.fillText('Warm regards,', 400, 1020);
-  ctx.fillText(`${names.length >= 2 ? names[0] : 'Wedding'} Family`, 400, 1045);
+  ctx.fillStyle = '#2F4F4F';
+  ctx.font = 'italic 18px serif';
+  ctx.fillText('Warm regards,', 400, 1100);
+  ctx.fillText(`${names.length >= 2 ? names[0] : 'Wedding'} Family`, 400, 1125);
 
   return canvas.toBuffer('image/png');
 }
