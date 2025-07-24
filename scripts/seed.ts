@@ -151,9 +151,10 @@ async function seed() {
       slug: "top-10-goan-wedding-trends-this-year",
       excerpt: "Discover the latest wedding trends that are defining Goan celebrations this year, from sustainable practices to cultural fusion ceremonies.",
       content: "Full content about wedding trends...",
+      category: "wedding-trends",
       author: "Maria D'Souza",
       featuredImage: "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=600",
-      tags: "trends,2024,goan-weddings,beach-weddings",
+      tags: ["trends", "2024", "goan-weddings", "beach-weddings"],
       published: true
     },
     {
@@ -161,9 +162,10 @@ async function seed() {
       slug: "planning-perfect-beach-wedding-goa",
       excerpt: "A comprehensive guide to planning an unforgettable beach wedding in Goa, including venue selection, permits, and weather considerations.",
       content: "Full content about beach wedding planning...",
+      category: "wedding-planning",
       author: "Joaquim Fernandes",
       featuredImage: "https://images.unsplash.com/photo-1520637736862-4d197d17c90a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=600",
-      tags: "beach-wedding,planning,venues,permits",
+      tags: ["beach-wedding", "planning", "venues", "permits"],
       published: true
     },
     {
@@ -171,9 +173,10 @@ async function seed() {
       slug: "traditional-goan-wedding-customs-rituals",
       excerpt: "Explore the rich cultural heritage of Goan weddings, from Portuguese influences to Hindu traditions that make these celebrations unique.",
       content: "Full content about traditions...",
+      category: "wedding-traditions",
       author: "Priya Kamat",
       featuredImage: "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=600",
-      tags: "traditions,culture,customs,heritage",
+      tags: ["traditions", "culture", "customs", "heritage"],
       published: true
     }
   ];
