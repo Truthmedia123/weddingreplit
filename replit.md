@@ -130,6 +130,10 @@ A premium wedding vendor directory website for Goa operating as a public directo
 - **2025-07-24**: Deleted InvitationGenerator page and removed "Invitations" navigation link
 - **2025-07-24**: Cleaned up invitation-related API routes and server-side code
 - **2025-07-24**: Application now focuses on vendor directory, RSVP system, and blog content only
+- **2025-07-24**: Re-implemented PDF-based wedding invitation generator using user-provided templates
+- **2025-07-24**: Created 4 new PDF templates: Save The Date Classic, Simple Invitation, Family Invitation, Detailed Save The Date
+- **2025-07-24**: Added secure PDF generation with self-destructing download links for privacy
+- **2025-07-24**: Integrated PDF-lib for professional PDF creation with customizable layouts
 
 ## Project Architecture
 
