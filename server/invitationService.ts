@@ -1,77 +1,103 @@
 import { createCanvas, loadImage } from 'canvas';
 import crypto from 'crypto';
 
-// Template definitions with elegant wedding designs
+// Template definitions with six distinct wedding invitation styles
 export const INVITATION_TEMPLATES = {
-  'classic-gold': {
-    name: 'Classic Gold',
+  'elegant-script': {
+    name: 'Elegant Script',
+    description: 'Timeless white background with black script fonts, delicate flourishes, and minimal gold accents',
     colors: {
-      primary: '#D4AF37',
-      secondary: '#FFFFFF',
-      text: '#2C3E50',
-      accent: '#F8F9FA'
+      primary: '#D4AF37', // Gold accent
+      secondary: '#FFFFFF', // White background
+      text: '#000000', // Black text
+      accent: '#F8F8F8' // Light gray for subtle elements
     },
     fonts: {
-      title: 'serif',
-      body: 'sans-serif'
+      title: 'Dancing Script, cursive',
+      body: 'Playfair Display, serif'
     },
-    layout: 'centered'
+    layout: 'elegant-script',
+    customizable: ['primaryColor', 'scriptFont', 'foilTrim']
   },
-  'romantic-rose': {
-    name: 'Romantic Rose',
+  'botanical-watercolor': {
+    name: 'Botanical Watercolor',
+    description: 'Soft watercolor foliage in green and blush framing the text area, modern serif headline',
     colors: {
-      primary: '#E8B4B8',
-      secondary: '#FFFFFF',
-      text: '#4A4A4A',
-      accent: '#F5F5F5'
+      primary: '#8FBC8F', // Sage green
+      secondary: '#F5F5F5', // Off-white background
+      text: '#2F4F2F', // Dark green text
+      accent: '#F4C2C2' // Blush accent
     },
     fonts: {
-      title: 'serif',
-      body: 'sans-serif'
+      title: 'Playfair Display, serif',
+      body: 'Source Sans Pro, sans-serif'
     },
-    layout: 'centered'
+    layout: 'botanical',
+    customizable: ['foliageColor', 'serifFont', 'backgroundTint']
   },
-  'beach-coral': {
-    name: 'Beach Coral',
+  'modern-minimalist': {
+    name: 'Modern Minimalist',
+    description: 'Clean sans-serif type on a solid pastel background, geometric line elements at borders',
     colors: {
-      primary: '#FF7F7F',
-      secondary: '#87CEEB',
-      text: '#2F4F4F',
-      accent: '#F0F8FF'
+      primary: '#B19CD9', // Lavender
+      secondary: '#F0F8FF', // Light background
+      text: '#2C3E50', // Dark navy text
+      accent: '#E8E8E8' // Light gray lines
     },
     fonts: {
-      title: 'serif',
-      body: 'sans-serif'
+      title: 'Montserrat, sans-serif',
+      body: 'Open Sans, sans-serif'
     },
-    layout: 'centered'
+    layout: 'minimalist',
+    customizable: ['backgroundHue', 'sansSerifFont', 'geometricElements']
   },
-  'elegant-navy': {
-    name: 'Elegant Navy',
+  'rustic-vintage': {
+    name: 'Rustic Vintage',
+    description: 'Kraft-paper texture with dark floral silhouettes, classic serif headline, and hand-lettered script',
     colors: {
-      primary: '#191970',
-      secondary: '#FFFFFF',
-      text: '#2F4F4F',
-      accent: '#F8F8FF'
+      primary: '#654321', // Dark brown
+      secondary: '#D2B48C', // Kraft paper color
+      text: '#2F2F2F', // Dark charcoal
+      accent: '#8B4513' // Saddle brown
     },
     fonts: {
-      title: 'serif',
-      body: 'sans-serif'
+      title: 'Merriweather, serif',
+      body: 'Kalam, cursive'
     },
-    layout: 'centered'
+    layout: 'rustic',
+    customizable: ['textureType', 'floralColor', 'scriptFont']
   },
-  'vintage-cream': {
-    name: 'Vintage Cream',
+  'traditional-indian': {
+    name: 'Traditional Indian',
+    description: 'Ornate gold borders inspired by Indian motifs on a deep red or navy canvas, formal serif text',
     colors: {
-      primary: '#DEB887',
-      secondary: '#FFFDD0',
-      text: '#8B4513',
-      accent: '#FFF8DC'
+      primary: '#FFD700', // Gold
+      secondary: '#8B0000', // Deep red
+      text: '#FFD700', // Gold text
+      accent: '#FFA500' // Orange accent
     },
     fonts: {
-      title: 'serif',
-      body: 'sans-serif'
+      title: 'Cinzel, serif',
+      body: 'Crimson Text, serif'
     },
-    layout: 'centered'
+    layout: 'traditional-indian',
+    customizable: ['borderColor', 'backgroundColor', 'serifFont']
+  },
+  'floral-photo': {
+    name: 'Floral Photo',
+    description: 'Full-bleed photo background with translucent text panel, floral corner motifs, and modern cursive',
+    colors: {
+      primary: '#FF69B4', // Hot pink
+      secondary: 'rgba(255, 255, 255, 0.9)', // Translucent white
+      text: '#2C3E50', // Dark navy
+      accent: '#FFB6C1' // Light pink
+    },
+    fonts: {
+      title: 'Great Vibes, cursive',
+      body: 'Lato, sans-serif'
+    },
+    layout: 'floral-photo',
+    customizable: ['photoUpload', 'cornerMotifColor', 'cursiveFont']
   }
 };
 

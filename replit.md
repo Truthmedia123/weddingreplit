@@ -108,10 +108,13 @@ A premium wedding vendor directory website for Goa operating as a public directo
 - **2025-07-24**: Fixed icon compatibility issues by replacing non-existent icons (Drone→Zap, Sparkle→Star, Drama→Theater, etc.)
 - **2025-07-24**: Categories now display correctly with beautiful gradient backgrounds and modern icons
 - **2025-07-24**: Successfully implemented complete Wedding Invitation Generator feature
-- **2025-07-24**: Added secure token-based invitation generation with 5 elegant templates
+- **2025-07-24**: Added secure token-based invitation generation with 6 distinct wedding styles
 - **2025-07-24**: Created Canvas-based image generation with customizable colors and fonts
 - **2025-07-24**: Implemented one-time download links with 24-hour expiry for security
 - **2025-07-24**: Added "Invitations" navigation link and complete frontend UI
+- **2025-07-24**: Enhanced invitation templates with 6 professional designs: Elegant Script, Botanical Watercolor, Modern Minimalist, Rustic Vintage, Traditional Indian, and Floral Photo
+- **2025-07-24**: Added template descriptions, color palettes, customization options, and improved live preview system
+- **2025-07-24**: Implemented template-specific background patterns and enhanced typography for each design style
 
 ## Project Architecture
 

@@ -12,6 +12,7 @@ import { apiRequest } from '@/lib/queryClient';
 
 interface Template {
   name: string;
+  description: string;
   colors: {
     primary: string;
     secondary: string;
@@ -23,6 +24,7 @@ interface Template {
     body: string;
   };
   layout: string;
+  customizable: string[];
 }
 
 interface Templates {
@@ -167,38 +169,64 @@ export default function InvitationGenerator() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 gap-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {templates && Object.entries(templates).map(([key, template]) => (
                     <div
                       key={key}
                       className={`p-4 border rounded-lg cursor-pointer transition-all ${
                         formData.templateId === key
-                          ? 'border-rose-500 bg-rose-50'
-                          : 'border-gray-200 hover:border-rose-300'
+                          ? 'border-rose-500 bg-rose-50 shadow-md'
+                          : 'border-gray-200 hover:border-rose-300 hover:shadow-sm'
                       }`}
                       onClick={() => handleInputChange('templateId', key)}
                     >
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h3 className="font-semibold">{template.name}</h3>
-                          <div className="flex gap-2 mt-2">
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h3 className="font-semibold text-lg">{template.name}</h3>
+                          {formData.templateId === key && (
+                            <Badge variant="default">Selected</Badge>
+                          )}
+                        </div>
+                        
+                        <p className="text-sm text-gray-600 leading-relaxed">
+                          {template.description}
+                        </p>
+                        
+                        {/* Color palette preview */}
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-gray-500">Colors:</span>
+                          <div className="flex gap-1">
                             <div
-                              className="w-4 h-4 rounded-full border"
+                              className="w-5 h-5 rounded-full border border-gray-300 shadow-sm"
                               style={{ backgroundColor: template.colors.primary }}
+                              title="Primary"
                             />
                             <div
-                              className="w-4 h-4 rounded-full border"
+                              className="w-5 h-5 rounded-full border border-gray-300 shadow-sm"
                               style={{ backgroundColor: template.colors.secondary }}
+                              title="Background"
                             />
                             <div
-                              className="w-4 h-4 rounded-full border"
+                              className="w-5 h-5 rounded-full border border-gray-300 shadow-sm"
+                              style={{ backgroundColor: template.colors.text }}
+                              title="Text"
+                            />
+                            <div
+                              className="w-5 h-5 rounded-full border border-gray-300 shadow-sm"
                               style={{ backgroundColor: template.colors.accent }}
+                              title="Accent"
                             />
                           </div>
                         </div>
-                        {formData.templateId === key && (
-                          <Badge variant="default">Selected</Badge>
-                        )}
+                        
+                        {/* Customizable options */}
+                        <div className="flex flex-wrap gap-1">
+                          {template.customizable.map((option) => (
+                            <Badge key={option} variant="outline" className="text-xs">
+                              {option.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -321,56 +349,136 @@ export default function InvitationGenerator() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {selectedTemplate && (
-                  <div className="p-6 border rounded-lg" style={{
-                    background: `linear-gradient(to bottom, ${selectedTemplate.colors.accent}, ${selectedTemplate.colors.secondary})`,
-                    border: `4px solid ${formData.customization?.primaryColor || selectedTemplate.colors.primary}`
-                  }}>
-                    <div className="text-center space-y-3">
-                      <p className="text-sm font-serif italic" style={{ color: formData.customization?.textColor || selectedTemplate.colors.text }}>
+                  <div 
+                    className="p-6 border rounded-lg relative overflow-hidden"
+                    style={{
+                      backgroundColor: selectedTemplate.colors.secondary,
+                      border: `3px solid ${formData.customization?.primaryColor || selectedTemplate.colors.primary}`,
+                      fontFamily: selectedTemplate.fonts.body
+                    }}
+                  >
+                    {/* Template-specific background patterns */}
+                    {selectedTemplate.layout === 'botanical' && (
+                      <div className="absolute inset-0 opacity-10">
+                        <div className="absolute top-4 left-4 w-16 h-16 rounded-full" style={{ backgroundColor: selectedTemplate.colors.accent }}></div>
+                        <div className="absolute bottom-4 right-4 w-12 h-12 rounded-full" style={{ backgroundColor: selectedTemplate.colors.accent }}></div>
+                      </div>
+                    )}
+                    
+                    {selectedTemplate.layout === 'minimalist' && (
+                      <div className="absolute inset-0">
+                        <div className="absolute top-0 left-1/4 w-px h-full" style={{ backgroundColor: selectedTemplate.colors.accent }}></div>
+                        <div className="absolute top-0 right-1/4 w-px h-full" style={{ backgroundColor: selectedTemplate.colors.accent }}></div>
+                      </div>
+                    )}
+                    
+                    {selectedTemplate.layout === 'traditional-indian' && (
+                      <div className="absolute inset-0 border-8 border-opacity-20" style={{ borderColor: selectedTemplate.colors.primary }}></div>
+                    )}
+
+                    <div className="text-center space-y-4 relative z-10">
+                      {/* Opening line */}
+                      <p 
+                        className="text-sm italic opacity-80"
+                        style={{ 
+                          color: formData.customization?.textColor || selectedTemplate.colors.text,
+                          fontFamily: selectedTemplate.fonts.body
+                        }}
+                      >
                         Together with our families
                       </p>
+                      
+                      {/* Couple names */}
                       {formData.coupleNames && (
-                        <div>
+                        <div className="space-y-2">
                           {formData.coupleNames.includes(' & ') ? (
-                            <div>
-                              <h2 className="text-2xl font-bold font-serif" style={{ color: formData.customization?.textColor || selectedTemplate.colors.text }}>
+                            <div className="space-y-1">
+                              <h2 
+                                className="text-3xl font-bold"
+                                style={{ 
+                                  color: formData.customization?.textColor || selectedTemplate.colors.text,
+                                  fontFamily: selectedTemplate.fonts.title
+                                }}
+                              >
                                 {formData.coupleNames.split(' & ')[0]}
                               </h2>
-                              <p className="text-xl font-serif italic" style={{ color: formData.customization?.primaryColor || selectedTemplate.colors.primary }}>
+                              <p 
+                                className="text-2xl italic"
+                                style={{ color: formData.customization?.primaryColor || selectedTemplate.colors.primary }}
+                              >
                                 &
                               </p>
-                              <h2 className="text-2xl font-bold font-serif" style={{ color: formData.customization?.textColor || selectedTemplate.colors.text }}>
+                              <h2 
+                                className="text-3xl font-bold"
+                                style={{ 
+                                  color: formData.customization?.textColor || selectedTemplate.colors.text,
+                                  fontFamily: selectedTemplate.fonts.title
+                                }}
+                              >
                                 {formData.coupleNames.split(' & ')[1]}
                               </h2>
                             </div>
                           ) : (
-                            <h2 className="text-2xl font-bold font-serif" style={{ color: formData.customization?.textColor || selectedTemplate.colors.text }}>
+                            <h2 
+                              className="text-3xl font-bold"
+                              style={{ 
+                                color: formData.customization?.textColor || selectedTemplate.colors.text,
+                                fontFamily: selectedTemplate.fonts.title
+                              }}
+                            >
                               {formData.coupleNames}
                             </h2>
                           )}
                         </div>
                       )}
-                      <p className="text-sm font-serif italic" style={{ color: formData.customization?.textColor || selectedTemplate.colors.text }}>
+                      
+                      {/* Invitation text */}
+                      <p 
+                        className="text-sm italic"
+                        style={{ color: formData.customization?.textColor || selectedTemplate.colors.text }}
+                      >
                         request the pleasure of your company<br />
                         at their wedding celebration
                       </p>
+                      
+                      {/* Wedding date */}
                       {formData.weddingDate && (
-                        <p className="text-lg font-bold" style={{ color: formData.customization?.primaryColor || selectedTemplate.colors.primary }}>
+                        <p 
+                          className="text-xl font-semibold"
+                          style={{ color: formData.customization?.primaryColor || selectedTemplate.colors.primary }}
+                        >
                           {formData.weddingDate}
                         </p>
                       )}
+                      
+                      {/* Venue */}
                       {formData.venue && (
-                        <div>
-                          <p className="text-sm" style={{ color: formData.customization?.textColor || selectedTemplate.colors.text }}>at</p>
-                          <p className="text-base font-semibold" style={{ color: formData.customization?.textColor || selectedTemplate.colors.text }}>
+                        <div className="space-y-1">
+                          <p 
+                            className="text-sm italic"
+                            style={{ color: formData.customization?.textColor || selectedTemplate.colors.text }}
+                          >
+                            at
+                          </p>
+                          <p 
+                            className="text-lg font-medium"
+                            style={{ color: formData.customization?.textColor || selectedTemplate.colors.text }}
+                          >
                             {formData.venue}
                           </p>
                         </div>
                       )}
+                      
+                      {/* Personal message */}
                       {formData.message && (
-                        <p className="text-sm italic mt-4" style={{ color: formData.customization?.textColor || selectedTemplate.colors.text }}>
-                          {formData.message}
-                        </p>
+                        <div className="pt-4 border-t border-opacity-20" style={{ borderColor: selectedTemplate.colors.accent }}>
+                          <p 
+                            className="text-sm italic"
+                            style={{ color: formData.customization?.textColor || selectedTemplate.colors.text }}
+                          >
+                            {formData.message}
+                          </p>
+                        </div>
                       )}
                     </div>
                   </div>
