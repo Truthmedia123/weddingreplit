@@ -23,7 +23,6 @@ export default function Layout({ children }: LayoutProps) {
     { name: "Categories", href: "/categories" },
     { name: "Venues", href: "/vendors/venues" },
     { name: "Blog", href: "/blog" },
-    { name: "Invitations", href: "/generate-invitation" },
     { name: "Create RSVP", href: "/create-rsvp" },
   ];
 
