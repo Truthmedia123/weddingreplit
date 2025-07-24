@@ -116,10 +116,7 @@ function getCategoryIcon(iconName: string) {
     Globe
   };
   
-  // Debug: log if icon is not found
-  if (!iconMap[iconName]) {
-    console.warn(`Icon not found: ${iconName}`);
-  }
+
   
   return iconMap[iconName] || Camera;
 }
