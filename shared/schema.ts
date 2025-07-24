@@ -128,6 +128,20 @@ export const rsvps = pgTable("rsvps", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const invitationTokens = pgTable("invitation_tokens", {
+  id: serial("id").primaryKey(),
+  token: text("token").notNull().unique(),
+  templateId: text("template_id").notNull(),
+  coupleNames: text("couple_names").notNull(),
+  weddingDate: text("wedding_date").notNull(),
+  venue: text("venue").notNull(),
+  message: text("message"),
+  customization: jsonb("customization"), // colors, fonts, etc.
+  used: boolean("used").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  expiresAt: timestamp("expires_at").notNull(),
+});
+
 // Relations
 export const vendorsRelations = relations(vendors, ({ many }) => ({
   reviews: many(reviews),
@@ -163,6 +177,15 @@ export const insertReviewSchema = createInsertSchema(reviews).omit({
   id: true,
   createdAt: true,
 });
+
+export const insertInvitationTokenSchema = createInsertSchema(invitationTokens).omit({
+  id: true,
+  createdAt: true,
+});
+
+// Types
+export type InvitationToken = typeof invitationTokens.$inferSelect;
+export type InsertInvitationToken = z.infer<typeof insertInvitationTokenSchema>;
 
 export const insertCategorySchema = createInsertSchema(categories).omit({
   id: true,

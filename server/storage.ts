@@ -1,4 +1,4 @@
-import { vendors, reviews, categories, blogPosts, businessSubmissions, contacts, weddings, rsvps } from "@shared/schema";
+import { vendors, reviews, categories, blogPosts, businessSubmissions, contacts, weddings, rsvps, invitationTokens } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc, sql, like, or, ilike } from "drizzle-orm";
 import type { 
@@ -9,7 +9,8 @@ import type {
   BusinessSubmission, InsertBusinessSubmission,
   Contact, InsertContact,
   Wedding, InsertWedding,
-  Rsvp, InsertRsvp
+  Rsvp, InsertRsvp,
+  InvitationToken, InsertInvitationToken
 } from "@shared/schema";
 
 export interface IStorage {
@@ -47,6 +48,12 @@ export interface IStorage {
   // RSVPs
   getWeddingRsvps(weddingId: number): Promise<Rsvp[]>;
   createRsvp(rsvp: InsertRsvp): Promise<Rsvp>;
+
+  // Invitation Tokens
+  createInvitationToken(token: InsertInvitationToken): Promise<InvitationToken>;
+  getInvitationToken(token: string): Promise<InvitationToken | undefined>;
+  markTokenAsUsed(token: string): Promise<void>;
+  cleanupExpiredTokens(): Promise<void>;
 }
 
 export class MemoryStorage implements IStorage {
@@ -409,6 +416,23 @@ export class MemoryStorage implements IStorage {
     this.rsvps.push(newRsvp);
     return newRsvp;
   }
+
+  // Invitation token methods (not implemented for memory storage)
+  async createInvitationToken(): Promise<InvitationToken> {
+    throw new Error("Invitation tokens not supported in memory storage");
+  }
+
+  async getInvitationToken(): Promise<InvitationToken | undefined> {
+    throw new Error("Invitation tokens not supported in memory storage");
+  }
+
+  async markTokenAsUsed(): Promise<void> {
+    throw new Error("Invitation tokens not supported in memory storage");
+  }
+
+  async cleanupExpiredTokens(): Promise<void> {
+    throw new Error("Invitation tokens not supported in memory storage");
+  }
 }
 
 export class DatabaseStorage implements IStorage {
@@ -518,6 +542,24 @@ export class DatabaseStorage implements IStorage {
   async createRsvp(rsvp: InsertRsvp): Promise<Rsvp> {
     const [newRsvp] = await db.insert(rsvps).values(rsvp).returning();
     return newRsvp;
+  }
+
+  async createInvitationToken(token: InsertInvitationToken): Promise<InvitationToken> {
+    const [newToken] = await db.insert(invitationTokens).values(token).returning();
+    return newToken;
+  }
+
+  async getInvitationToken(token: string): Promise<InvitationToken | undefined> {
+    const [invitationToken] = await db.select().from(invitationTokens).where(eq(invitationTokens.token, token));
+    return invitationToken || undefined;
+  }
+
+  async markTokenAsUsed(token: string): Promise<void> {
+    await db.update(invitationTokens).set({ used: true }).where(eq(invitationTokens.token, token));
+  }
+
+  async cleanupExpiredTokens(): Promise<void> {
+    await db.delete(invitationTokens).where(sql`expires_at < NOW()`);
   }
 }
 

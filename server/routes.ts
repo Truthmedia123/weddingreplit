@@ -1,8 +1,9 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertReviewSchema, insertBusinessSubmissionSchema, insertContactSchema, insertWeddingSchema, insertRsvpSchema } from "@shared/schema";
+import { insertReviewSchema, insertBusinessSubmissionSchema, insertContactSchema, insertWeddingSchema, insertRsvpSchema, insertInvitationTokenSchema } from "@shared/schema";
 import { z } from "zod";
+import { generateInvitationImage, generateSecureToken, generateExpiryDate, isTokenExpired, INVITATION_TEMPLATES } from "./invitationService";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Vendors
@@ -210,6 +211,121 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(rsvp);
     } catch (error) {
       res.status(500).json({ error: "Failed to submit RSVP" });
+    }
+  });
+
+  // Invitation Generation Routes
+  app.get("/api/invite/templates", async (req, res) => {
+    try {
+      res.json(INVITATION_TEMPLATES);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch templates" });
+    }
+  });
+
+  app.post("/api/invite/generate", async (req, res) => {
+    try {
+      const invitationSchema = z.object({
+        templateId: z.string(),
+        coupleNames: z.string().min(1),
+        weddingDate: z.string().min(1),
+        venue: z.string().min(1),
+        message: z.string().optional(),
+        customization: z.object({
+          primaryColor: z.string().optional(),
+          textColor: z.string().optional(),
+          font: z.string().optional(),
+        }).optional(),
+      });
+
+      const validatedData = invitationSchema.parse(req.body);
+
+      // Validate template exists
+      if (!INVITATION_TEMPLATES[validatedData.templateId as keyof typeof INVITATION_TEMPLATES]) {
+        return res.status(400).json({ message: "Invalid template ID" });
+      }
+
+      // Generate secure token
+      const token = generateSecureToken();
+      const expiresAt = generateExpiryDate();
+
+      // Store token in database
+      const tokenData = {
+        token,
+        templateId: validatedData.templateId,
+        coupleNames: validatedData.coupleNames,
+        weddingDate: validatedData.weddingDate,
+        venue: validatedData.venue,
+        message: validatedData.message || '',
+        customization: validatedData.customization || {},
+        expiresAt,
+        used: false,
+      };
+
+      await storage.createInvitationToken(tokenData);
+
+      // Clean up expired tokens
+      await storage.cleanupExpiredTokens();
+
+      const downloadUrl = `/api/invite/download?token=${token}`;
+      res.json({ downloadUrl, expiresAt });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid request data", errors: error.errors });
+      }
+      console.error("Error generating invitation:", error);
+      res.status(500).json({ message: "Failed to generate invitation" });
+    }
+  });
+
+  app.get("/api/invite/download", async (req, res) => {
+    try {
+      const token = req.query.token as string;
+      if (!token) {
+        return res.status(400).json({ message: "Token required" });
+      }
+
+      // Fetch token from database
+      const invitationToken = await storage.getInvitationToken(token);
+      if (!invitationToken) {
+        return res.status(404).json({ message: "Invitation expired or not found" });
+      }
+
+      // Check if token is expired
+      if (isTokenExpired(invitationToken.createdAt, invitationToken.expiresAt)) {
+        await storage.markTokenAsUsed(token); // Mark as used to prevent reuse
+        return res.status(410).json({ message: "Invitation expired" });
+      }
+
+      // Check if token is already used
+      if (invitationToken.used) {
+        return res.status(410).json({ message: "Invitation expired" });
+      }
+
+      // Generate invitation image
+      const invitationData = {
+        templateId: invitationToken.templateId,
+        coupleNames: invitationToken.coupleNames,
+        weddingDate: invitationToken.weddingDate,
+        venue: invitationToken.venue,
+        message: invitationToken.message || undefined,
+        customization: invitationToken.customization as any,
+      };
+
+      const imageBuffer = await generateInvitationImage(invitationData);
+
+      // Mark token as used (self-destruct)
+      await storage.markTokenAsUsed(token);
+
+      // Set headers for download
+      res.setHeader('Content-Type', 'image/png');
+      res.setHeader('Content-Disposition', `attachment; filename="wedding-invitation-${invitationToken.coupleNames.replace(/[^a-zA-Z0-9]/g, '-')}.png"`);
+      res.setHeader('Content-Length', imageBuffer.length);
+      
+      res.send(imageBuffer);
+    } catch (error) {
+      console.error("Error downloading invitation:", error);
+      res.status(500).json({ message: "Failed to download invitation" });
     }
   });
 
