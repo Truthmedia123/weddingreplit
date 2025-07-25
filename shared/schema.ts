@@ -138,6 +138,7 @@ export const invitationTokens = pgTable("invitation_tokens", {
   message: text("message"),
   customization: jsonb("customization"), // colors, fonts, etc.
   used: boolean("used").default(false),
+  pdfFilename: text("pdf_filename"),
   createdAt: timestamp("created_at").defaultNow(),
   expiresAt: timestamp("expires_at").notNull(),
 });

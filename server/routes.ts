@@ -260,7 +260,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid request data", errors: error.errors });
       }
       console.error("Error generating invitation:", error);
-      res.status(500).json({ message: "Failed to generate invitation" });
+      console.error("Error stack:", (error as Error).stack);
+      res.status(500).json({ message: "Failed to generate invitation", error: (error as Error).message });
     }
   });
 

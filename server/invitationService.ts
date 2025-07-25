@@ -32,9 +32,11 @@ export async function generateInvitationPDF(
   templateId: string,
   invitationData: InvitationData
 ): Promise<{ downloadToken: string; expiresIn: number }> {
+  console.log('Starting PDF generation for template:', templateId);
   await ensureTempDir();
 
   // Get template from database
+  console.log('Querying database for template...');
   const [template] = await db
     .select()
     .from(invitationTemplates)
@@ -42,91 +44,74 @@ export async function generateInvitationPDF(
     .limit(1);
 
   if (!template) {
+    console.error('Template not found in database:', templateId);
     throw new Error('Template not found');
   }
+  
+  console.log('Found template:', template.name, 'File:', template.pdfFilename);
 
   // Read the PDF template file
+  console.log('Reading PDF file...');
   const templatePath = path.join(process.cwd(), 'attached_assets', template.pdfFilename);
   const pdfBytes = await fs.readFile(templatePath);
   const pdfDoc = await PDFDocument.load(pdfBytes);
 
-  // Get field mapping for this template
-  const fieldMapping = template.fieldMapping as Record<string, string>;
+  // Add text overlay to PDF (since templates don't have form fields)
+  console.log('Adding text overlay to PDF...');
+  const pages = pdfDoc.getPages();
+  const firstPage = pages[0];
+  const { width, height } = firstPage.getSize();
+  console.log('PDF dimensions:', width, 'x', height);
 
-  // Fill the PDF form with provided data
-  try {
-    const form = pdfDoc.getForm();
-    
-    // Map invitation data to PDF fields based on template configuration
-    Object.entries(fieldMapping).forEach(([dataKey, pdfFieldName]) => {
-      const value = invitationData[dataKey as keyof InvitationData];
-      if (value && pdfFieldName) {
-        try {
-          const field = form.getTextField(pdfFieldName);
-          field.setText(value);
-        } catch (error) {
-          console.warn(`Could not set field ${pdfFieldName}:`, error);
-        }
-      }
+  // Add text overlay
+  const fontSize = 14;
+  const lineHeight = 20;
+  let yPosition = height - 150;
+
+  // Add couple names
+  const coupleText = `${invitationData.brideName} & ${invitationData.groomName}`;
+  firstPage.drawText(coupleText, {
+    x: 50,
+    y: yPosition,
+    size: fontSize + 2,
+    color: rgb(0, 0, 0),
+  });
+  yPosition -= lineHeight * 2;
+
+  // Add wedding date
+  firstPage.drawText(`Date: ${invitationData.weddingDate}`, {
+    x: 50,
+    y: yPosition,
+    size: fontSize,
+    color: rgb(0, 0, 0),
+  });
+  yPosition -= lineHeight;
+
+  // Add venue
+  firstPage.drawText(`Venue: ${invitationData.venue}`, {
+    x: 50,
+    y: yPosition,
+    size: fontSize,
+    color: rgb(0, 0, 0),
+  });
+  yPosition -= lineHeight;
+
+  // Add time if provided
+  if (invitationData.time) {
+    firstPage.drawText(`Time: ${invitationData.time}`, {
+      x: 50,
+      y: yPosition,
+      size: fontSize,
+      color: rgb(0, 0, 0),
     });
-
-    // Flatten the form to prevent further editing
-    form.flatten();
-  } catch (error) {
-    console.warn('PDF form manipulation failed, using text overlay instead:', error);
-    
-    // Fallback: Add text directly to the PDF without form fields
-    const pages = pdfDoc.getPages();
-    const firstPage = pages[0];
-    const { width, height } = firstPage.getSize();
-
-    // Template-specific text positioning
-    if (templateId === 'save-the-date-classic') {
-      firstPage.drawText(`${invitationData.brideName}`, {
-        x: width / 2 - 50,
-        y: height - 150,
-        size: 24,
-        color: rgb(0, 0, 0),
-      });
-      firstPage.drawText('AND', {
-        x: width / 2 - 20,
-        y: height - 180,
-        size: 16,
-        color: rgb(0, 0, 0),
-      });
-      firstPage.drawText(`${invitationData.groomName}`, {
-        x: width / 2 - 50,
-        y: height - 210,
-        size: 24,
-        color: rgb(0, 0, 0),
-      });
-      firstPage.drawText(`${invitationData.weddingDate}`, {
-        x: width / 2 - 80,
-        y: height - 280,
-        size: 20,
-        color: rgb(0, 0, 0),
-      });
-    } else if (templateId === 'wedding-invitation-elegant') {
-      firstPage.drawText(`${invitationData.brideName} & ${invitationData.groomName}`, {
-        x: width / 2 - 100,
-        y: height / 2,
-        size: 28,
-        color: rgb(0, 0, 0),
-      });
-      firstPage.drawText(`${invitationData.weddingDate}`, {
-        x: width / 2 - 80,
-        y: height / 2 - 40,
-        size: 18,
-        color: rgb(0, 0, 0),
-      });
-      firstPage.drawText(`${invitationData.venue}`, {
-        x: width / 2 - 80,
-        y: height / 2 - 80,
-        size: 16,
-        color: rgb(0, 0, 0),
-      });
-    }
+    yPosition -= lineHeight;
   }
+
+  console.log('Text overlay completed.');
+
+  // Generate a short unique ID for the PDF filename
+  const shortId = Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+  const pdfFilename = `invitation_${shortId}.pdf`;
 
   // Generate download token
   const downloadToken = jwt.sign(
@@ -134,14 +119,20 @@ export async function generateInvitationPDF(
       templateId, 
       timestamp: Date.now(),
       brideName: invitationData.brideName,
-      groomName: invitationData.groomName 
+      groomName: invitationData.groomName,
+      shortId
     },
     JWT_SECRET,
     { expiresIn: '5m' }
   );
 
-  // Save invitation record to database
-  const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
+  // Save the PDF temporarily
+  const filledPdfBytes = await pdfDoc.save();
+  const tempFilePath = path.join(TEMP_DIR, pdfFilename);
+  await fs.writeFile(tempFilePath, filledPdfBytes);
+
+  // Save invitation record to database with PDF filename
+  const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
   await db.insert(invitationTokens).values({
     token: downloadToken,
     templateId,
@@ -150,17 +141,13 @@ export async function generateInvitationPDF(
     venue: invitationData.venue || '',
     message: invitationData.coupleMessage || '',
     customization: invitationData,
+    pdfFilename,
     expiresAt,
   });
 
-  // Save the filled PDF temporarily
-  const filledPdfBytes = await pdfDoc.save();
-  const tempFilePath = path.join(TEMP_DIR, `invitation_${downloadToken}.pdf`);
-  await fs.writeFile(tempFilePath, filledPdfBytes);
-
   return {
     downloadToken,
-    expiresIn: 5 * 60 * 1000, // 5 minutes in milliseconds
+    expiresIn: 5 * 60 * 1000,
   };
 }
 
@@ -193,8 +180,11 @@ export async function downloadInvitation(token: string): Promise<{
       return { success: false, error: 'Download link expired' };
     }
 
-    // Read the PDF file
-    const tempFilePath = path.join(TEMP_DIR, `invitation_${token}.pdf`);
+    // Get the PDF filename from database
+    if (!invitation.pdfFilename) {
+      return { success: false, error: 'PDF file not found' };
+    }
+    const tempFilePath = path.join(TEMP_DIR, invitation.pdfFilename);
     
     try {
       const fileBuffer = await fs.readFile(tempFilePath);
@@ -239,7 +229,7 @@ export async function cleanupExpiredInvitations() {
     for (const invitation of expiredInvitations) {
       if (new Date() > invitation.expiresAt) {
         // Delete file
-        const tempFilePath = path.join(TEMP_DIR, `invitation_${invitation.token}.pdf`);
+        const tempFilePath = path.join(TEMP_DIR, invitation.pdfFilename || 'unknown.pdf');
         try {
           await fs.unlink(tempFilePath);
         } catch (error) {
