@@ -69,76 +69,74 @@ interface CategoryGridProps {
 
 // Function to get Lucide icon by icon name
 function getCategoryIcon(iconName: string) {
+  // Direct mapping with explicit key-value pairs
   const iconMap: { [key: string]: React.ComponentType<any> } = {
-    Camera,
-    MapPin,
-    ChefHat,
-    Calendar,
-    Sparkles,
-    Music,
-    Flower2,
-    Shirt,
-    Gem,
-    Car,
-    Video,
-    Paintbrush,
-    CakeSlice,
-    Mail,
-    Heart,
-    Shield,
-    Crown,
-    Gift,
-    Lightbulb,
-    Tent,
-    PartyPopper,
-    Music2,
-    Wine,
-    Cake,
-    Baby,
-    Zap,
-    Leaf,
-    Mic,
-    Star,
-    Truck,
-    Users,
-    FileText,
-    Scale,
-    TreePalm,
-    Home,
-    Dog,
-    Coffee,
-    MessageCircle,
-    HeartHandshake,
-    Radio,
-    ShieldCheck,
-    Waves,
-    Recycle,
-    Scissors,
-    Theater,
-    Plane,
-    Building,
-    Building2,
-    TreePine,
-    Volume2,
-    Church,
-    PawPrint,
-    User,
-    Smartphone,
-    Globe,
+    'Camera': Camera,
+    'MapPin': MapPin,
+    'ChefHat': ChefHat,
+    'Calendar': Calendar,
+    'Sparkles': Sparkles,
+    'Music': Music,
+    'Flower2': Flower2,
+    'Shirt': Shirt,
+    'Gem': Gem,
+    'Car': Car,
+    'Video': Video,
+    'Paintbrush': Paintbrush,
+    'CakeSlice': CakeSlice,
+    'Mail': Mail,
+    'Heart': Heart,
+    'Shield': Shield,
+    'Crown': Crown,
+    'Gift': Gift,
+    'Lightbulb': Lightbulb,
+    'Tent': Tent,
+    'PartyPopper': PartyPopper,
+    'Music2': Music2,
+    'Wine': Wine,
+    'Cake': Cake,
+    'Baby': Baby,
+    'Zap': Zap,
+    'Leaf': Leaf,
+    'Mic': Mic,
+    'Star': Star,
+    'Truck': Truck,
+    'Users': Users,
+    'FileText': FileText,
+    'Scale': Scale,
+    'TreePalm': TreePalm,
+    'Home': Home,
+    'Dog': Dog,
+    'Coffee': Coffee,
+    'MessageCircle': MessageCircle,
+    'HeartHandshake': HeartHandshake,
+    'Radio': Radio,
+    'ShieldCheck': ShieldCheck,
+    'Waves': Waves,
+    'Recycle': Recycle,
+    'Scissors': Scissors,
+    'Theater': Theater,
+    'Plane': Plane,
+    'Building': Building,
+    'Building2': Building2,
+    'TreePine': TreePine,
+    'Volume2': Volume2,
+    'Church': Church,
+    'PawPrint': PawPrint,
+    'User': User,
+    'Smartphone': Smartphone,
+    'Globe': Globe,
     // Add aliases for missing icons
     'PaintBrush2': Paintbrush,
     'Ring': Crown, // Use crown as substitute for ring
     'Flower': Flower2
   };
   
-
+  const component = iconMap[iconName];
+  console.log(`Icon lookup: "${iconName}" → Component:`, component, 'Type:', typeof component);
+  console.log('Direct test - PartyPopper:', PartyPopper, 'Type:', typeof PartyPopper);
   
-  // Debug: log if icon is not found
-  if (!iconMap[iconName]) {
-    console.warn(`Icon not found: ${iconName}`);
-  }
-  
-  return iconMap[iconName] || Camera;
+  return component || Camera;
 }
 
 export default function CategoryGrid({ showAll = false, maxCategories = 8, searchFilter = "" }: CategoryGridProps) {
@@ -200,8 +198,18 @@ export default function CategoryGrid({ showAll = false, maxCategories = 8, searc
                   <div className="relative mb-3 md:mb-6">
                     <div className={`bg-gradient-to-br ${category.color} w-12 h-12 md:w-20 md:h-20 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg`}>
                       {(() => {
-                        const IconComponent = getCategoryIcon(category.icon);
-                        return IconComponent ? <IconComponent className="text-white w-6 h-6 md:w-8 md:h-8" /> : <Camera className="text-white w-6 h-6 md:w-8 md:h-8" />;
+                        // Test direct rendering first
+                        if (category.icon === 'PartyPopper') {
+                          return <PartyPopper className="text-white w-6 h-6 md:w-8 md:h-8" />;
+                        }
+                        if (category.icon === 'Music') {
+                          return <Music className="text-white w-6 h-6 md:w-8 md:h-8" />;
+                        }
+                        if (category.icon === 'Wine') {
+                          return <Wine className="text-white w-6 h-6 md:w-8 md:h-8" />;
+                        }
+                        // Fallback to Camera for others
+                        return <Camera className="text-white w-6 h-6 md:w-8 md:h-8" />;
                       })()}
                     </div>
                     {/* Floating effect */}
