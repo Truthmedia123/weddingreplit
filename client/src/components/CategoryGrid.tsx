@@ -52,7 +52,13 @@ import {
   Plane,
   Building,
   Smartphone,
-  Globe
+  Globe,
+  Building2,
+  TreePine,
+  Volume2,
+  Church,
+  PawPrint,
+  User
 } from "lucide-react";
 
 interface CategoryGridProps {
@@ -111,8 +117,18 @@ function getCategoryIcon(iconName: string) {
     Theater,
     Plane,
     Building,
+    Building2,
+    TreePine,
+    Volume2,
+    Church,
+    PawPrint,
+    User,
     Smartphone,
-    Globe
+    Globe,
+    // Add aliases for missing icons
+    'PaintBrush2': Paintbrush,
+    'Ring': Crown, // Use crown as substitute for ring
+    'Flower': Flower2
   };
   
 
