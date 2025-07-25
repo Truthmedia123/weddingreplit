@@ -168,8 +168,19 @@ export default function InvitationGenerator() {
                         }}
                       >
                         <CardContent className="p-4">
-                          <div className="aspect-[3/4] bg-gray-100 rounded-lg mb-3 flex items-center justify-center">
-                            <FileText className="h-12 w-12 text-gray-400" />
+                          <div className="aspect-[3/4] bg-gradient-to-br from-blue-50 to-pink-50 border-2 border-dashed border-blue-200 rounded-lg mb-3 flex items-center justify-center relative overflow-hidden">
+                            {template.previewImage ? (
+                              <img 
+                                src={template.previewImage} 
+                                alt={template.name}
+                                className="w-full h-full object-cover rounded-lg"
+                              />
+                            ) : (
+                              <div className="text-center">
+                                <FileText className="h-8 w-8 text-blue-400 mx-auto mb-2" />
+                                <div className="text-xs text-blue-600 font-medium">{template.name}</div>
+                              </div>
+                            )}
                           </div>
                           <h4 className="font-medium text-sm">{template.name}</h4>
                           <p className="text-xs text-gray-600 mt-1">{template.description}</p>
@@ -196,8 +207,19 @@ export default function InvitationGenerator() {
                         }}
                       >
                         <CardContent className="p-4">
-                          <div className="aspect-[3/4] bg-gray-100 rounded-lg mb-3 flex items-center justify-center">
-                            <FileText className="h-12 w-12 text-gray-400" />
+                          <div className="aspect-[3/4] bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-dashed border-purple-200 rounded-lg mb-3 flex items-center justify-center relative overflow-hidden">
+                            {template.previewImage ? (
+                              <img 
+                                src={template.previewImage} 
+                                alt={template.name}
+                                className="w-full h-full object-cover rounded-lg"
+                              />
+                            ) : (
+                              <div className="text-center">
+                                <FileText className="h-8 w-8 text-purple-400 mx-auto mb-2" />
+                                <div className="text-xs text-purple-600 font-medium">{template.name}</div>
+                              </div>
+                            )}
                           </div>
                           <h4 className="font-medium text-sm">{template.name}</h4>
                           <p className="text-xs text-gray-600 mt-1">{template.description}</p>
