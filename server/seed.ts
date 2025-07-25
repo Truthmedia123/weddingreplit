@@ -8,144 +8,305 @@ export async function seedDatabase() {
     // Seed categories
     const categoryData = [
       {
-        name: "Wedding Venues",
-        slug: "wedding-venues",
-        description: "Beautiful locations for your special day",
-        icon: "MapPin",
+        name: "Bachelor/Bachelorette",
+        slug: "bachelor-bachelorette",
+        description: "Pre-wedding celebration parties",
+        icon: "PartyPopper",
         color: "from-rose-500 to-pink-500"
       },
       {
-        name: "Wedding Photographers",
-        slug: "wedding-photographers", 
-        description: "Capture your precious moments",
-        icon: "Camera",
+        name: "Bands, DJs & Musicians",
+        slug: "bands-djs-musicians",
+        description: "Perfect soundtrack for your day",
+        icon: "Music",
         color: "from-blue-500 to-indigo-500"
       },
       {
-        name: "Wedding Caterers",
-        slug: "wedding-caterers",
-        description: "Delicious cuisine for your celebration",
-        icon: "ChefHat",
+        name: "Bartending & Mobile Bars",
+        slug: "bartending-mobile-bars",
+        description: "Professional bar services",
+        icon: "Wine",
         color: "from-green-500 to-emerald-500"
       },
       {
-        name: "Wedding Decorators",
-        slug: "wedding-decorators",
-        description: "Transform your venue into a dream",
+        name: "Bridal Makeup",
+        slug: "bridal-makeup",
+        description: "Look your absolute best",
         icon: "Sparkles",
         color: "from-purple-500 to-violet-500"
       },
       {
-        name: "Bridal Wear",
-        slug: "bridal-wear",
-        description: "Stunning outfits for the bride",
-        icon: "Crown",
+        name: "Cake Designers",
+        slug: "cake-designers",
+        description: "Custom wedding cakes",
+        icon: "Cake",
         color: "from-pink-500 to-rose-500"
       },
       {
-        name: "Groom Wear",
-        slug: "groom-wear",
-        description: "Elegant attire for the groom",
-        icon: "User",
+        name: "Car Rentals",
+        slug: "car-rentals",
+        description: "Wedding transportation",
+        icon: "Car",
         color: "from-gray-500 to-slate-500"
       },
       {
-        name: "Wedding Music & DJ",
-        slug: "wedding-music-dj",
-        description: "Perfect soundtrack for your day",
-        icon: "Music",
+        name: "Caterers",
+        slug: "caterers",
+        description: "Delicious cuisine for your celebration",
+        icon: "ChefHat",
         color: "from-yellow-500 to-orange-500"
       },
       {
-        name: "Wedding Makeup Artists",
-        slug: "wedding-makeup-artists",
-        description: "Look your absolute best",
-        icon: "Palette",
+        name: "Childcare & Babysitters",
+        slug: "childcare-babysitters",
+        description: "Child care during events",
+        icon: "Baby",
         color: "from-teal-500 to-cyan-500"
       },
       {
-        name: "Wedding Transportation",
-        slug: "wedding-transportation",
-        description: "Arrive in style",
-        icon: "Car",
+        name: "Custom Jewelry",
+        slug: "custom-jewelry",
+        description: "Bespoke wedding jewelry",
+        icon: "Gem",
         color: "from-red-500 to-pink-500"
       },
       {
-        name: "Wedding Flowers",
-        slug: "wedding-flowers",
-        description: "Beautiful floral arrangements",
-        icon: "Flower",
+        name: "Decorators",
+        slug: "decorators",
+        description: "Transform your venue into a dream",
+        icon: "Paintbrush",
         color: "from-green-400 to-lime-500"
       },
       {
-        name: "Wedding Cakes",
-        slug: "wedding-cakes",
-        description: "Sweet endings to your celebration",
-        icon: "Cake",
+        name: "Drone Photography",
+        slug: "drone-photography",
+        description: "Aerial wedding photography",
+        icon: "Zap",
         color: "from-orange-500 to-yellow-500"
       },
       {
-        name: "Honeymoon Planning",
-        slug: "honeymoon-planning",
-        description: "Perfect romantic getaways",
-        icon: "Heart",
+        name: "Eco-Friendly/Sustainable",
+        slug: "eco-friendly-sustainable",
+        description: "Sustainable wedding solutions",
+        icon: "Leaf",
+        color: "from-green-600 to-emerald-600"
+      },
+      {
+        name: "Emcees/MCs",
+        slug: "emcees-mcs",
+        description: "Professional event hosts",
+        icon: "Mic",
         color: "from-pink-400 to-rose-500"
       },
       {
-        name: "Wedding Jewelry",
-        slug: "wedding-jewelry",
-        description: "Elegant accessories and jewelry",
-        icon: "Gem",
+        name: "Event Insurance",
+        slug: "event-insurance",
+        description: "Wedding event protection",
+        icon: "Shield",
         color: "from-amber-500 to-yellow-600"
+      },
+      {
+        name: "Fireworks & Special Effects",
+        slug: "fireworks-special-effects",
+        description: "Spectacular visual effects",
+        icon: "Star",
+        color: "from-indigo-500 to-purple-500"
+      },
+      {
+        name: "Food Trucks",
+        slug: "food-trucks",
+        description: "Mobile catering solutions",
+        icon: "Truck",
+        color: "from-emerald-500 to-teal-500"
+      },
+      {
+        name: "Guest Hospitality",
+        slug: "guest-hospitality",
+        description: "Guest accommodation services",
+        icon: "Home",
+        color: "from-rose-400 to-pink-600"
+      },
+      {
+        name: "Invitations & Stationery",
+        slug: "invitations-stationery",
+        description: "Beautiful wedding stationery",
+        icon: "Mail",
+        color: "from-violet-500 to-purple-600"
+      },
+      {
+        name: "Legal Services",
+        slug: "legal-services",
+        description: "Wedding legal assistance",
+        icon: "Scale",
+        color: "from-orange-400 to-red-500"
+      },
+      {
+        name: "Luxury Car Rentals",
+        slug: "luxury-car-rentals",
+        description: "Premium wedding transportation",
+        icon: "Crown",
+        color: "from-cyan-500 to-blue-600"
+      },
+      {
+        name: "Mehendi Artists",
+        slug: "mehendi-artists",
+        description: "Traditional henna art",
+        icon: "PaintBrush2",
+        color: "from-slate-500 to-gray-600"
+      },
+      {
+        name: "Mobile Restrooms",
+        slug: "mobile-restrooms",
+        description: "Luxury portable facilities",
+        icon: "Building",
+        color: "from-blue-600 to-indigo-600"
+      },
+      {
+        name: "On-site Medical",
+        slug: "on-site-medical",
+        description: "Medical support services",
+        icon: "Heart",
+        color: "from-red-600 to-rose-600"
+      },
+      {
+        name: "Pet Care & Services",
+        slug: "pet-care-services",
+        description: "Wedding pet services",
+        icon: "PawPrint",
+        color: "from-green-500 to-lime-500"
+      },
+      {
+        name: "Pop-up Bars",
+        slug: "pop-up-bars",
+        description: "Temporary bar setups",
+        icon: "Coffee",
+        color: "from-orange-600 to-yellow-600"
+      },
+      {
+        name: "Pre-marital",
+        slug: "pre-marital",
+        description: "Pre-wedding counseling",
+        icon: "Users",
+        color: "from-purple-600 to-violet-600"
+      },
+      {
+        name: "Pre-wedding Shoots",
+        slug: "pre-wedding-shoots",
+        description: "Romantic pre-wedding photography",
+        icon: "Camera",
+        color: "from-teal-600 to-cyan-600"
+      },
+      {
+        name: "Proposal Planning",
+        slug: "proposal-planning",
+        description: "Marriage proposal services",
+        icon: "Ring",
+        color: "from-pink-600 to-rose-600"
+      },
+      {
+        name: "Return Gifts",
+        slug: "return-gifts",
+        description: "Wedding favor gifts",
+        icon: "Gift",
+        color: "from-amber-600 to-yellow-700"
+      },
+      {
+        name: "Sangeet/Choreographers",
+        slug: "sangeet-choreographers",
+        description: "Wedding dance choreography",
+        icon: "Music2",
+        color: "from-indigo-600 to-purple-600"
+      },
+      {
+        name: "Security Services",
+        slug: "security-services",
+        description: "Event security professionals",
+        icon: "ShieldCheck",
+        color: "from-emerald-600 to-teal-600"
+      },
+      {
+        name: "Spa Services",
+        slug: "spa-services",
+        description: "Pre-wedding wellness",
+        icon: "Flower2",
+        color: "from-rose-600 to-pink-700"
+      },
+      {
+        name: "Sound & Audio",
+        slug: "sound-audio",
+        description: "Professional audio equipment",
+        icon: "Volume2",
+        color: "from-violet-600 to-purple-700"
+      },
+      {
+        name: "Sustainable/Eco-friendly",
+        slug: "sustainable-eco-friendly",
+        description: "Eco-conscious wedding services",
+        icon: "TreePine",
+        color: "from-green-700 to-emerald-700"
+      },
+      {
+        name: "Tailors & Alteration",
+        slug: "tailors-alteration",
+        description: "Wedding attire adjustments",
+        icon: "Scissors",
+        color: "from-orange-700 to-red-600"
+      },
+      {
+        name: "Traditional Ceremonies",
+        slug: "traditional-ceremonies",
+        description: "Cultural wedding ceremonies",
+        icon: "Church",
+        color: "from-cyan-600 to-blue-700"
+      },
+      {
+        name: "Travel Agents",
+        slug: "travel-agents",
+        description: "Honeymoon travel planning",
+        icon: "Plane",
+        color: "from-slate-600 to-gray-700"
+      },
+      {
+        name: "Venues (Hotels)",
+        slug: "venues-hotels",
+        description: "Hotel wedding venues",
+        icon: "Building2",
+        color: "from-blue-700 to-indigo-700"
+      },
+      {
+        name: "Venues (Other)",
+        slug: "venues-other",
+        description: "Alternative wedding venues",
+        icon: "MapPin",
+        color: "from-purple-700 to-violet-700"
+      },
+      {
+        name: "Wedding Choreography",
+        slug: "wedding-choreography",
+        description: "Professional dance instruction",
+        icon: "Theater",
+        color: "from-teal-700 to-cyan-700"
+      },
+      {
+        name: "Wedding Coordination",
+        slug: "wedding-coordination",
+        description: "Professional wedding planning",
+        icon: "Calendar",
+        color: "from-pink-700 to-rose-700"
+      },
+      {
+        name: "Wedding Photography",
+        slug: "wedding-photography",
+        description: "Professional wedding photographers",
+        icon: "Camera",
+        color: "from-amber-700 to-yellow-800"
       },
       {
         name: "Wedding Videography",
         slug: "wedding-videography",
         description: "Cinematic wedding films",
         icon: "Video",
-        color: "from-indigo-500 to-purple-500"
-      },
-      {
-        name: "Wedding Planners",
-        slug: "wedding-planners",
-        description: "Professional wedding coordination",
-        icon: "Calendar",
-        color: "from-emerald-500 to-teal-500"
-      },
-      {
-        name: "Pre-Wedding Shoots",
-        slug: "pre-wedding-shoots",
-        description: "Romantic pre-wedding photography",
-        icon: "Heart",
-        color: "from-rose-400 to-pink-600"
-      },
-      {
-        name: "Wedding Invitations",
-        slug: "wedding-invitations",
-        description: "Beautiful invitation designs",
-        icon: "Mail",
-        color: "from-violet-500 to-purple-600"
-      },
-      {
-        name: "Mehendi Artists",
-        slug: "mehendi-artists",
-        description: "Intricate henna designs",
-        icon: "Brush",
-        color: "from-orange-400 to-red-500"
-      },
-      {
-        name: "Wedding Gifts",
-        slug: "wedding-gifts",
-        description: "Memorable wedding presents",
-        icon: "Gift",
-        color: "from-cyan-500 to-blue-600"
-      },
-      {
-        name: "Wedding Security",
-        slug: "wedding-security",
-        description: "Safe and secure celebrations",
-        icon: "Shield",
-        color: "from-slate-500 to-gray-600"
+        color: "from-indigo-700 to-purple-800"
       }
     ];
 
