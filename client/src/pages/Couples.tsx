@@ -105,7 +105,7 @@ export default function Couples() {
   }
 
   const weddingDate = new Date(wedding.weddingDate);
-  const isRsvpOpen = !wedding.rsvpDeadline || new Date() < new Date(wedding.rsvpDeadline);
+  const isRsvpOpen = true; // Always allow RSVP for now
 
   return (
     <div className="min-h-screen">
