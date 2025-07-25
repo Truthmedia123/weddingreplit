@@ -197,6 +197,11 @@ export const insertInvitationTokenSchema = createInsertSchema(invitationTokens).
   createdAt: true,
 });
 
+export const insertInvitationTemplateSchema = createInsertSchema(invitationTemplates).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Types
 export type InvitationToken = typeof invitationTokens.$inferSelect;
 export type InsertInvitationToken = z.infer<typeof insertInvitationTokenSchema>;
@@ -224,33 +229,13 @@ export const insertContactSchema = createInsertSchema(contacts).omit({
   createdAt: true,
 });
 
-export const insertWeddingSchema = z.object({
-  brideName: z.string().min(1),
-  groomName: z.string().min(1),
-  weddingDate: z.string().transform(str => new Date(str)),
-  venue: z.string().min(1),
-  venueAddress: z.string().min(1),
-  ceremonyTime: z.string().min(1),
-  receptionTime: z.string().optional(),
-  coverImage: z.string().optional(),
-  galleryImages: z.array(z.string()).optional(),
-  story: z.string().optional(),
-  slug: z.string().min(1),
-  rsvpDeadline: z.string().optional().transform(str => str ? new Date(str) : null),
-  maxGuests: z.number().optional().default(100),
-  isPublic: z.boolean().optional().default(true),
-  contactEmail: z.string().email(),
-  contactPhone: z.string().optional(),
-});
-
-export const insertRsvpSchema = createInsertSchema(rsvps).omit({
+export const insertWeddingSchema = createInsertSchema(weddings).omit({
   id: true,
   createdAt: true,
 });
 
-export const insertInvitationTemplateSchema = createInsertSchema(invitationTemplates).omit({
+export const insertRsvpSchema = createInsertSchema(rsvps).omit({
   id: true,
-  isActive: true,
   createdAt: true,
 });
 
@@ -271,3 +256,5 @@ export type Wedding = typeof weddings.$inferSelect;
 export type InsertWedding = z.infer<typeof insertWeddingSchema>;
 export type Rsvp = typeof rsvps.$inferSelect;
 export type InsertRsvp = z.infer<typeof insertRsvpSchema>;
+
+

@@ -578,3 +578,18 @@ export class DatabaseStorage implements IStorage {
 }
 
 export const storage = new DatabaseStorage();
+
+// Seed database on startup if empty
+async function initializeDatabase() {
+  try {
+    const categoryCount = await db.select().from(categories).limit(1);
+    if (categoryCount.length === 0) {
+      const { seedDatabase } = await import("./seed");
+      await seedDatabase();
+    }
+  } catch (error) {
+    console.error("Error initializing database:", error);
+  }
+}
+
+initializeDatabase();
