@@ -1,0 +1,93 @@
+To pinpoint why even direct imports of Lucide React icons render as empty objects ({}), follow this targeted checklist and fixes:
+
+1. **Verify Your Lucide React Version & Module Resolution**  
+   Ensure your `package.json` lists `"lucide-react": "^0.453.0"` and that Vite is not aliasing it. In your repo root run:
+     ```bash
+     npm ls lucide-react
+     ```
+     Confirm it shows exactly v0.453.0 with no duplication.
+
+2. **Check Vite’s ESM Import Handling**  
+   - In `vite.config.ts`, add an explicit optimizeDeps include for Lucide:
+     ```ts
+     export default defineConfig({
+       // …
+       optimizeDeps: {
+         include: ['lucide-react']
+       }
+     });
+     ```
+   - Restart the dev server (`npm run dev -- --force`). This ensures Vite pre-bundles Lucide properly.
+
+3. **Simplify & Test a Single Icon Import**  
+   - Create a minimal test component:
+     ```tsx
+     // src/components/IconTest.tsx
+     import { PartyPopper } from 'lucide-react';
+     export default function IconTest() {
+       return ;
+     }
+     ```
+   - Render `` in your `App.tsx`. If this still logs `{}` in the console, the problem is upstream in the bundler or module format.
+
+4. **Inspect the Browser’s Network & Console**  
+   - In DevTools, under **Sources**, locate `lucide-react` module. You should see the raw SVG component code. If it’s missing or empty, Vite is stripping it out during HMR.
+
+5. **Bypass Tree-Shaking to Confirm Presence**  
+   - In your `CategoryGrid.tsx`, import the module without tree-shaking:
+     ```ts
+     import * as AllLucideIcons from 'lucide-react';
+     console.log(Object.keys(AllLucideIcons)); // Should list dozens of component names
+     ```
+   - If keys are missing or list is empty, Vite’s configuration is preventing correct module resolution.
+
+6. **Temporarily Switch to CJS Import**  
+   - As a last resort, try requiring the package:
+     ```ts
+     // At top of CategoryGrid.tsx
+     // @ts-ignore
+     const Lucide = require('lucide-react');
+     console.log('CJS import:', Object.keys(Lucide));
+     ```
+   - If this shows the icon names, it confirms an ESM interop issue in Vite. You can then adjust `vite.config.ts`:
+     ```ts
+     build: {
+       commonjsOptions: {
+         include: [/lucide-react/]
+       }
+     }
+     ```
+
+7. **Clear & Reinstall Dependencies**  
+   - Delete `node_modules` and `package-lock.json` (or `pnpm-lock.yaml`), then `npm install`. This eliminates version mismatches.
+
+8. **Validate Runtime Rendering**  
+   - Inspect the DOM: once you successfully render ``, you should see an inline `` element. If you only get `{}`, React is rendering the JSON representation of the component, indicating you’re rendering the component object itself instead of instantiating it:
+     ```tsx
+     // WRONG:
+     {PartyPopper}
+     // RIGHT:
+     
+     ```
+
+By following these steps you’ll isolate whether the issue is Vite’s dependency optimization, ESM/CJS interop, or a misuse of JSX. Once a direct `` renders correctly in `IconTest`, reapply the same import approach in `CategoryGrid` using:
+
+```tsx
+import { PartyPopper, Music, Wine } from 'lucide-react';
+const iconMap = { PartyPopper, Music, Wine /* … */ };
+
+function CategoryGrid({ categories }) {
+  return (
+    
+      {categories.map(cat => {
+        const Component = iconMap[cat.icon] || DefaultIcon;
+        return ;
+      })}
+    
+  );
+}
+```
+
+This guarantees you’re rendering actual React components, not objects, and resolves the blank-icon issue.
+
+[1] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/57406101/6c352e7e-b1db-4d1a-9b1b-c4ea959721ad/screencapture-6d620523-8ec2-4263-97f2-229595a69813-00-zqtkk5y16js3-kirk-replit-dev-categories-2025-07-25-13_22_56.pdf

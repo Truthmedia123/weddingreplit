@@ -2,6 +2,12 @@ import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import type { Category } from "@shared/schema";
+import * as AllLucideIcons from 'lucide-react';
+
+// Test tree-shaking bypass
+console.log('All Lucide Icons available:', Object.keys(AllLucideIcons).slice(0, 10));
+console.log('PartyPopper directly from import:', AllLucideIcons.PartyPopper);
+
 import { 
   Camera, 
   MapPin, 
@@ -67,76 +73,14 @@ interface CategoryGridProps {
   searchFilter?: string;
 }
 
-// Function to get Lucide icon by icon name
+// Function to get Lucide icon by icon name using the AllLucideIcons import
 function getCategoryIcon(iconName: string) {
-  // Direct mapping with explicit key-value pairs
-  const iconMap: { [key: string]: React.ComponentType<any> } = {
-    'Camera': Camera,
-    'MapPin': MapPin,
-    'ChefHat': ChefHat,
-    'Calendar': Calendar,
-    'Sparkles': Sparkles,
-    'Music': Music,
-    'Flower2': Flower2,
-    'Shirt': Shirt,
-    'Gem': Gem,
-    'Car': Car,
-    'Video': Video,
-    'Paintbrush': Paintbrush,
-    'CakeSlice': CakeSlice,
-    'Mail': Mail,
-    'Heart': Heart,
-    'Shield': Shield,
-    'Crown': Crown,
-    'Gift': Gift,
-    'Lightbulb': Lightbulb,
-    'Tent': Tent,
-    'PartyPopper': PartyPopper,
-    'Music2': Music2,
-    'Wine': Wine,
-    'Cake': Cake,
-    'Baby': Baby,
-    'Zap': Zap,
-    'Leaf': Leaf,
-    'Mic': Mic,
-    'Star': Star,
-    'Truck': Truck,
-    'Users': Users,
-    'FileText': FileText,
-    'Scale': Scale,
-    'TreePalm': TreePalm,
-    'Home': Home,
-    'Dog': Dog,
-    'Coffee': Coffee,
-    'MessageCircle': MessageCircle,
-    'HeartHandshake': HeartHandshake,
-    'Radio': Radio,
-    'ShieldCheck': ShieldCheck,
-    'Waves': Waves,
-    'Recycle': Recycle,
-    'Scissors': Scissors,
-    'Theater': Theater,
-    'Plane': Plane,
-    'Building': Building,
-    'Building2': Building2,
-    'TreePine': TreePine,
-    'Volume2': Volume2,
-    'Church': Church,
-    'PawPrint': PawPrint,
-    'User': User,
-    'Smartphone': Smartphone,
-    'Globe': Globe,
-    // Add aliases for missing icons
-    'PaintBrush2': Paintbrush,
-    'Ring': Crown, // Use crown as substitute for ring
-    'Flower': Flower2
-  };
+  // Use the AllLucideIcons object directly
+  const component = (AllLucideIcons as any)[iconName];
+  console.log(`Dynamic icon lookup: "${iconName}" → Component:`, component, 'Type:', typeof component);
+  console.log(`Available in AllLucideIcons:`, iconName in AllLucideIcons);
   
-  const component = iconMap[iconName];
-  console.log(`Icon lookup: "${iconName}" → Component:`, component, 'Type:', typeof component);
-  console.log('Direct test - PartyPopper:', PartyPopper, 'Type:', typeof PartyPopper);
-  
-  return component || Camera;
+  return component || AllLucideIcons.Camera;
 }
 
 export default function CategoryGrid({ showAll = false, maxCategories = 8, searchFilter = "" }: CategoryGridProps) {
@@ -198,18 +142,10 @@ export default function CategoryGrid({ showAll = false, maxCategories = 8, searc
                   <div className="relative mb-3 md:mb-6">
                     <div className={`bg-gradient-to-br ${category.color} w-12 h-12 md:w-20 md:h-20 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg`}>
                       {(() => {
-                        // Test direct rendering first
-                        if (category.icon === 'PartyPopper') {
-                          return <PartyPopper className="text-white w-6 h-6 md:w-8 md:h-8" />;
-                        }
-                        if (category.icon === 'Music') {
-                          return <Music className="text-white w-6 h-6 md:w-8 md:h-8" />;
-                        }
-                        if (category.icon === 'Wine') {
-                          return <Wine className="text-white w-6 h-6 md:w-8 md:h-8" />;
-                        }
-                        // Fallback to Camera for others
-                        return <Camera className="text-white w-6 h-6 md:w-8 md:h-8" />;
+                        const IconComponent = getCategoryIcon(category.icon);
+                        return IconComponent ? 
+                          <IconComponent className="text-white w-6 h-6 md:w-8 md:h-8" /> : 
+                          <AllLucideIcons.Camera className="text-white w-6 h-6 md:w-8 md:h-8" />;
                       })()}
                     </div>
                     {/* Floating effect */}
