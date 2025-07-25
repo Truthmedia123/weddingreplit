@@ -1,0 +1,432 @@
+Based on your Replit project structure and the PDF templates you've uploaded, here's a comprehensive prompt to add a wedding invitation generator section with self-destructing downloads to your wedding website:
+
+Feature Overview
+Add a Wedding Invitation Generator that allows users to create personalized invitations using your existing PDF templates, with secure download links that self-destruct after download.
+
+Implementation Structure
+1. Database Schema (Drizzle ORM)
+Create a new schema file server/db/schema/invitations.ts:
+
+typescript
+import { pgTable, serial, text, timestamp, boolean, uuid } from 'drizzle-orm/pg-core';
+
+export const invitations = pgTable('invitations', {
+  id: serial('id').primaryKey(),
+  sessionId: uuid('session_id').defaultRandom(),
+  templateId: text('template_id').notNull(), // References PDF template
+  guestData: text('guest_data').notNull(), // JSON string of form data
+  downloadToken: text('download_token').unique(),
+  isDownloaded: boolean('is_downloaded').default(false),
+  expiresAt: timestamp('expires_at').notNull(),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+export const templates = pgTable('templates', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  filename: text('filename').notNull(),
+  category: text('category').notNull(), // 'save-the-date', 'main-invitation', etc.
+  previewImage: text('preview_image'),
+  fieldMapping: text('field_mapping').notNull(), // JSON mapping for PDF fields
+  createdAt: timestamp('created_at').defaultNow(),
+});
+2. Backend API Routes
+Create server/api/invitations/ directory with these endpoints:
+
+server/api/invitations/templates.ts - Get available templates:
+
+typescript
+export async function GET() {
+  const templates = await db.select().from(templatesTable);
+  return Response.json(templates);
+}
+server/api/invitations/generate.ts - Generate invitation:
+
+typescript
+import { PDFDocument, PDFForm } from 'pdf-lib';
+import jwt from 'jsonwebtoken';
+
+export async function POST(request: Request) {
+  const { templateId, guestData } = await request.json();
+  
+  // Load PDF template
+  const template = await db.select().from(templatesTable)
+    .where(eq(templatesTable.id, templateId)).limit(1);
+  
+  const pdfBytes = await fs.readFile(`attached_assets/${template.filename}`);
+  const pdfDoc = await PDFDocument.load(pdfBytes);
+  const form = pdfDoc.getForm();
+  
+  // Fill form fields based on template mapping[46][49]
+  const fieldMapping = JSON.parse(template.fieldMapping);
+  Object.entries(guestData).forEach(([key, value]) => {
+    if (fieldMapping[key]) {
+      const field = form.getTextField(fieldMapping[key]);
+      field.setText(value as string);
+    }
+  });
+  
+  // Generate temporary download token with 5-minute expiry[50]
+  const downloadToken = jwt.sign(
+    { templateId, sessionId: crypto.randomUUID() },
+    process.env.JWT_SECRET,
+    { expiresIn: '5m' }
+  );
+  
+  // Save to database with expiration
+  const invitation = await db.insert(invitations).values({
+    templateId,
+    guestData: JSON.stringify(guestData),
+    downloadToken,
+    expiresAt: new Date(Date.now() + 5 * 60 * 1000), // 5 minutes
+  }).returning();
+  
+  // Save filled PDF temporarily
+  const filledPdfBytes = await pdfDoc.save();
+  await fs.writeFile(`temp/invitation_${downloadToken}.pdf`, filledPdfBytes);
+  
+  return Response.json({ 
+    downloadToken, 
+    expiresIn: 300000 // 5 minutes in milliseconds
+  });
+}
+server/api/invitations/download/[token].ts - Self-destructing download:
+
+typescript
+export async function GET(request: Request, { params }: { params: { token: string } }) {
+  try {
+    // Verify JWT token[47]
+    const decoded = jwt.verify(params.token, process.env.JWT_SECRET);
+    
+    // Check if already downloaded
+    const invitation = await db.select().from(invitations)
+      .where(eq(invitations.downloadToken, params.token)).limit(1);
+    
+    if (!invitation || invitation.isDownloaded) {
+      return new Response('Download link expired or already used', { status: 404 });
+    }
+    
+    // Read and return file
+    const filePath = `temp/invitation_${params.token}.pdf`;
+    const fileBuffer = await fs.readFile(filePath);
+    
+    // Mark as downloaded and clean up[23]
+    await db.update(invitations)
+      .set({ isDownloaded: true })
+      .where(eq(invitations.downloadToken, params.token));
+    
+    // Delete file after sending
+    setTimeout(() => {
+      fs.unlink(filePath).catch(console.error);
+    }, 1000);
+    
+    return new Response(fileBuffer, {
+      headers: {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename="wedding-invitation.pdf"`,
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+      },
+    });
+    
+  } catch (error) {
+    return new Response('Invalid or expired token', { status: 401 });
+  }
+}
+3. Frontend Components
+Create client/components/InvitationGenerator/:
+
+InvitationGenerator.tsx - Main component:
+
+tsx
+import React, { useState, useEffect } from 'react';
+import TemplateSelector from './TemplateSelector';
+import InvitationForm from './InvitationForm';
+import DownloadSection from './DownloadSection';
+
+export default function InvitationGenerator() {
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [formData, setFormData] = useState({});
+  const [downloadToken, setDownloadToken] = useState(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const handleGenerate = async () => {
+    setIsGenerating(true);
+    try {
+      const response = await fetch('/api/invitations/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          templateId: selectedTemplate.id,
+          guestData: formData,
+        }),
+      });
+      
+      const result = await response.json();
+      setDownloadToken(result.downloadToken);
+    } catch (error) {
+      console.error('Generation failed:', error);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto p-6">
+      <h2 className="text-3xl font-bold text-center mb-8">
+        Create Your Wedding Invitation
+      </h2>
+      
+      {!selectedTemplate && (
+        <TemplateSelector onSelect={setSelectedTemplate} />
+      )}
+      
+      {selectedTemplate && !downloadToken && (
+        <InvitationForm
+          template={selectedTemplate}
+          formData={formData}
+          onDataChange={setFormData}
+          onGenerate={handleGenerate}
+          isGenerating={isGenerating}
+        />
+      )}
+      
+      {downloadToken && (
+        <DownloadSection
+          token={downloadToken}
+          onReset={() => {
+            setSelectedTemplate(null);
+            setDownloadToken(null);
+            setFormData({});
+          }}
+        />
+      )}
+    </div>
+  );
+}
+TemplateSelector.tsx - Template selection with previews:
+
+tsx
+import React, { useState, useEffect } from 'react';
+
+export default function TemplateSelector({ onSelect }) {
+  const [templates, setTemplates] = useState([]);
+
+  useEffect(() => {
+    fetch('/api/invitations/templates')
+      .then(res => res.json())
+      .then(setTemplates);
+  }, []);
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {templates.map(template => (
+        <div
+          key={template.id}
+          className="border rounded-lg p-4 cursor-pointer hover:shadow-lg transition-shadow"
+          onClick={() => onSelect(template)}
+        >
+          <img
+            src={template.previewImage || '/placeholder-invitation.png'}
+            alt={template.name}
+            className="w-full h-48 object-cover rounded mb-4"
+          />
+          <h3 className="font-semibold text-lg">{template.name}</h3>
+          <p className="text-gray-600 capitalize">{template.category}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+InvitationForm.tsx - Dynamic form based on template:
+
+tsx
+import React from 'react';
+
+export default function InvitationForm({ 
+  template, 
+  formData, 
+  onDataChange, 
+  onGenerate, 
+  isGenerating 
+}) {
+  const fieldMapping = JSON.parse(template.fieldMapping || '{}');
+  const requiredFields = Object.keys(fieldMapping);
+
+  const handleInputChange = (field, value) => {
+    onDataChange(prev => ({ ...prev, [field]: value }));
+  };
+
+  const isFormValid = requiredFields.every(field => formData[field]?.trim());
+
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {requiredFields.map(field => (
+          <div key={field}>
+            <label className="block text-sm font-medium mb-2 capitalize">
+              {field.replace(/([A-Z])/g, ' $1').trim()}
+            </label>
+            <input
+              type="text"
+              value={formData[field] || ''}
+              onChange={(e) => handleInputChange(field, e.target.value)}
+              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+              placeholder={`Enter ${field}`}
+            />
+          </div>
+        ))}
+      </div>
+      
+      <button
+        onClick={onGenerate}
+        disabled={!isFormValid || isGenerating}
+        className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold
+                   disabled:bg-gray-400 disabled:cursor-not-allowed
+                   hover:bg-blue-700 transition-colors"
+      >
+        {isGenerating ? 'Generating...' : 'Generate Invitation'}
+      </button>
+    </div>
+  );
+}
+DownloadSection.tsx - Self-destructing download with countdown:
+
+tsx
+import React, { useState, useEffect } from 'react';
+
+export default function DownloadSection({ token, onReset }) {
+  const [timeLeft, setTimeLeft] = useState(300); // 5 minutes
+  const [hasDownloaded, setHasDownloaded] = useState(false);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const handleDownload = async () => {
+    try {
+      const response = await fetch(`/api/invitations/download/${token}`);
+      
+      if (!response.ok) {
+        throw new Error('Download failed');
+      }
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'wedding-invitation.pdf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+      
+      setHasDownloaded(true);
+    } catch (error) {
+      alert('Download failed. The link may have expired.');
+    }
+  };
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  if (timeLeft === 0 || hasDownloaded) {
+    return (
+      <div className="text-center p-8">
+        <div className="text-red-600 mb-4">
+          {hasDownloaded ? 'File downloaded successfully!' : 'Download link expired'}
+        </div>
+        <button
+          onClick={onReset}
+          className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+        >
+          Create Another Invitation
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="text-center p-8 bg-green-50 rounded-lg">
+      <h3 className="text-2xl font-bold mb-4 text-green-800">
+        Your Invitation is Ready!
+      </h3>
+      
+      <div className="text-lg mb-6">
+        Download expires in: <span className="font-mono font-bold text-red-600">
+          {formatTime(timeLeft)}
+        </span>
+      </div>
+      
+      <button
+        onClick={handleDownload}
+        className="bg-green-600 text-white px-8 py-3 rounded-lg text-lg font-semibold
+                   hover:bg-green-700 transition-colors mb-4"
+      >
+        Download PDF Invitation
+      </button>
+      
+      <div className="text-sm text-gray-600 mb-4">
+        ⚠️ This link will self-destruct after download for security
+      </div>
+      
+      <button
+        onClick={onReset}
+        className="text-blue-600 hover:underline"
+      >
+        Create Another Invitation
+      </button>
+    </div>
+  );
+}
+4. Environment Variables
+Add to your .env:
+
+text
+JWT_SECRET=your-super-secret-jwt-key-for-temporary-tokens
+INVITATION_TEMP_DIR=./temp
+5. Template Preparation
+For each PDF template, create a field mapping configuration:
+
+json
+{
+  "brideName": "bride_name_field",
+  "groomName": "groom_name_field", 
+  "weddingDate": "date_field",
+  "venue": "venue_field",
+  "time": "time_field",
+  "familyNames": "family_field"
+}
+6. Integration with Main App
+Add the route to your main routing:
+
+tsx
+// In your main App.tsx or router configuration
+import InvitationGenerator from './components/InvitationGenerator/InvitationGenerator';
+
+// Add route
+<Route path="/create-invitation" component={InvitationGenerator} />
+7. Security Features
+JWT tokens with 5-minute expiry
+
+One-time download links
+
+Automatic file cleanup after download
+
+Server-side PDF generation to prevent tampering
+
+Input validation and sanitization
+
+This implementation provides a complete wedding invitation generator with secure, self-destructing downloads that integrates seamlessly with your existing Drizzle ORM and TypeScript Vite structure
