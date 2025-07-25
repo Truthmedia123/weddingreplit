@@ -192,22 +192,6 @@ export const insertReviewSchema = createInsertSchema(reviews).omit({
   createdAt: true,
 });
 
-export const insertInvitationTokenSchema = createInsertSchema(invitationTokens).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertInvitationTemplateSchema = createInsertSchema(invitationTemplates).omit({
-  id: true,
-  createdAt: true,
-});
-
-// Types
-export type InvitationToken = typeof invitationTokens.$inferSelect;
-export type InsertInvitationToken = z.infer<typeof insertInvitationTokenSchema>;
-export type InvitationTemplate = typeof invitationTemplates.$inferSelect;
-export type InsertInvitationTemplate = z.infer<typeof insertInvitationTemplateSchema>;
-
 export const insertCategorySchema = createInsertSchema(categories).omit({
   id: true,
   vendorCount: true,
@@ -216,6 +200,7 @@ export const insertCategorySchema = createInsertSchema(categories).omit({
 export const insertBlogPostSchema = createInsertSchema(blogPosts).omit({
   id: true,
   createdAt: true,
+  updatedAt: true,
 });
 
 export const insertBusinessSubmissionSchema = createInsertSchema(businessSubmissions).omit({
@@ -239,6 +224,16 @@ export const insertRsvpSchema = createInsertSchema(rsvps).omit({
   createdAt: true,
 });
 
+export const insertInvitationTokenSchema = createInsertSchema(invitationTokens).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertInvitationTemplateSchema = createInsertSchema(invitationTemplates).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Types
 export type Vendor = typeof vendors.$inferSelect;
 export type InsertVendor = z.infer<typeof insertVendorSchema>;
@@ -256,5 +251,7 @@ export type Wedding = typeof weddings.$inferSelect;
 export type InsertWedding = z.infer<typeof insertWeddingSchema>;
 export type Rsvp = typeof rsvps.$inferSelect;
 export type InsertRsvp = z.infer<typeof insertRsvpSchema>;
-
-
+export type InvitationToken = typeof invitationTokens.$inferSelect;
+export type InsertInvitationToken = z.infer<typeof insertInvitationTokenSchema>;
+export type InvitationTemplate = typeof invitationTemplates.$inferSelect;
+export type InsertInvitationTemplate = z.infer<typeof insertInvitationTemplateSchema>;
