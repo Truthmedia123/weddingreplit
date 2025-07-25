@@ -29,7 +29,6 @@ export default function Couples() {
   const [showRsvpForm, setShowRsvpForm] = useState(false);
   const [rsvpForm, setRsvpForm] = useState({
     guestName: "",
-    guestEmail: "",
     guestPhone: "",
     attendingCeremony: true,
     attendingReception: true,
@@ -51,7 +50,7 @@ export default function Couples() {
       const response = await fetch(`/api/weddings/${wedding!.id}/rsvps`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(rsvpData),
+        body: JSON.stringify({...rsvpData, guestEmail: ""}),
       });
       if (!response.ok) throw new Error('Failed to create RSVP');
       return response.json();
@@ -331,27 +330,16 @@ export default function Couples() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="guestEmail">Email</Label>
-                    <Input
-                      id="guestEmail"
-                      type="email"
-                      value={rsvpForm.guestEmail}
-                      onChange={(e) => setRsvpForm({...rsvpForm, guestEmail: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="numberOfGuests">Number of Guests</Label>
-                    <Input
-                      id="numberOfGuests"
-                      type="number"
-                      min="1"
-                      max="10"
-                      value={rsvpForm.numberOfGuests}
-                      onChange={(e) => setRsvpForm({...rsvpForm, numberOfGuests: parseInt(e.target.value)})}
-                    />
-                  </div>
+                <div>
+                  <Label htmlFor="numberOfGuests">Number of Guests</Label>
+                  <Input
+                    id="numberOfGuests"
+                    type="number"
+                    min="1"
+                    max="10"
+                    value={rsvpForm.numberOfGuests}
+                    onChange={(e) => setRsvpForm({...rsvpForm, numberOfGuests: parseInt(e.target.value)})}
+                  />
                 </div>
 
                 <div className="space-y-4">
