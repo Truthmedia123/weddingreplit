@@ -24,6 +24,7 @@ const createRSVPSchema = z.object({
   venueAddress: z.string().min(1, "Venue address is required"),
   contactEmail: z.string().email("Valid email is required"),
   contactPhone: z.string().optional(),
+  contactPhone2: z.string().optional(),
   story: z.string().optional(),
   coverImage: z.string().optional(),
   maxGuests: z.string().transform((val) => parseInt(val) || 100),
@@ -51,6 +52,7 @@ export default function CreateRSVP() {
       venueAddress: "",
       contactEmail: "",
       contactPhone: "",
+      contactPhone2: "",
       story: "",
       coverImage: "",
       maxGuests: "100",
@@ -382,6 +384,16 @@ export default function CreateRSVP() {
                     placeholder="+91 9876543210"
                   />
                 </div>
+              </div>
+
+              <div>
+                <Label htmlFor="contactPhone2">Contact Phone 2 (Optional)</Label>
+                <Input
+                  id="contactPhone2"
+                  type="tel"
+                  {...form.register("contactPhone2")}
+                  placeholder="+91 98765 43211"
+                />
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">

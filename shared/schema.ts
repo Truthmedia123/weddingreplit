@@ -111,6 +111,7 @@ export const weddings = pgTable("weddings", {
   isPublic: boolean("is_public").default(true),
   contactEmail: text("contact_email").notNull(),
   contactPhone: text("contact_phone"),
+  contactPhone2: text("contact_phone2"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

@@ -280,7 +280,24 @@ export default function Couples() {
                     {wedding.contactEmail}
                   </a>
                 </div>
-
+                
+                {wedding.contactPhone && (
+                  <div className="flex items-center gap-3">
+                    <i className="fas fa-phone text-red-500"></i>
+                    <a href={`tel:${wedding.contactPhone}`} className="text-gray-600 hover:text-red-500">
+                      {wedding.contactPhone}
+                    </a>
+                  </div>
+                )}
+                
+                {wedding.contactPhone2 && (
+                  <div className="flex items-center gap-3">
+                    <i className="fas fa-phone text-red-500"></i>
+                    <a href={`tel:${wedding.contactPhone2}`} className="text-gray-600 hover:text-red-500">
+                      {wedding.contactPhone2}
+                    </a>
+                  </div>
+                )}
 
               </CardContent>
             </Card>
