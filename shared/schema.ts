@@ -142,6 +142,19 @@ export const invitationTokens = pgTable("invitation_tokens", {
   expiresAt: timestamp("expires_at").notNull(),
 });
 
+export const invitationTemplates = pgTable("invitation_templates", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  slug: text("slug").notNull().unique(),
+  category: text("category").notNull(), // 'save-the-date' or 'wedding-invitation'
+  description: text("description").notNull(),
+  previewImage: text("preview_image"),
+  pdfFilename: text("pdf_filename").notNull(),
+  fieldMapping: jsonb("field_mapping").notNull(), // JSON mapping for PDF fields
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
 export const vendorsRelations = relations(vendors, ({ many }) => ({
   reviews: many(reviews),
@@ -186,6 +199,8 @@ export const insertInvitationTokenSchema = createInsertSchema(invitationTokens).
 // Types
 export type InvitationToken = typeof invitationTokens.$inferSelect;
 export type InsertInvitationToken = z.infer<typeof insertInvitationTokenSchema>;
+export type InvitationTemplate = typeof invitationTemplates.$inferSelect;
+export type InsertInvitationTemplate = z.infer<typeof insertInvitationTemplateSchema>;
 
 export const insertCategorySchema = createInsertSchema(categories).omit({
   id: true,
@@ -229,6 +244,12 @@ export const insertWeddingSchema = z.object({
 
 export const insertRsvpSchema = createInsertSchema(rsvps).omit({
   id: true,
+  createdAt: true,
+});
+
+export const insertInvitationTemplateSchema = createInsertSchema(invitationTemplates).omit({
+  id: true,
+  isActive: true,
   createdAt: true,
 });
 

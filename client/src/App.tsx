@@ -20,7 +20,7 @@ import Wishlist from "@/pages/Wishlist";
 import Couples from "@/pages/Couples";
 import CreateRSVP from "@/pages/CreateRSVP";
 import TrackRSVP from "@/pages/TrackRSVP";
-import PDFInvitationGenerator from "@/pages/PDFInvitationGenerator";
+import InvitationGenerator from "@/pages/InvitationGenerator";
 
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import TermsConditions from "@/pages/TermsConditions";
@@ -45,7 +45,7 @@ function Router() {
         <Route path="/couples/:slug" component={Couples} />
         <Route path="/create-rsvp" component={CreateRSVP} />
         <Route path="/track/:slug" component={TrackRSVP} />
-        <Route path="/generate-invitation" component={PDFInvitationGenerator} />
+        <Route path="/generate-invitation" component={InvitationGenerator} />
 
         <Route path="/privacy-policy" component={PrivacyPolicy} />
         <Route path="/terms-conditions" component={TermsConditions} />

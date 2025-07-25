@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertReviewSchema, insertBusinessSubmissionSchema, insertContactSchema, insertWeddingSchema, insertRsvpSchema, insertInvitationTokenSchema } from "@shared/schema";
 import { z } from "zod";
-import { generatePDFInvitation, generateSecureToken, generateExpiryDate, isTokenExpired, PDF_INVITATION_TEMPLATES } from "./pdfInvitationService";
+import { generateInvitationPDF, downloadInvitation, ensureTempDir } from "./invitationService";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Vendors
@@ -214,62 +214,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // PDF Invitation Generation Routes
-  app.get("/api/invite/templates", async (req, res) => {
+  // Wedding Invitation Generator Routes
+  app.get("/api/invitation/templates", async (req, res) => {
     try {
-      res.json(PDF_INVITATION_TEMPLATES);
+      const templates = await storage.getInvitationTemplates();
+      res.json(templates);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch templates" });
     }
   });
 
-  app.post("/api/invite/generate", async (req, res) => {
+  app.post("/api/invitation/generate", async (req, res) => {
     try {
       const invitationSchema = z.object({
         templateId: z.string(),
-        coupleNames: z.string().min(1),
+        brideName: z.string().min(1),
+        groomName: z.string().min(1),
         weddingDate: z.string().min(1),
         venue: z.string().min(1),
         time: z.string().optional(),
-        message: z.string().optional(),
-        customization: z.object({
-          primaryColor: z.string().optional(),
-          textColor: z.string().optional(),
-          font: z.string().optional(),
-        }).optional(),
+        familyMessage: z.string().optional(),
+        coupleMessage: z.string().optional(),
       });
 
       const validatedData = invitationSchema.parse(req.body);
 
-      // Validate template exists
-      if (!PDF_INVITATION_TEMPLATES[validatedData.templateId as keyof typeof PDF_INVITATION_TEMPLATES]) {
-        return res.status(400).json({ message: "Invalid template ID" });
-      }
-
-      // Generate secure token
-      const token = generateSecureToken();
-      const expiresAt = generateExpiryDate();
-
-      // Store token in database
-      const tokenData = {
-        token,
-        templateId: validatedData.templateId,
-        coupleNames: validatedData.coupleNames,
+      // Generate invitation PDF with self-destructing download
+      const result = await generateInvitationPDF(validatedData.templateId, {
+        brideName: validatedData.brideName,
+        groomName: validatedData.groomName,
         weddingDate: validatedData.weddingDate,
         venue: validatedData.venue,
-        message: validatedData.message || '',
-        customization: validatedData.customization || {},
-        expiresAt,
-        used: false,
-      };
+        time: validatedData.time,
+        familyMessage: validatedData.familyMessage,
+        coupleMessage: validatedData.coupleMessage,
+      });
 
-      await storage.createInvitationToken(tokenData);
-
-      // Clean up expired tokens
-      await storage.cleanupExpiredTokens();
-
-      const downloadUrl = `/api/invite/download?token=${token}`;
-      res.json({ downloadUrl, expiresAt });
+      res.json({
+        downloadToken: result.downloadToken,
+        expiresIn: result.expiresIn,
+        downloadUrl: `/api/invitation/download/${result.downloadToken}`,
+      });
     } catch (error) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ message: "Invalid request data", errors: error.errors });
@@ -279,54 +264,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/invite/download", async (req, res) => {
+  app.get("/api/invitation/download/:token", async (req, res) => {
     try {
-      const token = req.query.token as string;
-      if (!token) {
-        return res.status(400).json({ message: "Token required" });
-      }
-
-      // Fetch token from database
-      const invitationToken = await storage.getInvitationToken(token);
-      if (!invitationToken) {
-        return res.status(404).json({ message: "Invitation expired or not found" });
-      }
-
-      // Check if token is expired
-      if (isTokenExpired(invitationToken.createdAt, invitationToken.expiresAt)) {
-        await storage.markTokenAsUsed(token);
-        return res.status(410).json({ message: "Invitation expired" });
-      }
-
-      // Check if token is already used
-      if (invitationToken.used) {
-        return res.status(410).json({ message: "Invitation expired" });
-      }
-
-      // Generate PDF invitation
-      const invitationData = {
-        templateId: invitationToken.templateId,
-        coupleNames: invitationToken.coupleNames,
-        weddingDate: invitationToken.weddingDate,
-        venue: invitationToken.venue,
-        time: (invitationToken.customization as any)?.time,
-        message: invitationToken.message || undefined,
-        customization: invitationToken.customization as any,
-      };
-
-      const pdfBuffer = await generatePDFInvitation(invitationData);
-
-      // Mark token as used (self-destruct)
-      await storage.markTokenAsUsed(token);
-
-      // Set headers for download
-      res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', `attachment; filename="wedding-invitation-${invitationToken.coupleNames.replace(/[^a-zA-Z0-9]/g, '-')}.pdf"`);
-      res.setHeader('Content-Length', pdfBuffer.length);
+      const { token } = req.params;
       
-      res.send(pdfBuffer);
+      const result = await downloadInvitation(token);
+      
+      if (!result.success) {
+        return res.status(410).json({ message: result.error });
+      }
+
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="${result.filename}"`);
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+      
+      res.send(result.data);
     } catch (error) {
-      console.error("Error downloading invitation:", error);
+      console.error("Download error:", error);
       res.status(500).json({ message: "Failed to download invitation" });
     }
   });

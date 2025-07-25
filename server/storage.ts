@@ -1,4 +1,4 @@
-import { vendors, reviews, categories, blogPosts, businessSubmissions, contacts, weddings, rsvps, invitationTokens } from "@shared/schema";
+import { vendors, reviews, categories, blogPosts, businessSubmissions, contacts, weddings, rsvps, invitationTokens, invitationTemplates } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc, sql, like, or, ilike } from "drizzle-orm";
 import type { 
@@ -10,7 +10,8 @@ import type {
   Contact, InsertContact,
   Wedding, InsertWedding,
   Rsvp, InsertRsvp,
-  InvitationToken, InsertInvitationToken
+  InvitationToken, InsertInvitationToken,
+  InvitationTemplate, InsertInvitationTemplate
 } from "@shared/schema";
 
 export interface IStorage {
@@ -54,6 +55,10 @@ export interface IStorage {
   getInvitationToken(token: string): Promise<InvitationToken | undefined>;
   markTokenAsUsed(token: string): Promise<void>;
   cleanupExpiredTokens(): Promise<void>;
+
+  // Invitation Templates
+  getInvitationTemplates(): Promise<InvitationTemplate[]>;
+  createInvitationTemplate(template: InsertInvitationTemplate): Promise<InvitationTemplate>;
 }
 
 export class MemoryStorage implements IStorage {
@@ -560,6 +565,15 @@ export class DatabaseStorage implements IStorage {
 
   async cleanupExpiredTokens(): Promise<void> {
     await db.delete(invitationTokens).where(sql`expires_at < NOW()`);
+  }
+
+  async getInvitationTemplates(): Promise<InvitationTemplate[]> {
+    return await db.select().from(invitationTemplates).where(eq(invitationTemplates.isActive, true));
+  }
+
+  async createInvitationTemplate(template: InsertInvitationTemplate): Promise<InvitationTemplate> {
+    const [newTemplate] = await db.insert(invitationTemplates).values(template).returning();
+    return newTemplate;
   }
 }
 
