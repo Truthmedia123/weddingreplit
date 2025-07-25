@@ -187,33 +187,7 @@ export default function Couples() {
               </Card>
             )}
 
-            {/* Gallery */}
-            {wedding.galleryImages && wedding.galleryImages.length > 0 && (
-              <Card className="border-0 shadow-2xl">
-                <CardHeader>
-                  <CardTitle className="text-3xl font-bold text-center wedding-script text-teal-600">
-                    Our Journey Together
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Carousel className="w-full">
-                    <CarouselContent>
-                      {wedding.galleryImages.map((image, index) => (
-                        <CarouselItem key={index} className="md:basis-1/2">
-                          <img 
-                            src={image} 
-                            alt={`${wedding.brideName} & ${wedding.groomName} ${index + 1}`}
-                            className="w-full h-80 object-cover rounded-xl" 
-                          />
-                        </CarouselItem>
-                      ))}
-                    </CarouselContent>
-                    <CarouselPrevious />
-                    <CarouselNext />
-                  </Carousel>
-                </CardContent>
-              </Card>
-            )}
+
 
 
           </div>
