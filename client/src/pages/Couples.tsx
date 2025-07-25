@@ -34,7 +34,6 @@ export default function Couples() {
     attendingCeremony: true,
     attendingReception: true,
     numberOfGuests: 1,
-    dietaryRestrictions: "",
     message: ""
   });
 
@@ -79,6 +78,18 @@ export default function Couples() {
 
   const handleSubmitRsvp = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate required fields
+    if (!rsvpForm.guestName.trim()) {
+      toast({ title: "Please enter your full name", variant: "destructive" });
+      return;
+    }
+    
+    if (!rsvpForm.guestPhone.trim()) {
+      toast({ title: "Please enter your phone number", variant: "destructive" });
+      return;
+    }
+    
     createRsvpMutation.mutate(rsvpForm);
   };
 
@@ -309,12 +320,12 @@ export default function Couples() {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="guestEmail">Email *</Label>
+                    <Label htmlFor="guestPhone">Phone Number *</Label>
                     <Input
-                      id="guestEmail"
-                      type="email"
-                      value={rsvpForm.guestEmail}
-                      onChange={(e) => setRsvpForm({...rsvpForm, guestEmail: e.target.value})}
+                      id="guestPhone"
+                      type="tel"
+                      value={rsvpForm.guestPhone}
+                      onChange={(e) => setRsvpForm({...rsvpForm, guestPhone: e.target.value})}
                       required
                     />
                   </div>
@@ -322,12 +333,12 @@ export default function Couples() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="guestPhone">Phone Number</Label>
+                    <Label htmlFor="guestEmail">Email</Label>
                     <Input
-                      id="guestPhone"
-                      type="tel"
-                      value={rsvpForm.guestPhone}
-                      onChange={(e) => setRsvpForm({...rsvpForm, guestPhone: e.target.value})}
+                      id="guestEmail"
+                      type="email"
+                      value={rsvpForm.guestEmail}
+                      onChange={(e) => setRsvpForm({...rsvpForm, guestEmail: e.target.value})}
                     />
                   </div>
                   <div>
@@ -370,15 +381,7 @@ export default function Couples() {
                   )}
                 </div>
 
-                <div>
-                  <Label htmlFor="dietaryRestrictions">Dietary Restrictions</Label>
-                  <Input
-                    id="dietaryRestrictions"
-                    value={rsvpForm.dietaryRestrictions}
-                    onChange={(e) => setRsvpForm({...rsvpForm, dietaryRestrictions: e.target.value})}
-                    placeholder="Any allergies or dietary requirements"
-                  />
-                </div>
+
 
                 <div>
                   <Label htmlFor="message">Message for the Couple</Label>
