@@ -64,7 +64,7 @@ export interface IStorage {
 export class DatabaseStorage implements IStorage {
   // Vendors
   async getVendors(filters: { category?: string; location?: string; search?: string }): Promise<Vendor[]> {
-    let query = db.select().from(vendors).as('vendors_query');
+    let query = db.select().from(vendors);
     
     const conditions: any[] = [];
     
@@ -134,7 +134,7 @@ export class DatabaseStorage implements IStorage {
 
   // Blog Posts
   async getBlogPosts(published?: boolean): Promise<BlogPost[]> {
-    let query = db.select().from(blogPosts).as('blog_posts_query');
+    let query = db.select().from(blogPosts);
     
     if (published !== undefined) {
       query = query.where(eq(blogPosts.published, published));

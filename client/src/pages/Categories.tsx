@@ -1,5 +1,4 @@
 import CategoryGrid from "@/components/CategoryGrid";
-import IconTest from "@/components/IconTest";
 
 export default function Categories() {
   return (
@@ -19,10 +18,7 @@ export default function Categories() {
           </p>
         </div>
         
-        {/* Debug component to test icon imports */}
-        <div className="mb-8">
-          <IconTest />
-        </div>
+
         
         <CategoryGrid showAll={true} />
       </div>
