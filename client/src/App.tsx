@@ -22,6 +22,7 @@ import CreateRSVP from "@/pages/CreateRSVP";
 import TrackRSVP from "@/pages/TrackRSVP";
 import InvitationGenerator from "@/pages/InvitationGenerator";
 
+
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import TermsConditions from "@/pages/TermsConditions";
 import CookiePolicy from "@/pages/CookiePolicy";

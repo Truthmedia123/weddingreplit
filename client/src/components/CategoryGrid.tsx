@@ -1,71 +1,7 @@
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
-import type { Category } from "@shared/schema";
-import * as AllLucideIcons from 'lucide-react';
-
-// Test tree-shaking bypass
-console.log('All Lucide Icons available:', Object.keys(AllLucideIcons).slice(0, 10));
-console.log('PartyPopper directly from import:', AllLucideIcons.PartyPopper);
-
-import { 
-  Camera, 
-  MapPin, 
-  ChefHat,
-  Calendar, 
-  Sparkles,
-  Music, 
-  Flower2, 
-  Shirt,
-  Gem,
-  Car,
-  Video,
-  Paintbrush,
-  CakeSlice,
-  Mail,
-  Heart,
-  Shield,
-  Crown,
-  Gift,
-  Lightbulb,
-  Tent,
-  PartyPopper,
-  Music2,
-  Wine,
-  Cake,
-  Baby,
-  Flower,
-  Zap,
-  Leaf,
-  Mic,
-  Star,
-  Truck,
-  Users,
-  FileText,
-  Scale,
-  TreePalm,
-  Home,
-  Dog,
-  Coffee,
-  MessageCircle,
-  HeartHandshake,
-  Radio,
-  ShieldCheck,
-  Waves,
-  Recycle,
-  Scissors,
-  Theater,
-  Plane,
-  Building,
-  Smartphone,
-  Globe,
-  Building2,
-  TreePine,
-  Volume2,
-  Church,
-  PawPrint,
-  User
-} from "lucide-react";
+import type { Category } from "@shared/schema-sqlite";
 
 interface CategoryGridProps {
   showAll?: boolean;
@@ -73,20 +9,18 @@ interface CategoryGridProps {
   searchFilter?: string;
 }
 
-// Function to get Lucide icon by icon name using the AllLucideIcons import
-function getCategoryIcon(iconName: string) {
-  // Use the AllLucideIcons object directly
-  const component = (AllLucideIcons as any)[iconName];
-  console.log(`Dynamic icon lookup: "${iconName}" → Component:`, component, 'Type:', typeof component);
-  console.log(`Available in AllLucideIcons:`, iconName in AllLucideIcons);
-  
-  return component || AllLucideIcons.Camera;
-}
+// Using the imported getCategoryIcon function from CategoryIcons.tsx
 
 export default function CategoryGrid({ showAll = false, maxCategories = 8, searchFilter = "" }: CategoryGridProps) {
   const { data: allCategories = [], isLoading } = useQuery<Category[]>({
     queryKey: ['/api/categories'],
   });
+
+  // Debug logging
+  if (allCategories.length > 0) {
+    console.log('Categories loaded:', allCategories.length);
+    console.log('Sample category:', allCategories[0]);
+  }
 
   let filteredCategories = allCategories;
   
@@ -130,26 +64,73 @@ export default function CategoryGrid({ showAll = false, maxCategories = 8, searc
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
 
         
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
           {categories.map((category) => (
             <Link key={category.slug} href={`/vendors/${category.slug}`}>
               <Card className="group cursor-pointer hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 bg-white/80 backdrop-blur-sm border-0 overflow-hidden">
-                <CardContent className="p-4 md:p-8 text-center relative">
+                <CardContent className="p-6 md:p-8 text-center relative min-h-[120px] flex flex-col justify-center">
                   {/* Hover background effect */}
                   <div className={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
                   
                   {/* Icon container */}
                   <div className="relative mb-3 md:mb-6">
-                    <div className={`bg-gradient-to-br ${category.color} w-12 h-12 md:w-20 md:h-20 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg`}>
-                      {(() => {
-                        const IconComponent = getCategoryIcon(category.icon);
-                        return IconComponent ? 
-                          <IconComponent className="text-white w-6 h-6 md:w-8 md:h-8" /> : 
-                          <AllLucideIcons.Camera className="text-white w-6 h-6 md:w-8 md:h-8" />;
-                      })()}
+                    <div 
+                      className="w-12 h-12 md:w-20 md:h-20 rounded-full flex items-center justify-center mx-auto group-hover:scale-110 transition-all duration-500"
+                      style={{
+                        backgroundColor: '#F5F5F5',
+                        border: '1px solid #E0E0E0',
+                        boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.05)'
+                      }}
+                    >
+                      <div 
+                        className="text-lg md:text-xl font-bold text-gray-700"
+                        style={{ fontFamily: 'Arial, sans-serif' }}
+                      >
+                        {(() => {
+                          // Simple text-based icons that will definitely work
+                          const textIcons: {[key: string]: string} = {
+                            'PartyPopper': '🎉',
+                            'Music': '♪',
+                            'Wine': '🍷',
+                            'Sparkles': '✨',
+                            'Cake': '🎂',
+                            'Car': '🚗',
+                            'ChefHat': '👨‍🍳',
+                            'Baby': '👶',
+                            'Gem': '💎',
+                            'Flower2': '🌸',
+                            'Zap': '⚡',
+                            'Leaf': '🍃',
+                            'Mic': '🎤',
+                            'Shield': '🛡️',
+                            'Gift': '🎁',
+                            'Music2': '♫',
+                            'Star': '⭐',
+                            'Truck': '🚚',
+                            'Users': '👥',
+                            'FileText': '📄',
+                            'Mail': '📧',
+                            'Heart': '❤️',
+                            'Home': '🏠',
+                            'Dog': '🐕',
+                            'Coffee': '☕',
+                            'ShieldCheck': '✅',
+                            'Recycle': '♻️',
+                            'Plane': '✈️',
+                            'Building': '🏢',
+                            'Smartphone': '📱',
+                            'Globe': '🌍',
+                            'Volume2': '🔊',
+                            'Paintbrush': '🎨',
+                            'Shirt': '👕',
+                            'Video': '📹',
+                            'Calendar': '📅',
+                            'Camera': '📷'
+                          };
+                          return textIcons[category.icon] || '📷';
+                        })()}
+                      </div>
                     </div>
-                    {/* Floating effect */}
-                    <div className={`absolute inset-0 bg-gradient-to-br ${category.color} w-12 h-12 md:w-20 md:h-20 rounded-xl md:rounded-2xl mx-auto opacity-20 blur-xl group-hover:blur-2xl transition-all duration-500`}></div>
                   </div>
                   
                   <h3 className="font-bold text-sm md:text-lg text-slate-800 mb-2 md:mb-3 group-hover:text-red-600 transition-colors duration-300 leading-tight">

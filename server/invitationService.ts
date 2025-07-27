@@ -1,22 +1,4 @@
-import { PDFDocument, PDFForm, rgb } from 'pdf-lib';
-import jwt from 'jsonwebtoken';
-import { promises as fs } from 'fs';
-import path from 'path';
-import { db } from './db';
-import { invitationTokens, invitationTemplates } from '@shared/schema';
-import { eq } from 'drizzle-orm';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'wedding-invitation-secret-key';
-const TEMP_DIR = path.join(process.cwd(), 'temp');
-
-// Ensure temp directory exists
-async function ensureTempDir() {
-  try {
-    await fs.access(TEMP_DIR);
-  } catch {
-    await fs.mkdir(TEMP_DIR, { recursive: true });
-  }
-}
+import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
 interface InvitationData {
   brideName: string;
@@ -28,227 +10,279 @@ interface InvitationData {
   coupleMessage?: string;
 }
 
-export async function generateInvitationPDF(
+const generatedInvitations = new Map<string, {
+  filename: string;
+  data: Buffer;
+  expiresAt: Date;
+}>();
+
+export const generateInvitationPDF = async (
   templateId: string,
   invitationData: InvitationData
-): Promise<{ downloadToken: string; expiresIn: number }> {
+): Promise<{ downloadToken: string; expiresIn: number }> => {
   console.log('Starting PDF generation for template:', templateId);
-  await ensureTempDir();
 
-  // Get template from database
-  console.log('Querying database for template...');
-  const [template] = await db
-    .select()
-    .from(invitationTemplates)
-    .where(eq(invitationTemplates.slug, templateId))
-    .limit(1);
+  try {
+    const pdfDoc = await PDFDocument.create();
+    const page = pdfDoc.addPage([595, 842]);
+    const { width, height } = page.getSize();
+    
+    const titleFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+    const bodyFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-  if (!template) {
-    console.error('Template not found in database:', templateId);
-    throw new Error('Template not found');
-  }
-  
-  console.log('Found template:', template.name, 'File:', template.pdfFilename);
+    // Background with template-specific colors
+    let bgColor = rgb(0.98, 0.97, 0.95); // Default cream
+    let primaryColor = rgb(0.4, 0.3, 0.2); // Dark brown
+    let accentColor = rgb(0.7, 0.6, 0.4); // Gold
 
-  // Read the PDF template file
-  console.log('Reading PDF file...');
-  const templatePath = path.join(process.cwd(), 'attached_assets', template.pdfFilename);
-  const pdfBytes = await fs.readFile(templatePath);
-  const pdfDoc = await PDFDocument.load(pdfBytes);
+    if (templateId.includes('pink')) {
+      bgColor = rgb(0.99, 0.95, 0.97);
+      primaryColor = rgb(0.7, 0.3, 0.5);
+      accentColor = rgb(0.9, 0.7, 0.8);
+    } else if (templateId.includes('botanical')) {
+      bgColor = rgb(0.97, 0.99, 0.96);
+      primaryColor = rgb(0.2, 0.5, 0.3);
+      accentColor = rgb(0.6, 0.8, 0.7);
+    } else if (templateId.includes('lavender')) {
+      bgColor = rgb(0.96, 0.95, 0.99);
+      primaryColor = rgb(0.4, 0.3, 0.6);
+      accentColor = rgb(0.8, 0.7, 0.9);
+    }
 
-  // Add text overlay to PDF (since templates don't have form fields)
-  console.log('Adding text overlay to PDF...');
-  const pages = pdfDoc.getPages();
-  const firstPage = pages[0];
-  const { width, height } = firstPage.getSize();
-  console.log('PDF dimensions:', width, 'x', height);
-
-  // Add text overlay
-  const fontSize = 14;
-  const lineHeight = 20;
-  let yPosition = height - 150;
-
-  // Add couple names
-  const coupleText = `${invitationData.brideName} & ${invitationData.groomName}`;
-  firstPage.drawText(coupleText, {
-    x: 50,
-    y: yPosition,
-    size: fontSize + 2,
-    color: rgb(0, 0, 0),
-  });
-  yPosition -= lineHeight * 2;
-
-  // Add wedding date
-  firstPage.drawText(`Date: ${invitationData.weddingDate}`, {
-    x: 50,
-    y: yPosition,
-    size: fontSize,
-    color: rgb(0, 0, 0),
-  });
-  yPosition -= lineHeight;
-
-  // Add venue
-  firstPage.drawText(`Venue: ${invitationData.venue}`, {
-    x: 50,
-    y: yPosition,
-    size: fontSize,
-    color: rgb(0, 0, 0),
-  });
-  yPosition -= lineHeight;
-
-  // Add time if provided
-  if (invitationData.time) {
-    firstPage.drawText(`Time: ${invitationData.time}`, {
-      x: 50,
-      y: yPosition,
-      size: fontSize,
-      color: rgb(0, 0, 0),
+    // Background
+    page.drawRectangle({
+      x: 0,
+      y: 0,
+      width: width,
+      height: height,
+      color: bgColor,
     });
-    yPosition -= lineHeight;
+
+    // Decorative border
+    page.drawRectangle({
+      x: 40,
+      y: 40,
+      width: width - 80,
+      height: height - 80,
+      borderColor: accentColor,
+      borderWidth: 3,
+    });
+
+    // Inner border
+    page.drawRectangle({
+      x: 55,
+      y: 55,
+      width: width - 110,
+      height: height - 110,
+      borderColor: accentColor,
+      borderWidth: 1,
+    });
+
+    const centerX = width / 2;
+    let yPosition = height - 100;
+
+    // Title
+    const title = templateId.includes('save-the-date') ? 'Save The Date' : 'Wedding Invitation';
+    const titleWidth = titleFont.widthOfTextAtSize(title, 32);
+    page.drawText(title, {
+      x: centerX - (titleWidth / 2),
+      y: yPosition,
+      size: 32,
+      font: titleFont,
+      color: primaryColor,
+    });
+    yPosition -= 50;
+
+    // Decorative line
+    page.drawLine({
+      start: { x: centerX - 120, y: yPosition },
+      end: { x: centerX + 120, y: yPosition },
+      thickness: 2,
+      color: accentColor,
+    });
+    yPosition -= 40;
+
+    // Decorative symbol
+    const symbol = templateId.includes('pink') ? '♥' : templateId.includes('botanical') ? '❀' : templateId.includes('lavender') ? '✿' : '❦';
+    const symbolWidth = titleFont.widthOfTextAtSize(symbol, 20);
+    page.drawText(symbol, {
+      x: centerX - (symbolWidth / 2),
+      y: yPosition,
+      size: 20,
+      font: titleFont,
+      color: accentColor,
+    });
+    yPosition -= 50;
+
+    // Couple names
+    const coupleText = `${invitationData.brideName} & ${invitationData.groomName}`;
+    const coupleWidth = titleFont.widthOfTextAtSize(coupleText, 26);
+    page.drawText(coupleText, {
+      x: centerX - (coupleWidth / 2),
+      y: yPosition,
+      size: 26,
+      font: titleFont,
+      color: rgb(0.2, 0.2, 0.2),
+    });
+    yPosition -= 60;
+
+    // Date formatting
+    let dateText = invitationData.weddingDate;
+    try {
+      const date = new Date(invitationData.weddingDate);
+      dateText = date.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    } catch (e) {
+      // Use original date string if parsing fails
+    }
+
+    const dateWidth = bodyFont.widthOfTextAtSize(dateText, 18);
+    page.drawText(dateText, {
+      x: centerX - (dateWidth / 2),
+      y: yPosition,
+      size: 18,
+      font: bodyFont,
+      color: rgb(0.3, 0.3, 0.3),
+    });
+    yPosition -= 40;
+
+    // Time if provided
+    if (invitationData.time) {
+      const timeText = `at ${invitationData.time}`;
+      const timeWidth = bodyFont.widthOfTextAtSize(timeText, 16);
+      page.drawText(timeText, {
+        x: centerX - (timeWidth / 2),
+        y: yPosition,
+        size: 16,
+        font: bodyFont,
+        color: rgb(0.3, 0.3, 0.3),
+      });
+      yPosition -= 40;
+    }
+
+    // Venue
+    const venueWidth = bodyFont.widthOfTextAtSize(invitationData.venue, 16);
+    page.drawText(invitationData.venue, {
+      x: centerX - (venueWidth / 2),
+      y: yPosition,
+      size: 16,
+      font: bodyFont,
+      color: rgb(0.3, 0.3, 0.3),
+    });
+    yPosition -= 50;
+
+    // Family message
+    if (invitationData.familyMessage) {
+      yPosition -= 20;
+      const labelText = 'With love from our families';
+      const labelWidth = bodyFont.widthOfTextAtSize(labelText, 12);
+      page.drawText(labelText, {
+        x: centerX - (labelWidth / 2),
+        y: yPosition,
+        size: 12,
+        font: bodyFont,
+        color: accentColor,
+      });
+      yPosition -= 25;
+      
+      const msgWidth = bodyFont.widthOfTextAtSize(invitationData.familyMessage, 11);
+      page.drawText(invitationData.familyMessage, {
+        x: centerX - (msgWidth / 2),
+        y: yPosition,
+        size: 11,
+        font: bodyFont,
+        color: rgb(0.3, 0.3, 0.3),
+      });
+      yPosition -= 30;
+    }
+
+    // Couple message
+    if (invitationData.coupleMessage) {
+      yPosition -= 20;
+      const labelText = 'A personal note from us';
+      const labelWidth = bodyFont.widthOfTextAtSize(labelText, 12);
+      page.drawText(labelText, {
+        x: centerX - (labelWidth / 2),
+        y: yPosition,
+        size: 12,
+        font: bodyFont,
+        color: accentColor,
+      });
+      yPosition -= 25;
+      
+      const msgWidth = bodyFont.widthOfTextAtSize(invitationData.coupleMessage, 11);
+      page.drawText(invitationData.coupleMessage, {
+        x: centerX - (msgWidth / 2),
+        y: yPosition,
+        size: 11,
+        font: bodyFont,
+        color: rgb(0.3, 0.3, 0.3),
+      });
+    }
+
+    const pdfBytes = await pdfDoc.save();
+    
+    const downloadToken = Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
+    const filename = `wedding-invitation-${invitationData.brideName}-${invitationData.groomName}.pdf`
+      .replace(/[^a-zA-Z0-9.-]/g, '-');
+    
+    const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+    generatedInvitations.set(downloadToken, {
+      filename,
+      data: Buffer.from(pdfBytes),
+      expiresAt
+    });
+
+    console.log('PDF generation completed successfully');
+
+    return {
+      downloadToken,
+      expiresIn: 5 * 60 * 1000
+    };
+
+  } catch (error) {
+    console.error('PDF generation failed:', error);
+    throw new Error(`Failed to generate PDF invitation: ${error.message}`);
   }
+};
 
-  console.log('Text overlay completed.');
-
-  // Generate a short unique ID for the PDF filename
-  const shortId = Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
-  const pdfFilename = `invitation_${shortId}.pdf`;
-
-  // Generate download token
-  const downloadToken = jwt.sign(
-    { 
-      templateId, 
-      timestamp: Date.now(),
-      brideName: invitationData.brideName,
-      groomName: invitationData.groomName,
-      shortId
-    },
-    JWT_SECRET,
-    { expiresIn: '5m' }
-  );
-
-  // Save the PDF temporarily
-  const filledPdfBytes = await pdfDoc.save();
-  const tempFilePath = path.join(TEMP_DIR, pdfFilename);
-  await fs.writeFile(tempFilePath, filledPdfBytes);
-
-  // Save invitation record to database with PDF filename
-  const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
-  await db.insert(invitationTokens).values({
-    token: downloadToken,
-    templateId,
-    coupleNames: `${invitationData.brideName} & ${invitationData.groomName}`,
-    weddingDate: invitationData.weddingDate,
-    venue: invitationData.venue || '',
-    message: invitationData.coupleMessage || '',
-    customization: invitationData,
-    pdfFilename,
-    expiresAt,
-  });
-
-  return {
-    downloadToken,
-    expiresIn: 5 * 60 * 1000,
-  };
-}
-
-export async function downloadInvitation(token: string): Promise<{
+export const downloadInvitationPDF = async (token: string): Promise<{
   success: boolean;
   data?: Buffer;
   filename?: string;
   error?: string;
-}> {
+}> => {
   try {
-    // Verify JWT token
-    const decoded = jwt.verify(token, JWT_SECRET) as any;
-    
-    // Check if invitation exists and not yet downloaded
-    const [invitation] = await db
-      .select()
-      .from(invitationTokens)
-      .where(eq(invitationTokens.token, token))
-      .limit(1);
+    const invitation = generatedInvitations.get(token);
 
     if (!invitation) {
-      return { success: false, error: 'Download link not found' };
-    }
-
-    if (invitation.used) {
-      return { success: false, error: 'Download link already used' };
+      return { success: false, error: 'Download link not found or expired' };
     }
 
     if (new Date() > invitation.expiresAt) {
+      generatedInvitations.delete(token);
       return { success: false, error: 'Download link expired' };
     }
 
-    // Get the PDF filename from database
-    if (!invitation.pdfFilename) {
-      return { success: false, error: 'PDF file not found' };
-    }
-    const tempFilePath = path.join(TEMP_DIR, invitation.pdfFilename);
-    
-    try {
-      const fileBuffer = await fs.readFile(tempFilePath);
-      
-      // Mark as downloaded
-      await db
-        .update(invitationTokens)
-        .set({ used: true })
-        .where(eq(invitationTokens.token, token));
+    const result = {
+      success: true,
+      data: invitation.data,
+      filename: invitation.filename
+    };
 
-      // Schedule file deletion after a short delay
-      setTimeout(async () => {
-        try {
-          await fs.unlink(tempFilePath);
-          console.log(`Temporary file deleted: ${tempFilePath}`);
-        } catch (error) {
-          console.warn(`Failed to delete temporary file: ${tempFilePath}`, error);
-        }
-      }, 2000);
+    generatedInvitations.delete(token);
+    return result;
 
-      return {
-        success: true,
-        data: fileBuffer,
-        filename: `wedding-invitation-${invitation.coupleNames.replace(/[^a-zA-Z0-9]/g, '-')}.pdf`,
-      };
-    } catch (fileError) {
-      return { success: false, error: 'File not found or corrupted' };
-    }
-  } catch (jwtError) {
-    return { success: false, error: 'Invalid or expired token' };
-  }
-}
-
-// Cleanup expired invitations and files
-export async function cleanupExpiredInvitations() {
-  try {
-    const expiredInvitations = await db
-      .select()
-      .from(invitationTokens)
-      .where(eq(invitationTokens.used, false));
-
-    for (const invitation of expiredInvitations) {
-      if (new Date() > invitation.expiresAt) {
-        // Delete file
-        const tempFilePath = path.join(TEMP_DIR, invitation.pdfFilename || 'unknown.pdf');
-        try {
-          await fs.unlink(tempFilePath);
-        } catch (error) {
-          // File might already be deleted, ignore
-        }
-
-        // Mark as used to prevent future access
-        await db
-          .update(invitationTokens)
-          .set({ used: true })
-          .where(eq(invitationTokens.token, invitation.token));
-      }
-    }
   } catch (error) {
-    console.error('Cleanup error:', error);
+    console.error('Download error:', error);
+    return { success: false, error: 'Failed to process download' };
   }
-}
+};
 
-// Run cleanup every 10 minutes
-setInterval(cleanupExpiredInvitations, 10 * 60 * 1000);
-
-export { ensureTempDir };
+export const ensureTempDir = async (): Promise<void> => {
+  // No-op for in-memory storage
+};

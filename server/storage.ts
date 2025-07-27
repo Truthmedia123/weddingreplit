@@ -1,18 +1,13 @@
-import { vendors, reviews, categories, blogPosts, businessSubmissions, contacts, weddings, rsvps, invitationTokens, invitationTemplates } from "@shared/schema";
+import { vendors, categories, blogPosts, weddings, rsvps } from "@shared/schema-sqlite";
 import { db } from "./db";
-import { eq, and, desc, sql, like, or, ilike } from "drizzle-orm";
+import { eq, and, desc, sql, like, or } from "drizzle-orm";
 import type { 
   Vendor, InsertVendor, 
-  Review, InsertReview, 
   Category, InsertCategory,
   BlogPost, InsertBlogPost,
-  BusinessSubmission, InsertBusinessSubmission,
-  Contact, InsertContact,
   Wedding, InsertWedding,
-  Rsvp, InsertRsvp,
-  InvitationToken, InsertInvitationToken,
-  InvitationTemplate, InsertInvitationTemplate
-} from "@shared/schema";
+  Rsvp, InsertRsvp
+} from "@shared/schema-sqlite";
 
 export interface IStorage {
   // Vendors
@@ -20,10 +15,6 @@ export interface IStorage {
   getVendor(id: number): Promise<Vendor | undefined>;
   getFeaturedVendors(): Promise<Vendor[]>;
   createVendor(vendor: InsertVendor): Promise<Vendor>;
-
-  // Reviews
-  getVendorReviews(vendorId: number): Promise<Review[]>;
-  createReview(review: InsertReview): Promise<Review>;
 
   // Categories
   getCategories(): Promise<Category[]>;
@@ -35,12 +26,6 @@ export interface IStorage {
   getBlogPost(slug: string): Promise<BlogPost | undefined>;
   createBlogPost(post: InsertBlogPost): Promise<BlogPost>;
 
-  // Business Submissions
-  createBusinessSubmission(submission: InsertBusinessSubmission): Promise<BusinessSubmission>;
-
-  // Contacts
-  createContact(contact: InsertContact): Promise<Contact>;
-
   // Weddings
   getWeddings(): Promise<Wedding[]>;
   getWedding(slug: string): Promise<Wedding | undefined>;
@@ -50,15 +35,7 @@ export interface IStorage {
   getWeddingRsvps(weddingId: number): Promise<Rsvp[]>;
   createRsvp(rsvp: InsertRsvp): Promise<Rsvp>;
 
-  // Invitation Tokens
-  createInvitationToken(token: InsertInvitationToken): Promise<InvitationToken>;
-  getInvitationToken(token: string): Promise<InvitationToken | undefined>;
-  markTokenAsUsed(token: string): Promise<void>;
-  cleanupExpiredTokens(): Promise<void>;
 
-  // Invitation Templates
-  getInvitationTemplates(): Promise<InvitationTemplate[]>;
-  createInvitationTemplate(template: InsertInvitationTemplate): Promise<InvitationTemplate>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -79,9 +56,9 @@ export class DatabaseStorage implements IStorage {
     if (filters.search) {
       conditions.push(
         or(
-          ilike(vendors.name, `%${filters.search}%`),
-          ilike(vendors.description, `%${filters.search}%`),
-          ilike(vendors.services, `%${filters.search}%`)
+          like(vendors.name, `%${filters.search}%`),
+          like(vendors.description, `%${filters.search}%`),
+          like(vendors.services, `%${filters.search}%`)
         )
       );
     }
@@ -107,15 +84,7 @@ export class DatabaseStorage implements IStorage {
     return result[0];
   }
 
-  // Reviews
-  async getVendorReviews(vendorId: number): Promise<Review[]> {
-    return await db.select().from(reviews).where(eq(reviews.vendorId, vendorId)).orderBy(desc(reviews.createdAt));
-  }
-
-  async createReview(review: InsertReview): Promise<Review> {
-    const result = await db.insert(reviews).values(review).returning();
-    return result[0];
-  }
+  // Reviews - Not implemented in SQLite schema yet
 
   // Categories
   async getCategories(): Promise<Category[]> {
@@ -153,17 +122,8 @@ export class DatabaseStorage implements IStorage {
     return result[0];
   }
 
-  // Business Submissions
-  async createBusinessSubmission(submission: InsertBusinessSubmission): Promise<BusinessSubmission> {
-    const result = await db.insert(businessSubmissions).values(submission).returning();
-    return result[0];
-  }
-
-  // Contacts
-  async createContact(contact: InsertContact): Promise<Contact> {
-    const result = await db.insert(contacts).values(contact).returning();
-    return result[0];
-  }
+  // Business Submissions - Not implemented in SQLite schema yet
+  // Contacts - Not implemented in SQLite schema yet
 
   // Weddings
   async getWeddings(): Promise<Wedding[]> {
@@ -193,34 +153,7 @@ export class DatabaseStorage implements IStorage {
     return result[0];
   }
 
-  // Invitation Tokens
-  async createInvitationToken(token: InsertInvitationToken): Promise<InvitationToken> {
-    const result = await db.insert(invitationTokens).values(token).returning();
-    return result[0];
-  }
 
-  async getInvitationToken(token: string): Promise<InvitationToken | undefined> {
-    const result = await db.select().from(invitationTokens).where(eq(invitationTokens.token, token));
-    return result[0];
-  }
-
-  async markTokenAsUsed(token: string): Promise<void> {
-    await db.update(invitationTokens).set({ used: true }).where(eq(invitationTokens.token, token));
-  }
-
-  async cleanupExpiredTokens(): Promise<void> {
-    await db.delete(invitationTokens).where(sql`${invitationTokens.expiresAt} < NOW()`);
-  }
-
-  // Invitation Templates
-  async getInvitationTemplates(): Promise<InvitationTemplate[]> {
-    return await db.select().from(invitationTemplates).where(eq(invitationTemplates.isActive, true));
-  }
-
-  async createInvitationTemplate(template: InsertInvitationTemplate): Promise<InvitationTemplate> {
-    const result = await db.insert(invitationTemplates).values(template).returning();
-    return result[0];
-  }
 }
 
 export const storage: IStorage = new DatabaseStorage();

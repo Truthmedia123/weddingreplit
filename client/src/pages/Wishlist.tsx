@@ -131,6 +131,8 @@ export default function Wishlist() {
                         src={item.vendor.profileImage || "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=300"}
                         alt={item.vendor.name}
                         className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                        decoding="async"
                       />
                       
                       {/* Actions overlay */}

@@ -66,24 +66,19 @@ export default function Layout({ children }: LayoutProps) {
                 ))}
               </div>
               
-              {/* Search Bar */}
-              <form onSubmit={handleSearch} className="relative">
-                <div className="relative">
-                  <Input
-                    type="text"
-                    placeholder="Search vendors..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-64 pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-full focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white"
-                  />
-                  <button
-                    type="submit"
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-500 transition-colors"
-                  >
-                    <i className="fas fa-search text-sm"></i>
-                  </button>
-                </div>
-              </form>
+              {/* Search Icon Only */}
+              <button
+                onClick={() => {
+                  const searchTerm = prompt("Search vendors:");
+                  if (searchTerm?.trim()) {
+                    window.location.href = `/vendors/all?search=${encodeURIComponent(searchTerm.trim())}`;
+                  }
+                }}
+                className="w-12 h-12 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 hover:text-red-500 transition-colors touch-manipulation"
+                title="Search vendors"
+              >
+                <i className="fas fa-search text-lg"></i>
+              </button>
               
               {/* Wishlist Button */}
               <Link href="/wishlist">

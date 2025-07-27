@@ -129,33 +129,7 @@ export const rsvps = pgTable("rsvps", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const invitationTokens = pgTable("invitation_tokens", {
-  id: serial("id").primaryKey(),
-  token: text("token").notNull().unique(),
-  templateId: text("template_id").notNull(),
-  coupleNames: text("couple_names").notNull(),
-  weddingDate: text("wedding_date").notNull(),
-  venue: text("venue").notNull(),
-  message: text("message"),
-  customization: jsonb("customization"), // colors, fonts, etc.
-  used: boolean("used").default(false),
-  pdfFilename: text("pdf_filename"),
-  createdAt: timestamp("created_at").defaultNow(),
-  expiresAt: timestamp("expires_at").notNull(),
-});
 
-export const invitationTemplates = pgTable("invitation_templates", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  slug: text("slug").notNull().unique(),
-  category: text("category").notNull(), // 'save-the-date' or 'wedding-invitation'
-  description: text("description").notNull(),
-  previewImage: text("preview_image"),
-  pdfFilename: text("pdf_filename").notNull(),
-  fieldMapping: jsonb("field_mapping").notNull(), // JSON mapping for PDF fields
-  isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
-});
 
 // Relations
 export const vendorsRelations = relations(vendors, ({ many }) => ({
@@ -225,15 +199,7 @@ export const insertRsvpSchema = createInsertSchema(rsvps).omit({
   createdAt: true,
 });
 
-export const insertInvitationTokenSchema = createInsertSchema(invitationTokens).omit({
-  id: true,
-  createdAt: true,
-});
 
-export const insertInvitationTemplateSchema = createInsertSchema(invitationTemplates).omit({
-  id: true,
-  createdAt: true,
-});
 
 // Types
 export type Vendor = typeof vendors.$inferSelect;
@@ -252,7 +218,3 @@ export type Wedding = typeof weddings.$inferSelect;
 export type InsertWedding = z.infer<typeof insertWeddingSchema>;
 export type Rsvp = typeof rsvps.$inferSelect;
 export type InsertRsvp = z.infer<typeof insertRsvpSchema>;
-export type InvitationToken = typeof invitationTokens.$inferSelect;
-export type InsertInvitationToken = z.infer<typeof insertInvitationTokenSchema>;
-export type InvitationTemplate = typeof invitationTemplates.$inferSelect;
-export type InsertInvitationTemplate = z.infer<typeof insertInvitationTemplateSchema>;

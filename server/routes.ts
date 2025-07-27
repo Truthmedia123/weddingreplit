@@ -1,9 +1,9 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertReviewSchema, insertBusinessSubmissionSchema, insertContactSchema, insertWeddingSchema, insertRsvpSchema, insertInvitationTokenSchema } from "@shared/schema";
+import { insertReviewSchema, insertBusinessSubmissionSchema, insertContactSchema, insertWeddingSchema, insertRsvpSchema } from "@shared/schema";
 import { z } from "zod";
-import { generateInvitationPDF, downloadInvitation, ensureTempDir } from "./invitationService";
+import { generateInvitation, getInvitation, type InvitationData } from "./simpleInvitationGenerator";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Vendors
@@ -214,53 +214,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Wedding Invitation Generator Routes
-  app.get("/api/invitation/templates", async (req, res) => {
-    try {
-      const templates = await storage.getInvitationTemplates();
-      res.json(templates);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch templates" });
-    }
-  });
-
+  // Wedding Invitation Generator
   app.post("/api/invitation/generate", async (req, res) => {
     try {
       const invitationSchema = z.object({
-        templateId: z.string(),
-        brideName: z.string().min(1),
+        bibleVerse: z.string().min(1),
+        bibleReference: z.string().min(1),
         groomName: z.string().min(1),
-        weddingDate: z.string().min(1),
-        venue: z.string().min(1),
-        time: z.string().optional(),
-        familyMessage: z.string().optional(),
-        coupleMessage: z.string().optional(),
+        groomFatherName: z.string().min(1),
+        groomMotherName: z.string().min(1),
+        brideName: z.string().min(1),
+        brideFatherName: z.string().min(1),
+        brideMotherName: z.string().min(1),
+        ceremonyVenue: z.string().min(1),
+        ceremonyDay: z.string().min(1),
+        ceremonyDate: z.string().min(1),
+        ceremonyTime: z.string().min(1),
+        receptionVenue: z.string().min(1),
+        receptionTime: z.string().min(1),
+        address1: z.string().min(1),
+        location1: z.string().min(1),
+        contact1: z.string().min(1),
+        address2: z.string().min(1),
+        location2: z.string().min(1),
+        contact2: z.string().min(1),
       });
 
       const validatedData = invitationSchema.parse(req.body);
-
-      // Generate invitation PDF with self-destructing download
-      const result = await generateInvitationPDF(validatedData.templateId, {
-        brideName: validatedData.brideName,
-        groomName: validatedData.groomName,
-        weddingDate: validatedData.weddingDate,
-        venue: validatedData.venue,
-        time: validatedData.time,
-        familyMessage: validatedData.familyMessage,
-        coupleMessage: validatedData.coupleMessage,
-      });
+      const result = await generateInvitation(validatedData);
 
       res.json({
-        downloadToken: result.downloadToken,
-        expiresIn: result.expiresIn,
-        downloadUrl: `/api/invitation/download/${result.downloadToken}`,
+        downloadToken: result.token,
+        filename: result.filename,
+        downloadUrl: `/api/invitation/download/${result.token}`,
+        expiresAt: result.expiresAt,
       });
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid request data", errors: error.errors });
+        return res.status(400).json({ message: "Invalid invitation data", errors: error.errors });
       }
       console.error("Error generating invitation:", error);
-      console.error("Error stack:", (error as Error).stack);
       res.status(500).json({ message: "Failed to generate invitation", error: (error as Error).message });
     }
   });
@@ -268,43 +261,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/invitation/download/:token", async (req, res) => {
     try {
       const { token } = req.params;
-      
-      const result = await downloadInvitation(token);
-      
-      if (!result.success) {
-        return res.status(410).json({ message: result.error });
+      const result = getInvitation(token);
+
+      if (!result) {
+        return res.status(410).json({ message: "Invitation not found or expired" });
       }
 
-      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Type', 'image/png');
       res.setHeader('Content-Disposition', `attachment; filename="${result.filename}"`);
       res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
       res.setHeader('Pragma', 'no-cache');
       res.setHeader('Expires', '0');
-      
-      res.send(result.data);
+
+      res.send(result.buffer);
     } catch (error) {
       console.error("Download error:", error);
       res.status(500).json({ message: "Failed to download invitation" });
     }
-  });
-
-  // Simple placeholder image service for templates
-  app.get('/api/placeholder/:width/:height', (req, res) => {
-    const { width, height } = req.params;
-    const text = req.query.text || 'Template';
-    
-    // Create a simple SVG placeholder
-    const svg = `
-      <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
-        <rect width="100%" height="100%" fill="#f3f4f6"/>
-        <rect x="10" y="10" width="${parseInt(width) - 20}" height="${parseInt(height) - 20}" fill="none" stroke="#d1d5db" stroke-width="2" stroke-dasharray="5,5"/>
-        <text x="50%" y="50%" font-family="Arial, sans-serif" font-size="14" fill="#6b7280" text-anchor="middle" dominant-baseline="central">${text}</text>
-      </svg>
-    `;
-    
-    res.setHeader('Content-Type', 'image/svg+xml');
-    res.setHeader('Cache-Control', 'public, max-age=3600');
-    res.send(svg);
   });
 
   const httpServer = createServer(app);

@@ -129,7 +129,9 @@ export default function VendorProfile() {
         <img 
           src={vendor.coverImage || vendor.profileImage || "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&h=800"} 
           alt={vendor.name}
-          className="w-full h-full object-cover" 
+          className="w-full h-full object-cover"
+          loading="lazy"
+          decoding="async" 
         />
         <div className="absolute inset-0 bg-black/50"></div>
         <div className="absolute bottom-8 left-8 text-white">
@@ -181,7 +183,9 @@ export default function VendorProfile() {
                           <img 
                             src={image} 
                             alt={`${vendor.name} gallery ${index + 1}`}
-                            className="w-full h-64 object-cover rounded-lg" 
+                            className="w-full h-64 object-cover rounded-lg"
+                            loading="lazy"
+                            decoding="async" 
                           />
                         </CarouselItem>
                       ))}

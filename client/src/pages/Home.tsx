@@ -27,6 +27,8 @@ export default function Home() {
             src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" 
             alt="Beautiful Goan beach wedding ceremony" 
             className="w-full h-full object-cover scale-110" 
+            loading="eager"
+            decoding="async"
             onError={(e) => {
               e.currentTarget.src = "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80";
             }}
@@ -189,7 +191,9 @@ export default function Home() {
                   <img 
                     src={post.featuredImage || "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400"} 
                     alt={post.title}
-                    className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500" 
+                    className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
+                    loading="lazy"
+                    decoding="async" 
                   />
                   <CardContent className="p-6">
                     <h3 className="text-xl font-semibold text-slate-800 mb-3 group-hover:text-red-500 transition-colors">

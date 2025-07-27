@@ -1,460 +1,419 @@
 import React, { useState } from 'react';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { Download, FileText, Calendar, MapPin, Clock, Users, Loader2 } from 'lucide-react';
-import { apiRequest } from '@/lib/queryClient';
+import { Download, Heart, Sparkles } from 'lucide-react';
+import { useMutation } from '@tanstack/react-query';
 
-const invitationSchema = z.object({
-  templateId: z.string().min(1, 'Please select a template'),
-  brideName: z.string().min(1, 'Bride name is required'),
-  groomName: z.string().min(1, 'Groom name is required'),
-  weddingDate: z.string().min(1, 'Wedding date is required'),
-  venue: z.string().min(1, 'Venue is required'),
-  time: z.string().optional(),
-  familyMessage: z.string().optional(),
-  coupleMessage: z.string().optional(),
-});
+interface InvitationFormData {
+  bibleVerse: string;
+  bibleReference: string;
+  groomName: string;
+  groomFatherName: string;
+  groomMotherName: string;
+  brideName: string;
+  brideFatherName: string;
+  brideMotherName: string;
+  ceremonyVenue: string;
+  ceremonyDay: string;
+  ceremonyDate: string;
+  ceremonyTime: string;
+  receptionVenue: string;
+  receptionTime: string;
+  address1: string;
+  location1: string;
+  contact1: string;
+  address2: string;
+  location2: string;
+  contact2: string;
+}
 
-type InvitationFormData = z.infer<typeof invitationSchema>;
-
-interface InvitationTemplate {
-  id: number;
-  name: string;
-  slug: string;
-  category: string;
-  description: string;
-  previewImage?: string;
+interface GenerationResult {
+  downloadToken: string;
+  filename: string;
+  downloadUrl: string;
+  expiresAt: string;
 }
 
 export default function InvitationGenerator() {
-  const [selectedTemplate, setSelectedTemplate] = useState<string>('');
-  const [step, setStep] = useState(1);
-  const [downloadLink, setDownloadLink] = useState<string | null>(null);
-  const [expiryTime, setExpiryTime] = useState<number | null>(null);
-
-  // Fetch invitation templates
-  const { data: templates, isLoading: templatesLoading } = useQuery<InvitationTemplate[]>({
-    queryKey: ['/api/invitation/templates'],
+  const [formData, setFormData] = useState<InvitationFormData>({
+    bibleVerse: "I have found the one whom my soul loves",
+    bibleReference: "Song of Solomon 3:4",
+    groomName: "",
+    groomFatherName: "",
+    groomMotherName: "",
+    brideName: "",
+    brideFatherName: "",
+    brideMotherName: "",
+    ceremonyVenue: "",
+    ceremonyDay: "",
+    ceremonyDate: "",
+    ceremonyTime: "",
+    receptionVenue: "",
+    receptionTime: "",
+    address1: "",
+    location1: "",
+    contact1: "",
+    address2: "",
+    location2: "",
+    contact2: "",
   });
 
-  const form = useForm<InvitationFormData>({
-    resolver: zodResolver(invitationSchema),
-    defaultValues: {
-      templateId: '',
-      brideName: '',
-      groomName: '',
-      weddingDate: '',
-      venue: '',
-      time: '',
-      familyMessage: '',
-      coupleMessage: '',
-    },
-  });
+  const [generatedInvitation, setGeneratedInvitation] = useState<GenerationResult | null>(null);
 
-  // Generate invitation mutation
   const generateMutation = useMutation({
-    mutationFn: async (data: InvitationFormData) => {
-      const response = await apiRequest('/api/invitation/generate', 'POST', data);
-      return response as unknown as { downloadUrl: string; expiresIn: number; downloadToken: string };
+    mutationFn: async (data: InvitationFormData): Promise<GenerationResult> => {
+      const response = await fetch('/api/invitation/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to generate invitation');
+      }
+      
+      return response.json();
     },
-    onSuccess: (data) => {
-      setDownloadLink(data.downloadUrl);
-      setExpiryTime(Date.now() + data.expiresIn);
-      setStep(3);
+    onSuccess: (result) => {
+      setGeneratedInvitation(result);
     },
   });
 
-  const onSubmit = (data: InvitationFormData) => {
-    generateMutation.mutate(data);
+  const handleInputChange = (field: keyof InvitationFormData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const selectedTemplateData = templates?.find(t => t.slug === selectedTemplate);
-
-  const categorizedTemplates = templates ? {
-    'save-the-date': templates.filter(t => t.category === 'save-the-date'),
-    'wedding-invitation': templates.filter(t => t.category === 'wedding-invitation')
-  } : { 'save-the-date': [], 'wedding-invitation': [] };
-
-  const formatTimeRemaining = () => {
-    if (!expiryTime) return '';
-    const remaining = expiryTime - Date.now();
-    const minutes = Math.floor(remaining / 60000);
-    const seconds = Math.floor((remaining % 60000) / 1000);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  const handleGenerate = () => {
+    generateMutation.mutate(formData);
   };
 
-  if (templatesLoading) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-center min-h-[400px]">
-          <Loader2 className="h-8 w-8 animate-spin" />
-        </div>
-      </div>
-    );
-  }
+  const handleDownload = () => {
+    if (generatedInvitation) {
+      window.open(generatedInvitation.downloadUrl, '_blank');
+      setGeneratedInvitation(null); // Clear after download since it's one-time use
+    }
+  };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-pink-50 py-8">
+      <div className="container mx-auto px-4 max-w-4xl">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Wedding Invitation Generator
-          </h1>
-          <p className="text-gray-600">
-            Create beautiful, personalized wedding invitations and save-the-date cards
-          </p>
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <Heart className="h-8 w-8 text-pink-500" />
+            <h1 className="text-4xl font-bold text-gray-800">Wedding Invitation Generator</h1>
+            <Sparkles className="h-8 w-8 text-blue-500" />
+          </div>
+          <p className="text-gray-600 text-lg">Create beautiful Christian wedding invitations with blue floral design</p>
         </div>
 
-        {/* Step Progress */}
-        <div className="flex items-center justify-center mb-8">
-          <div className="flex items-center space-x-4">
-            <div className={`flex items-center space-x-2 ${step >= 1 ? 'text-blue-600' : 'text-gray-400'}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 1 ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}>
-                1
-              </div>
-              <span>Choose Template</span>
-            </div>
-            <div className="w-8 h-0.5 bg-gray-300"></div>
-            <div className={`flex items-center space-x-2 ${step >= 2 ? 'text-blue-600' : 'text-gray-400'}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 2 ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}>
-                2
-              </div>
-              <span>Add Details</span>
-            </div>
-            <div className="w-8 h-0.5 bg-gray-300"></div>
-            <div className={`flex items-center space-x-2 ${step >= 3 ? 'text-blue-600' : 'text-gray-400'}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 3 ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}>
-                3
-              </div>
-              <span>Download</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Step 1: Template Selection */}
-        {step === 1 && (
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5" />
-                  Choose Your Template
-                </CardTitle>
-                <CardDescription>
-                  Select a beautiful template for your wedding invitation or save-the-date
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {/* Save the Date Templates */}
-                <div className="mb-6">
-                  <h3 className="text-lg font-semibold mb-3">Save the Date</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {categorizedTemplates['save-the-date'].map((template) => (
-                      <Card 
-                        key={template.id}
-                        className={`cursor-pointer transition-all ${selectedTemplate === template.slug ? 'ring-2 ring-blue-500' : 'hover:shadow-md'}`}
-                        onClick={() => {
-                          setSelectedTemplate(template.slug);
-                          form.setValue('templateId', template.slug);
-                        }}
-                      >
-                        <CardContent className="p-4">
-                          <div className="aspect-[3/4] bg-gradient-to-br from-blue-50 to-pink-50 border-2 border-dashed border-blue-200 rounded-lg mb-3 flex items-center justify-center relative overflow-hidden">
-                            {template.previewImage ? (
-                              <img 
-                                src={template.previewImage} 
-                                alt={template.name}
-                                className="w-full h-full object-cover rounded-lg"
-                              />
-                            ) : (
-                              <div className="text-center">
-                                <FileText className="h-8 w-8 text-blue-400 mx-auto mb-2" />
-                                <div className="text-xs text-blue-600 font-medium">{template.name}</div>
-                              </div>
-                            )}
-                          </div>
-                          <h4 className="font-medium text-sm">{template.name}</h4>
-                          <p className="text-xs text-gray-600 mt-1">{template.description}</p>
-                          <Badge variant="secondary" className="mt-2 text-xs">
-                            Save the Date
-                          </Badge>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Wedding Invitation Templates */}
-                <div>
-                  <h3 className="text-lg font-semibold mb-3">Wedding Invitations</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {categorizedTemplates['wedding-invitation'].map((template) => (
-                      <Card 
-                        key={template.id}
-                        className={`cursor-pointer transition-all ${selectedTemplate === template.slug ? 'ring-2 ring-blue-500' : 'hover:shadow-md'}`}
-                        onClick={() => {
-                          setSelectedTemplate(template.slug);
-                          form.setValue('templateId', template.slug);
-                        }}
-                      >
-                        <CardContent className="p-4">
-                          <div className="aspect-[3/4] bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-dashed border-purple-200 rounded-lg mb-3 flex items-center justify-center relative overflow-hidden">
-                            {template.previewImage ? (
-                              <img 
-                                src={template.previewImage} 
-                                alt={template.name}
-                                className="w-full h-full object-cover rounded-lg"
-                              />
-                            ) : (
-                              <div className="text-center">
-                                <FileText className="h-8 w-8 text-purple-400 mx-auto mb-2" />
-                                <div className="text-xs text-purple-600 font-medium">{template.name}</div>
-                              </div>
-                            )}
-                          </div>
-                          <h4 className="font-medium text-sm">{template.name}</h4>
-                          <p className="text-xs text-gray-600 mt-1">{template.description}</p>
-                          <Badge variant="default" className="mt-2 text-xs">
-                            Wedding Invitation
-                          </Badge>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex justify-end mt-6">
-                  <Button 
-                    onClick={() => setStep(2)} 
-                    disabled={!selectedTemplate}
-                  >
-                    Continue to Details
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {/* Step 2: Form Details */}
-        {step === 2 && (
-          <Card>
+        {generatedInvitation ? (
+          <Card className="mb-8 border-green-200 bg-green-50">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Users className="h-5 w-5" />
-                Wedding Details
-              </CardTitle>
-              <CardDescription>
-                Enter your wedding information to personalize your {selectedTemplateData?.name?.toLowerCase()}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="brideName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Bride's Name</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Enter bride's name" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="groomName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Groom's Name</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Enter groom's name" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="weddingDate"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center gap-2">
-                            <Calendar className="h-4 w-4" />
-                            Wedding Date
-                          </FormLabel>
-                          <FormControl>
-                            <Input type="date" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="time"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center gap-2">
-                            <Clock className="h-4 w-4" />
-                            Ceremony Time (Optional)
-                          </FormLabel>
-                          <FormControl>
-                            <Input type="time" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <FormField
-                    control={form.control}
-                    name="venue"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="flex items-center gap-2">
-                          <MapPin className="h-4 w-4" />
-                          Venue
-                        </FormLabel>
-                        <FormControl>
-                          <Input placeholder="Enter wedding venue" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="familyMessage"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Family Message (Optional)</FormLabel>
-                        <FormControl>
-                          <Textarea 
-                            placeholder="Add a special message from families (optional)" 
-                            {...field} 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="coupleMessage"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Personal Message (Optional)</FormLabel>
-                        <FormControl>
-                          <Textarea 
-                            placeholder="Add a personal message from the couple (optional)" 
-                            {...field} 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="flex justify-between">
-                    <Button type="button" variant="outline" onClick={() => setStep(1)}>
-                      Back to Templates
-                    </Button>
-                    <Button type="submit" disabled={generateMutation.isPending}>
-                      {generateMutation.isPending ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Generating...
-                        </>
-                      ) : (
-                        'Generate Invitation'
-                      )}
-                    </Button>
-                  </div>
-                </form>
-              </Form>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Step 3: Download */}
-        {step === 3 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="text-green-800 flex items-center gap-2">
                 <Download className="h-5 w-5" />
                 Your Invitation is Ready!
               </CardTitle>
-              <CardDescription>
-                Download your personalized wedding invitation. This link will expire in 5 minutes and can only be used once.
-              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <Alert>
-                <AlertDescription>
-                  🔒 <strong>Security Notice:</strong> Your download link is secure and will self-destruct after one use or 5 minutes for your privacy.
-                </AlertDescription>
-              </Alert>
-
-              <div className="text-center">
-                {downloadLink && (
-                  <div className="space-y-4">
-                    <div className="text-sm text-gray-600">
-                      Time remaining: <span className="font-mono font-semibold">{formatTimeRemaining()}</span>
-                    </div>
-                    <Button asChild size="lg" className="w-full md:w-auto">
-                      <a href={downloadLink} download>
-                        <Download className="mr-2 h-4 w-4" />
-                        Download Invitation PDF
-                      </a>
-                    </Button>
-                  </div>
-                )}
-              </div>
-
-              <div className="flex justify-center">
+            <CardContent>
+              <p className="text-green-700 mb-4">
+                Your beautiful wedding invitation has been generated successfully. 
+                Click below to download your high-resolution image (perfect for WhatsApp sharing).
+              </p>
+              <div className="flex gap-4">
+                <Button onClick={handleDownload} className="bg-green-600 hover:bg-green-700">
+                  <Download className="h-4 w-4 mr-2" />
+                  Download Invitation
+                </Button>
                 <Button 
                   variant="outline" 
-                  onClick={() => {
-                    setStep(1);
-                    setSelectedTemplate('');
-                    setDownloadLink(null);
-                    setExpiryTime(null);
-                    form.reset();
-                  }}
+                  onClick={() => setGeneratedInvitation(null)}
+                  className="border-green-600 text-green-600 hover:bg-green-50"
                 >
-                  Create Another Invitation
+                  Create Another
                 </Button>
               </div>
+              <p className="text-sm text-green-600 mt-2">
+                Note: Download link expires in 24 hours and can only be used once for security.
+              </p>
             </CardContent>
           </Card>
-        )}
+        ) : (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-2xl text-center text-gray-800">Fill in Your Wedding Details</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Bible Verse Section */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-blue-50 rounded-lg">
+                <div>
+                  <Label htmlFor="bibleVerse" className="text-blue-800 font-semibold">Bible Verse</Label>
+                  <Textarea
+                    id="bibleVerse"
+                    value={formData.bibleVerse}
+                    onChange={(e) => handleInputChange('bibleVerse', e.target.value)}
+                    placeholder="Enter your chosen Bible verse"
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="bibleReference" className="text-blue-800 font-semibold">Bible Reference</Label>
+                  <Input
+                    id="bibleReference"
+                    value={formData.bibleReference}
+                    onChange={(e) => handleInputChange('bibleReference', e.target.value)}
+                    placeholder="e.g., Song of Solomon 3:4"
+                    className="mt-1"
+                  />
+                </div>
+              </div>
 
-        {generateMutation.isError && (
-          <Alert className="mt-4">
-            <AlertDescription>
-              Failed to generate invitation. Please try again.
-            </AlertDescription>
-          </Alert>
+              {/* Couple Names */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4 p-4 bg-pink-50 rounded-lg">
+                  <h3 className="font-semibold text-pink-800 text-lg">Groom Details</h3>
+                  <div>
+                    <Label htmlFor="groomName" className="text-pink-700">Groom's Name</Label>
+                    <Input
+                      id="groomName"
+                      value={formData.groomName}
+                      onChange={(e) => handleInputChange('groomName', e.target.value)}
+                      placeholder="Enter groom's name"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="groomFatherName" className="text-pink-700">Father's Name</Label>
+                    <Input
+                      id="groomFatherName"
+                      value={formData.groomFatherName}
+                      onChange={(e) => handleInputChange('groomFatherName', e.target.value)}
+                      placeholder="Enter father's name"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="groomMotherName" className="text-pink-700">Mother's Name</Label>
+                    <Input
+                      id="groomMotherName"
+                      value={formData.groomMotherName}
+                      onChange={(e) => handleInputChange('groomMotherName', e.target.value)}
+                      placeholder="Enter mother's name"
+                      className="mt-1"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-4 p-4 bg-pink-50 rounded-lg">
+                  <h3 className="font-semibold text-pink-800 text-lg">Bride Details</h3>
+                  <div>
+                    <Label htmlFor="brideName" className="text-pink-700">Bride's Name</Label>
+                    <Input
+                      id="brideName"
+                      value={formData.brideName}
+                      onChange={(e) => handleInputChange('brideName', e.target.value)}
+                      placeholder="Enter bride's name"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="brideFatherName" className="text-pink-700">Father's Name</Label>
+                    <Input
+                      id="brideFatherName"
+                      value={formData.brideFatherName}
+                      onChange={(e) => handleInputChange('brideFatherName', e.target.value)}
+                      placeholder="Enter father's name"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="brideMotherName" className="text-pink-700">Mother's Name</Label>
+                    <Input
+                      id="brideMotherName"
+                      value={formData.brideMotherName}
+                      onChange={(e) => handleInputChange('brideMotherName', e.target.value)}
+                      placeholder="Enter mother's name"
+                      className="mt-1"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Ceremony Details */}
+              <div className="space-y-4 p-4 bg-green-50 rounded-lg">
+                <h3 className="font-semibold text-green-800 text-lg">Ceremony Details</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="ceremonyVenue" className="text-green-700">Ceremony Venue</Label>
+                    <Input
+                      id="ceremonyVenue"
+                      value={formData.ceremonyVenue}
+                      onChange={(e) => handleInputChange('ceremonyVenue', e.target.value)}
+                      placeholder="e.g., Our Lady of Merces Church, Merces"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="ceremonyDay" className="text-green-700">Day</Label>
+                    <Input
+                      id="ceremonyDay"
+                      value={formData.ceremonyDay}
+                      onChange={(e) => handleInputChange('ceremonyDay', e.target.value)}
+                      placeholder="e.g., Sunday"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="ceremonyDate" className="text-green-700">Date</Label>
+                    <Input
+                      id="ceremonyDate"
+                      value={formData.ceremonyDate}
+                      onChange={(e) => handleInputChange('ceremonyDate', e.target.value)}
+                      placeholder="e.g., 24th April 2025"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="ceremonyTime" className="text-green-700">Time</Label>
+                    <Input
+                      id="ceremonyTime"
+                      value={formData.ceremonyTime}
+                      onChange={(e) => handleInputChange('ceremonyTime', e.target.value)}
+                      placeholder="e.g., 3:30 p.m."
+                      className="mt-1"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Reception Details */}
+              <div className="space-y-4 p-4 bg-purple-50 rounded-lg">
+                <h3 className="font-semibold text-purple-800 text-lg">Reception Details</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="receptionVenue" className="text-purple-700">Reception Venue</Label>
+                    <Input
+                      id="receptionVenue"
+                      value={formData.receptionVenue}
+                      onChange={(e) => handleInputChange('receptionVenue', e.target.value)}
+                      placeholder="e.g., Old Heritage, Pillar"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="receptionTime" className="text-purple-700">Reception Time</Label>
+                    <Input
+                      id="receptionTime"
+                      value={formData.receptionTime}
+                      onChange={(e) => handleInputChange('receptionTime', e.target.value)}
+                      placeholder="e.g., 7:00 p.m."
+                      className="mt-1"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Contact Information */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4 p-4 bg-yellow-50 rounded-lg">
+                  <h3 className="font-semibold text-yellow-800 text-lg">Contact 1</h3>
+                  <div>
+                    <Label htmlFor="address1" className="text-yellow-700">Address</Label>
+                    <Input
+                      id="address1"
+                      value={formData.address1}
+                      onChange={(e) => handleInputChange('address1', e.target.value)}
+                      placeholder="Enter address"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="location1" className="text-yellow-700">Location</Label>
+                    <Input
+                      id="location1"
+                      value={formData.location1}
+                      onChange={(e) => handleInputChange('location1', e.target.value)}
+                      placeholder="e.g., Merces - Vaddy Goa"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="contact1" className="text-yellow-700">Mobile Number</Label>
+                    <Input
+                      id="contact1"
+                      value={formData.contact1}
+                      onChange={(e) => handleInputChange('contact1', e.target.value)}
+                      placeholder="Enter mobile number"
+                      className="mt-1"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-4 p-4 bg-yellow-50 rounded-lg">
+                  <h3 className="font-semibold text-yellow-800 text-lg">Contact 2</h3>
+                  <div>
+                    <Label htmlFor="address2" className="text-yellow-700">Address</Label>
+                    <Input
+                      id="address2"
+                      value={formData.address2}
+                      onChange={(e) => handleInputChange('address2', e.target.value)}
+                      placeholder="Enter address"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="location2" className="text-yellow-700">Location</Label>
+                    <Input
+                      id="location2"
+                      value={formData.location2}
+                      onChange={(e) => handleInputChange('location2', e.target.value)}
+                      placeholder="e.g., St. Joseph Vaz Ward, Sancoale Goa"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="contact2" className="text-yellow-700">Mobile Number</Label>
+                    <Input
+                      id="contact2"
+                      value={formData.contact2}
+                      onChange={(e) => handleInputChange('contact2', e.target.value)}
+                      placeholder="Enter mobile number"
+                      className="mt-1"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-center pt-6">
+                <Button
+                  onClick={handleGenerate}
+                  disabled={generateMutation.isPending}
+                  className="bg-gradient-to-r from-blue-600 to-pink-600 hover:from-blue-700 hover:to-pink-700 text-white px-8 py-3 text-lg"
+                >
+                  {generateMutation.isPending ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="h-5 w-5 mr-2" />
+                      Generate Beautiful Invitation
+                    </>
+                  )}
+                </Button>
+              </div>
+
+              {generateMutation.error && (
+                <div className="text-center text-red-600 bg-red-50 p-4 rounded-lg">
+                  Error: {generateMutation.error.message}
+                </div>
+              )}
+            </CardContent>
+          </Card>
         )}
       </div>
     </div>
