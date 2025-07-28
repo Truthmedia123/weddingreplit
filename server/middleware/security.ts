@@ -30,7 +30,7 @@ export const securityHeaders = helmet({
 // Rate limiting configurations
 export const generalRateLimit = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
+  max: process.env.NODE_ENV === 'production' ? 100 : 1000, // More lenient in development
   message: {
     error: "Too many requests from this IP, please try again later.",
   },
@@ -40,7 +40,7 @@ export const generalRateLimit = rateLimit({
 
 export const apiRateLimit = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 50, // Limit each IP to 50 API requests per windowMs
+  max: process.env.NODE_ENV === 'production' ? 50 : 500, // More lenient in development
   message: {
     error: "Too many API requests from this IP, please try again later.",
   },

@@ -26,6 +26,9 @@ import path from "path";
 
 const app = express();
 
+// Trust proxy for Replit environment
+app.set('trust proxy', true);
+
 // Security middleware
 app.use(securityHeaders);
 app.use(cors(corsOptions));
