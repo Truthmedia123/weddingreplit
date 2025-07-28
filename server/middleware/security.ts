@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from "express";
 
 // Security headers middleware
 export const securityHeaders = helmet({
-  contentSecurityPolicy: {
+  contentSecurityPolicy: process.env.NODE_ENV === 'production' ? {
     directives: {
       defaultSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com"],
@@ -18,7 +18,7 @@ export const securityHeaders = helmet({
       formAction: ["'self'"],
       upgradeInsecureRequests: [],
     },
-  },
+  } : false, // Disable CSP in development
   crossOriginEmbedderPolicy: false, // Allow embedding for hCaptcha
   hsts: {
     maxAge: 31536000, // 1 year
@@ -121,7 +121,7 @@ export const sanitizeInput = (req: Request, res: Response, next: NextFunction) =
 // CORS configuration
 export const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
-    ? [process.env.FRONTEND_URL, process.env.DOMAIN_URL].filter(Boolean)
+    ? [process.env.FRONTEND_URL, process.env.DOMAIN_URL].filter(Boolean) as string[]
     : true,
   credentials: true,
   optionsSuccessStatus: 200,
