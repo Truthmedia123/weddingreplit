@@ -52,17 +52,58 @@ export async function generateInvitation(data: InvitationData): Promise<Generate
     const ctx = canvas.getContext('2d');
 
     // Load the blank template
+    let templateLoaded = false;
     try {
-      const templatePath = path.join(process.cwd(), 'attached_assets', 'Blank Template_1753690165955.png');
+      const templatePath = path.resolve(process.cwd(), 'attached_assets', 'Blank Template_1753690165955.png');
+      console.log('[INVITATION] Attempting to load template from:', templatePath);
+      
+      // Check if file exists first
+      const fs = await import('fs');
+      if (!fs.existsSync(templatePath)) {
+        throw new Error('Template file does not exist');
+      }
+      
       const template = await loadImage(templatePath);
+      console.log('[INVITATION] Template loaded successfully, dimensions:', template.width, 'x', template.height);
 
-      // Draw the blank template
-      ctx.drawImage(template, 0, 0, 800, 1200);
-      console.log('Successfully loaded floral template');
+      // Draw the blank template - scale to fit canvas while maintaining aspect ratio
+      const aspectRatio = template.width / template.height;
+      let drawWidth = 800;
+      let drawHeight = 1200;
+      
+      if (aspectRatio > 800/1200) {
+        drawHeight = 800 / aspectRatio;
+      } else {
+        drawWidth = 1200 * aspectRatio;
+      }
+      
+      const x = (800 - drawWidth) / 2;
+      const y = (1200 - drawHeight) / 2;
+      
+      ctx.drawImage(template, x, y, drawWidth, drawHeight);
+      templateLoaded = true;
+      console.log('[INVITATION] Successfully loaded and drew floral template');
     } catch (error) {
-      console.log('Template not found, creating floral-inspired background');
-      ctx.fillStyle = '#f8f8f8';
+      console.error('Template loading error:', error);
+      console.log('Creating fallback background with floral border design');
+      
+      // Create a soft cream background
+      ctx.fillStyle = '#fef9f3';
       ctx.fillRect(0, 0, 800, 1200);
+      
+      // Add a decorative border
+      ctx.strokeStyle = '#d97706';
+      ctx.lineWidth = 3;
+      ctx.setLineDash([]);
+      
+      // Draw geometric border similar to the template
+      ctx.beginPath();
+      ctx.moveTo(80, 80);
+      ctx.lineTo(720, 80);
+      ctx.lineTo(720, 1120);
+      ctx.lineTo(80, 1120);
+      ctx.closePath();
+      ctx.stroke();
     }
 
     // Set default text properties
