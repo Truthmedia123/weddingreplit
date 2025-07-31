@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Download, Heart, Sparkles } from 'lucide-react';
+import { Download, Heart, Sparkles, Upload, QrCode } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 
 interface InvitationFormData {
@@ -28,6 +28,7 @@ interface InvitationFormData {
   address2: string;
   location2: string;
   contact2: string;
+  qrCodeImage?: string;
 }
 
 interface GenerationResult {
@@ -62,6 +63,7 @@ export default function InvitationGenerator() {
   });
 
   const [generatedInvitation, setGeneratedInvitation] = useState<GenerationResult | null>(null);
+  const [qrCodePreview, setQrCodePreview] = useState<string | null>(null);
 
   const generateMutation = useMutation({
     mutationFn: async (data: InvitationFormData): Promise<GenerationResult> => {
@@ -85,6 +87,36 @@ export default function InvitationGenerator() {
 
   const handleInputChange = (field: keyof InvitationFormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleQrCodeUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please select an image file (PNG, JPG, etc.)');
+        return;
+      }
+      
+      // Validate file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('File size must be less than 5MB');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const base64 = e.target?.result as string;
+        setFormData(prev => ({ ...prev, qrCodeImage: base64 }));
+        setQrCodePreview(base64);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeQrCode = () => {
+    setFormData(prev => ({ ...prev, qrCodeImage: undefined }));
+    setQrCodePreview(null);
   };
 
   const handleGenerate = () => {
@@ -385,6 +417,61 @@ export default function InvitationGenerator() {
                     />
                   </div>
                 </div>
+              </div>
+
+              {/* QR Code Upload Section */}
+              <div className="space-y-4 p-4 bg-indigo-50 rounded-lg">
+                <h3 className="font-semibold text-indigo-800 text-lg flex items-center gap-2">
+                  <QrCode className="h-5 w-5" />
+                  RSVP QR Code (Optional)
+                </h3>
+                <p className="text-indigo-600 text-sm">
+                  Upload a QR code that guests can scan to RSVP online. The QR code will be positioned at the bottom center of your invitation.
+                </p>
+                
+                {!qrCodePreview ? (
+                  <div className="border-2 border-dashed border-indigo-300 rounded-lg p-6 text-center">
+                    <Upload className="h-8 w-8 text-indigo-400 mx-auto mb-2" />
+                    <p className="text-indigo-600 mb-2">Upload QR Code Image</p>
+                    <p className="text-sm text-indigo-500 mb-4">PNG, JPG up to 5MB</p>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleQrCodeUpload}
+                      className="hidden"
+                      id="qr-upload"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => document.getElementById('qr-upload')?.click()}
+                      className="border-indigo-300 text-indigo-600 hover:bg-indigo-50"
+                    >
+                      Choose File
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-4 p-4 bg-white rounded-lg border border-indigo-200">
+                    <img
+                      src={qrCodePreview}
+                      alt="QR Code Preview"
+                      className="w-16 h-16 object-contain border border-gray-200 rounded"
+                    />
+                    <div className="flex-1">
+                      <p className="text-indigo-800 font-medium">QR Code Ready!</p>
+                      <p className="text-indigo-600 text-sm">This will appear at the bottom of your invitation</p>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={removeQrCode}
+                      className="text-red-600 border-red-300 hover:bg-red-50"
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                )}
               </div>
 
               <div className="text-center pt-6">

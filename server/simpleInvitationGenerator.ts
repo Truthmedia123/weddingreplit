@@ -23,6 +23,7 @@ export interface InvitationData {
   address2: string;
   location2: string;
   contact2: string;
+  qrCodeImage?: string; // Optional base64 encoded QR code image
 }
 
 export interface GeneratedInvitation {
@@ -35,43 +36,168 @@ const invitationStore = new Map<string, { buffer: Buffer; filename: string; expi
 
 export async function generateInvitation(data: InvitationData): Promise<GeneratedInvitation> {
   try {
-    // Create canvas
-    const canvas = createCanvas(1080, 1920);
+    // Create canvas matching the template size
+    const canvas = createCanvas(800, 1200);
     const ctx = canvas.getContext('2d');
 
-    // Just create a simple white background for now to test
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, 1080, 1920);
+    // Load the beautiful floral template
+    let templateLoaded = false;
+    try {
+      const templatePath = path.resolve(process.cwd(), 'attached_assets', 'Blank Template_1753690165955.png');
+      console.log('[INVITATION] Loading template from:', templatePath);
+      
+      const template = await loadImage(templatePath);
+      console.log('[INVITATION] Template loaded, size:', template.width, 'x', template.height);
 
-    // Add a simple border
-    ctx.strokeStyle = '#d4af37';
-    ctx.lineWidth = 4;
-    ctx.strokeRect(100, 100, 880, 1720);
+      // Draw the template to fit canvas
+      ctx.drawImage(template, 0, 0, 800, 1200);
+      templateLoaded = true;
+      console.log('[INVITATION] Template drawn successfully');
+    } catch (error) {
+      console.error('[INVITATION] Template loading failed:', error);
+      // Fallback to cream background with decorative border
+      ctx.fillStyle = '#fef9f3';
+      ctx.fillRect(0, 0, 800, 1200);
+      
+      ctx.strokeStyle = '#d97706';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(80, 80);
+      ctx.lineTo(720, 80);
+      ctx.lineTo(720, 1120);
+      ctx.lineTo(80, 1120);
+      ctx.closePath();
+      ctx.stroke();
+    }
 
-    // Simple text without complex fonts
-    ctx.fillStyle = '#000000';
-    ctx.font = '30px Arial';
+    // Set text properties
     ctx.textAlign = 'center';
-    
-    // Just add the names for testing
-    ctx.fillText(`${data.groomName} & ${data.brideName}`, 540, 500);
-    ctx.fillText('Wedding Invitation', 540, 400);
+    ctx.textBaseline = 'middle';
 
-    // Generate token
+    // Bible verse at top (balanced position to clear floral area)
+    ctx.fillStyle = '#2c3e50';
+    ctx.font = 'italic 18px "Times New Roman", serif';
+    ctx.fillText(`"${data.bibleVerse}"`, 400, 320);
+    
+    // Bible reference 
+    ctx.font = 'italic 16px "Times New Roman", serif';
+    ctx.fillText(`- ${data.bibleReference}`, 400, 345);
+
+    // "We," section
+    ctx.font = 'italic 24px "Times New Roman", serif';
+    ctx.fillText('We,', 400, 390);
+
+    // Names in beautiful script style (matching demo)
+    ctx.font = 'italic 48px "Times New Roman", serif';
+    ctx.fillStyle = '#1e40af'; // Blue color
+    ctx.fillText(data.groomName, 280, 450);
+    
+    ctx.font = '32px "Times New Roman", serif';
+    ctx.fillStyle = '#2c3e50';
+    ctx.fillText('&', 400, 450);
+    
+    ctx.font = 'italic 48px "Times New Roman", serif';
+    ctx.fillStyle = '#1e40af';
+    ctx.fillText(data.brideName, 520, 450);
+
+    // Parent details
+    ctx.font = '16px "Times New Roman", serif';
+    ctx.fillStyle = '#4a5568';
+    ctx.fillText(`(s/o Mr. ${data.groomFatherName}`, 280, 485);
+    ctx.fillText(`& Mrs. ${data.groomMotherName})`, 280, 505);
+    
+    ctx.fillText(`(d/o Mr. ${data.brideFatherName}`, 520, 485);
+    ctx.fillText(`& Mrs. ${data.brideMotherName})`, 520, 505);
+
+    // Main invitation text
+    ctx.font = '18px "Times New Roman", serif';
+    ctx.fillStyle = '#2c3e50';
+    ctx.textAlign = 'center';
+    ctx.fillText('Together with our parents', 400, 550);
+    ctx.fillText('cordially invite you & your family', 400, 575);
+    ctx.fillText('to witness the most memorable event of our lives', 400, 600);
+    ctx.fillText('as we exchange our marriage vows to pledge our love to each other', 400, 625);
+
+    // Ceremony details
+    ctx.font = '20px "Times New Roman", serif';
+    ctx.fillStyle = '#1e40af';
+    ctx.fillText(`at ${data.ceremonyVenue}, on ${data.ceremonyDay},`, 400, 670);
+    
+    // Date and time in larger text
+    ctx.font = 'bold 22px "Times New Roman", serif';
+    ctx.fillText(`${data.ceremonyDate} at ${data.ceremonyTime}`, 400, 700);
+
+    // Reception details
+    ctx.font = '18px "Times New Roman", serif';
+    ctx.fillStyle = '#2c3e50';
+    ctx.fillText('And thereafter to join us for our celebration', 400, 740);
+    
+    ctx.font = '20px "Times New Roman", serif';
+    ctx.fillStyle = '#1e40af';
+    ctx.fillText(`at ${data.receptionVenue} at ${data.receptionTime} sharp`, 400, 770);
+
+    // QR Code (if provided)
+    if (data.qrCodeImage) {
+      try {
+        // Decode base64 QR code image
+        const qrImageData = data.qrCodeImage.replace(/^data:image\/[a-z]+;base64,/, '');
+        const qrBuffer = Buffer.from(qrImageData, 'base64');
+        const qrImage = await loadImage(qrBuffer);
+        
+        // Position QR code at bottom center
+        const qrSize = 80;
+        const qrX = 400 - qrSize / 2;
+        const qrY = 820;
+        
+        ctx.drawImage(qrImage, qrX, qrY, qrSize, qrSize);
+        
+        // Add RSVP text below QR code
+        ctx.textAlign = 'center';
+        ctx.font = '14px "Times New Roman", serif';
+        ctx.fillStyle = '#4a5568';
+        ctx.fillText('Scan to RSVP', 400, 915);
+      } catch (error) {
+        console.error('[INVITATION] QR Code loading error:', error);
+      }
+    }
+
+    // Contact information (adjusted for QR code space)
+    const contactY = data.qrCodeImage ? 950 : 920;
+    ctx.font = '16px "Times New Roman", serif';
+    ctx.fillStyle = '#4a5568';
+    ctx.textAlign = 'left';
+    ctx.fillText(data.address1, 100, contactY);
+    ctx.fillText(data.location1, 100, contactY + 20);
+    ctx.fillText(`Mob.: ${data.contact1}`, 100, contactY + 40);
+
+    ctx.textAlign = 'right';
+    ctx.fillText(data.address2, 700, contactY);
+    ctx.fillText(data.location2, 700, contactY + 20);
+    ctx.fillText(`Mob.: ${data.contact2}`, 700, contactY + 40);
+
+    // Final blessing
+    ctx.textAlign = 'center';
+    ctx.font = 'italic 20px "Times New Roman", serif';
+    ctx.fillStyle = '#1e40af';
+    const blessingY = data.qrCodeImage ? 1030 : 1000;
+    ctx.fillText('Your presence is our blessing', 400, blessingY);
+
+    // Generate token and filename
     const token = crypto.randomBytes(16).toString('hex');
-    const filename = `invitation-${token}.png`;
+    const filename = `invitation-${data.groomName.toLowerCase().replace(/\s+/g, '-')}-${data.brideName.toLowerCase().replace(/\s+/g, '-')}.png`;
     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
     // Convert to buffer
     const buffer = canvas.toBuffer('image/png');
 
-    // Store
+    // Store in memory
     invitationStore.set(token, { buffer, filename, expiresAt });
 
+    console.log(`[INVITATION] Generated invitation for ${data.groomName} & ${data.brideName}`);
     return { token, filename, expiresAt };
 
   } catch (error) {
-    console.error('Error:', error);
+    console.error('[INVITATION] Generation error:', error);
     throw error;
   }
 }

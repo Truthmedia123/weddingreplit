@@ -1,5 +1,5 @@
 import "dotenv/config";
-import express, { type Request, Response, NextFunction } from "express";
+import express from "express";
 import cors from "cors";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
@@ -26,8 +26,11 @@ import path from "path";
 
 const app = express();
 
-// Security middleware (temporarily simplified for debugging)
-// app.use(securityHeaders);
+// Trust proxy for Replit environment
+app.set('trust proxy', true);
+
+// Security middleware
+app.use(securityHeaders);
 app.use(cors(corsOptions));
 // app.use(generalRateLimit);
 
@@ -120,8 +123,8 @@ app.use((req, res, next) => {
   process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
   process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
-  const port = process.env.PORT || 5005;
-  server.listen(port, () => {
+  const port = process.env.PORT || 5001;
+  server.listen(port, "0.0.0.0", () => {
     log(`🚀 Server running on port ${port}`);
     log(`📊 Health check: http://localhost:${port}/health`);
     log(`🔍 Environment: ${process.env.NODE_ENV || 'development'}`);

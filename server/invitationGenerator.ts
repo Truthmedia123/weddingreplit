@@ -47,89 +47,149 @@ setInterval(() => {
 
 export async function generateInvitation(data: InvitationData): Promise<GeneratedInvitation> {
   try {
-    // Create high-resolution canvas (1080x1920px for WhatsApp stories)
-    const canvas = createCanvas(1080, 1920);
+    // Create canvas matching the template size (standard invitation size)
+    const canvas = createCanvas(800, 1200);
     const ctx = canvas.getContext('2d');
 
-    // Load your blank template
+    // Load the blank template
+    let templateLoaded = false;
     try {
-      const templatePath = path.join(process.cwd(), 'attached_assets', 'image_1753434868813.png');
+      const templatePath = path.resolve(process.cwd(), 'attached_assets', 'Blank Template_1753690165955.png');
+      console.log('[INVITATION] Attempting to load template from:', templatePath);
+      
+      // Check if file exists first
+      const fs = await import('fs');
+      if (!fs.existsSync(templatePath)) {
+        throw new Error('Template file does not exist');
+      }
+      
       const template = await loadImage(templatePath);
+      console.log('[INVITATION] Template loaded successfully, dimensions:', template.width, 'x', template.height);
 
-      // Draw your template exactly as it is
-      ctx.drawImage(template, 0, 0, 1080, 1920);
-      console.log('Successfully loaded your blank template');
+      // Draw the blank template - scale to fit canvas while maintaining aspect ratio
+      const aspectRatio = template.width / template.height;
+      let drawWidth = 800;
+      let drawHeight = 1200;
+      
+      if (aspectRatio > 800/1200) {
+        drawHeight = 800 / aspectRatio;
+      } else {
+        drawWidth = 1200 * aspectRatio;
+      }
+      
+      const x = (800 - drawWidth) / 2;
+      const y = (1200 - drawHeight) / 2;
+      
+      ctx.drawImage(template, x, y, drawWidth, drawHeight);
+      templateLoaded = true;
+      console.log('[INVITATION] Successfully loaded and drew floral template');
     } catch (error) {
-      console.log('Template not found, using white background');
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, 1080, 1920);
+      console.error('Template loading error:', error);
+      console.log('Creating fallback background with floral border design');
+      
+      // Create a soft cream background
+      ctx.fillStyle = '#fef9f3';
+      ctx.fillRect(0, 0, 800, 1200);
+      
+      // Add a decorative border
+      ctx.strokeStyle = '#d97706';
+      ctx.lineWidth = 3;
+      ctx.setLineDash([]);
+      
+      // Draw geometric border similar to the template
+      ctx.beginPath();
+      ctx.moveTo(80, 80);
+      ctx.lineTo(720, 80);
+      ctx.lineTo(720, 1120);
+      ctx.lineTo(80, 1120);
+      ctx.closePath();
+      ctx.stroke();
     }
 
-    // Set text properties
+    // Set default text properties
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
+
+    // Bible verse at top (italic, elegant style matching demo)
     ctx.fillStyle = '#2c3e50';
+    ctx.font = 'italic 18px "Times New Roman", serif';
+    ctx.fillText(`"${data.bibleVerse}"`, 400, 240);
+    
+    // Bible reference (smaller, matching demo style)  
+    ctx.font = 'italic 16px "Times New Roman", serif';
+    ctx.fillText(`- ${data.bibleReference}`, 400, 265);
 
-    // Bible verse at top
-    ctx.font = 'italic 24px serif';
-    ctx.fillText(`"${data.bibleVerse}"`, 540, 300);
-    ctx.font = '20px serif';
-    ctx.fillText(`- ${data.bibleReference}`, 540, 340);
+    // "We," section (matching demo positioning)
+    ctx.font = 'italic 24px "Times New Roman", serif';
+    ctx.fillText('We,', 400, 320);
 
-    // "We," section
-    ctx.font = 'italic 28px serif';
-    ctx.fillText('We,', 540, 420);
+    // Names in beautiful script style (matching demo)
+    ctx.font = 'italic 48px "Times New Roman", serif';
+    ctx.fillStyle = '#1e40af'; // Blue color matching demo
+    ctx.fillText(data.groomName, 280, 380);
+    
+    ctx.font = '32px "Times New Roman", serif';
+    ctx.fillStyle = '#2c3e50';
+    ctx.fillText('&', 400, 380);
+    
+    ctx.font = 'italic 48px "Times New Roman", serif';
+    ctx.fillStyle = '#1e40af';
+    ctx.fillText(data.brideName, 520, 380);
 
-    // Names
-    ctx.font = 'bold 40px serif';
-    ctx.fillStyle = '#1e3a8a';
-    ctx.fillText(`${data.groomName} & ${data.brideName}`, 540, 500);
-
-    // Parent details
-    ctx.font = '18px serif';
+    // Parent details (matching demo format)
+    ctx.font = '16px "Times New Roman", serif';
     ctx.fillStyle = '#4a5568';
-    ctx.fillText(`(s/o ${data.groomFatherName} & ${data.groomMotherName})`, 540, 540);
-    ctx.fillText(`(d/o ${data.brideFatherName} & ${data.brideMotherName})`, 540, 570);
+    ctx.fillText(`(s/o Mr. ${data.groomFatherName}`, 280, 415);
+    ctx.fillText(`& Mrs. ${data.groomMotherName})`, 280, 435);
+    
+    ctx.fillText(`(d/o Mr. ${data.brideFatherName}`, 520, 415);
+    ctx.fillText(`& Mrs. ${data.brideMotherName})`, 520, 435);
 
-    // Main invitation text
-    ctx.font = '22px serif';
+    // Main invitation text (matching demo)
+    ctx.font = '18px "Times New Roman", serif';
     ctx.fillStyle = '#2c3e50';
-    ctx.fillText('Together with our parents', 540, 650);
-    ctx.fillText('cordially invite you & your family', 540, 680);
-    ctx.fillText('to witness the most memorable event of our lives', 540, 710);
-    ctx.fillText('as we exchange our marriage vows to pledge our love to each other', 540, 740);
+    ctx.textAlign = 'center';
+    ctx.fillText('Together with our parents', 400, 490);
+    ctx.fillText('cordially invite you & your family', 400, 515);
+    ctx.fillText('to witness the most memorable event of our lives', 400, 540);
+    ctx.fillText('as we exchange our marriage vows to pledge our love to each other', 400, 565);
 
-    // Ceremony details
-    ctx.font = '24px serif';
-    ctx.fillStyle = '#1e3a8a';
-    ctx.fillText(`at ${data.ceremonyVenue}`, 540, 820);
-    ctx.fillText(`on ${data.ceremonyDay}, ${data.ceremonyDate} at ${data.ceremonyTime}`, 540, 860);
+    // Ceremony details (matching demo layout)
+    ctx.font = '20px "Times New Roman", serif';
+    ctx.fillStyle = '#1e40af';
+    ctx.fillText(`at ${data.ceremonyVenue}, on ${data.ceremonyDay},`, 400, 620);
+    
+    // Date and time in larger text
+    ctx.font = 'bold 22px "Times New Roman", serif';
+    ctx.fillText(`${data.ceremonyDate} at ${data.ceremonyTime}`, 400, 650);
 
     // Reception details
-    ctx.font = '22px serif';
+    ctx.font = '18px "Times New Roman", serif';
     ctx.fillStyle = '#2c3e50';
-    ctx.fillText('And thereafter to join us for our celebration', 540, 940);
-    ctx.fillStyle = '#1e3a8a';
-    ctx.fillText(`at ${data.receptionVenue} at ${data.receptionTime} sharp`, 540, 980);
+    ctx.fillText('And thereafter to join us for our celebration', 400, 690);
+    
+    ctx.font = '20px "Times New Roman", serif';
+    ctx.fillStyle = '#1e40af';
+    ctx.fillText(`at ${data.receptionVenue} at ${data.receptionTime} sharp`, 400, 720);
 
-    // Contact information
-    ctx.font = '18px serif';
+    // Contact information (matching demo layout)
+    ctx.font = '16px "Times New Roman", serif';
     ctx.fillStyle = '#4a5568';
     ctx.textAlign = 'left';
-    ctx.fillText(data.address1, 150, 1100);
-    ctx.fillText(data.location1, 150, 1130);
-    ctx.fillText(`Mob.: ${data.contact1}`, 150, 1160);
+    ctx.fillText(data.address1, 100, 1050);
+    ctx.fillText(data.location1, 100, 1070);
+    ctx.fillText(`Mob.: ${data.contact1}`, 100, 1090);
 
     ctx.textAlign = 'right';
-    ctx.fillText(data.address2, 930, 1100);
-    ctx.fillText(data.location2, 930, 1130);
-    ctx.fillText(`Mob.: ${data.contact2}`, 930, 1160);
+    ctx.fillText(data.address2, 700, 1050);
+    ctx.fillText(data.location2, 700, 1070);
+    ctx.fillText(`Mob.: ${data.contact2}`, 700, 1090);
 
-    // Final blessing
+    // Final blessing (matching demo)
     ctx.textAlign = 'center';
-    ctx.font = 'italic 24px serif';
-    ctx.fillStyle = '#1e3a8a';
-    ctx.fillText('Your presence is our blessing', 540, 1250);
+    ctx.font = 'italic 20px "Times New Roman", serif';
+    ctx.fillStyle = '#1e40af';
+    ctx.fillText('Your presence is our blessing', 400, 1130);
 
     // Generate unique token and filename
     const token = crypto.randomBytes(32).toString('hex');

@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from "express";
 
 // Security headers middleware
 export const securityHeaders = helmet({
-  contentSecurityPolicy: {
+  contentSecurityPolicy: process.env.NODE_ENV === 'production' ? {
     directives: {
       defaultSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com"],
@@ -18,7 +18,7 @@ export const securityHeaders = helmet({
       formAction: ["'self'"],
       upgradeInsecureRequests: [],
     },
-  },
+  } : false, // Disable CSP in development
   crossOriginEmbedderPolicy: false, // Allow embedding for hCaptcha
   hsts: {
     maxAge: 31536000, // 1 year
@@ -30,7 +30,7 @@ export const securityHeaders = helmet({
 // Rate limiting configurations
 export const generalRateLimit = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
+  max: process.env.NODE_ENV === 'production' ? 100 : 1000, // More lenient in development
   message: {
     error: "Too many requests from this IP, please try again later.",
   },
@@ -40,7 +40,7 @@ export const generalRateLimit = rateLimit({
 
 export const apiRateLimit = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 50, // Limit each IP to 50 API requests per windowMs
+  max: process.env.NODE_ENV === 'production' ? 50 : 500, // More lenient in development
   message: {
     error: "Too many API requests from this IP, please try again later.",
   },
@@ -121,7 +121,7 @@ export const sanitizeInput = (req: Request, res: Response, next: NextFunction) =
 // CORS configuration
 export const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
-    ? [process.env.FRONTEND_URL, process.env.DOMAIN_URL].filter(Boolean)
+    ? [process.env.FRONTEND_URL, process.env.DOMAIN_URL].filter(Boolean) as string[]
     : true,
   credentials: true,
   optionsSuccessStatus: 200,
