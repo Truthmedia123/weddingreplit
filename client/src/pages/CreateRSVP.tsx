@@ -9,9 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Calendar, Clock, MapPin, Heart, Users, Mail, Phone, Upload, X } from "lucide-react";
+import { MapPin, Heart, Upload, X, Download, MessageCircle } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
-import { apiRequest } from "@/lib/queryClient";
+
 import { useToast } from "@/hooks/use-toast";
 
 const createRSVPSchema = z.object({
@@ -27,7 +27,7 @@ const createRSVPSchema = z.object({
   contactPhone2: z.string().optional(),
   story: z.string().optional(),
   coverImage: z.string().optional(),
-  maxGuests: z.string().transform((val) => parseInt(val) || 100),
+  maxGuests: z.string().min(1).transform((val) => parseInt(val) || 100),
   rsvpDeadline: z.string().optional(),
 });
 
@@ -35,7 +35,7 @@ type CreateRSVPForm = z.infer<typeof createRSVPSchema>;
 
 export default function CreateRSVP() {
   const [createdWedding, setCreatedWedding] = useState<any>(null);
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+
   const [imagePreview, setImagePreview] = useState<string>("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -143,6 +143,56 @@ export default function CreateRSVP() {
     createWeddingMutation.mutate(data);
   };
 
+  const downloadRSVPInfo = () => {
+    if (!createdWedding) return;
+    
+    const rsvpInfo = `
+${createdWedding.brideName} & ${createdWedding.groomName}'s Wedding
+
+Wedding Date: ${new Date(createdWedding.weddingDate).toLocaleDateString()}
+Ceremony Time: ${createdWedding.ceremonyTime}
+Reception Time: ${createdWedding.receptionTime || 'TBD'}
+Venue: ${createdWedding.venue}
+Address: ${createdWedding.venueAddress}
+
+RSVP Link: ${window.location.origin}/couples/${createdWedding.slug}
+Track RSVPs: ${window.location.origin}/track/${createdWedding.slug}
+
+Contact: ${createdWedding.contactEmail}
+${createdWedding.contactPhone ? `Phone: ${createdWedding.contactPhone}` : ''}
+
+${createdWedding.story ? `Our Story: ${createdWedding.story}` : ''}
+    `.trim();
+
+    const blob = new Blob([rsvpInfo], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${createdWedding.brideName}-${createdWedding.groomName}-wedding-info.txt`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
+  const shareViaWhatsApp = () => {
+    if (!createdWedding) return;
+    
+    const rsvpUrl = `${window.location.origin}/couples/${createdWedding.slug}`;
+    const message = `🎊 We're getting married! 💒
+
+${createdWedding.brideName} & ${createdWedding.groomName}
+
+📅 Date: ${new Date(createdWedding.weddingDate).toLocaleDateString()}
+🕐 Time: ${createdWedding.ceremonyTime}
+📍 Venue: ${createdWedding.venue}
+
+Please RSVP here: ${rsvpUrl}
+
+We can't wait to celebrate with you! 💕`;
+
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
   if (createdWedding) {
     const rsvpUrl = `${window.location.origin}/couples/${createdWedding.slug}`;
     const trackUrl = `${window.location.origin}/track/${createdWedding.slug}`;
@@ -186,6 +236,24 @@ export default function CreateRSVP() {
                       Copy
                     </Button>
                   </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <Button 
+                    onClick={shareViaWhatsApp}
+                    className="flex-1 bg-green-600 hover:bg-green-700"
+                  >
+                    <MessageCircle className="h-4 w-4 mr-2" />
+                    Share via WhatsApp
+                  </Button>
+                  <Button 
+                    onClick={downloadRSVPInfo}
+                    variant="outline"
+                    className="flex-1"
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Download Info
+                  </Button>
                 </div>
 
                 <div>

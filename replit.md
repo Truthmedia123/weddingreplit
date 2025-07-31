@@ -1,208 +1,7 @@
 # TheGoanWedding.com Project Documentation
 
 ## Overview
-A premium wedding vendor directory website for Goa operating as a public directory with vendor information sourced from the internet. Features vendor listings, reviews, blog content, business submission forms, and an elegant RSVP wedding tool. Vendors can request listing additions or removals. Built with React frontend, Node.js backend, and PostgreSQL database. AdSense-compatible with email-only communication.
-
-## Recent Changes
-- **2024-06-24**: Resolved database connection issues by implementing stable in-memory storage
-- **2024-06-24**: All API endpoints now working correctly (vendors, blog, categories, RSVP)
-- **2024-06-24**: Installed Replit CLI for enhanced development capabilities
-- **2024-12-25**: Implemented complete wedding RSVP tool with couples pages and guest management
-- **2024-12-25**: Added Instagram and YouTube integration for all vendor profiles
-- **2024-12-25**: Simplified location filters to North/South Goa only
-- **2024-12-25**: Removed search box from homepage hero section
-- **2024-12-25**: Enhanced mobile responsiveness across all components
-- **2024-12-25**: Upgraded design with Wedify-inspired aesthetics
-- **2025-01-05**: Successfully migrated from Replit Agent to Replit environment
-- **2025-01-05**: Implemented comprehensive light/dark mode toggle system
-- **2025-01-05**: Updated all components with dark mode support and proper theme switching
-- **2025-01-05**: Enhanced RSVP system with dynamic page creation and QR code generation
-- **2025-01-05**: Added RSVP tracking dashboard for couples to monitor guest responses
-- **2025-01-05**: Updated vendor categories to match weddingsdegoa.com with 31 comprehensive categories
-- **2025-01-05**: Fixed RSVP creation backend issues - wedding page creation now fully functional
-- **2025-01-05**: Successfully completed migration from Replit Agent to Replit environment
-- **2025-01-05**: Verified all 31 vendor categories match weddingsdegoa.com competitor structure
-- **2025-01-05**: Integrated PostgreSQL database with full data persistence
-- **2025-01-05**: Migrated from in-memory storage to DatabaseStorage with Drizzle ORM
-- **2025-01-05**: Seeded database with comprehensive vendor, category, and blog data
-- **2025-01-05**: Added new unique categories: Photobooth & 360° Booth Rentals, Kids Entertainment & Nannies
-- **2025-01-05**: Renamed "Cakes and Confectionery" to "Cakes & Traditional Bakers" for uniqueness
-- **2025-01-05**: Updated 19 category names to avoid copy-paste appearance from competitors
-- **2025-01-05**: Enhanced CategoryGrid to show limited categories on homepage with "View All" button
-- **2025-01-05**: Created dedicated /categories page showing all 33 vendor categories
-- **2025-01-05**: Added comprehensive search functionality with magnifying glass icon in header
-- **2025-01-05**: Implemented search bar for both desktop and mobile navigation
-- **2025-01-05**: Updated navigation to prioritize "Categories" over generic "Vendors" link
-- **2025-01-06**: Removed all WhatsApp and phone contact methods, keeping only email communication
-- **2025-01-06**: Created comprehensive AdSense-compatible Privacy Policy page
-- **2025-01-06**: Created detailed Terms & Conditions page for public directory service
-- **2025-01-06**: Created Cookie Policy page with Google AdSense compliance
-- **2025-01-06**: Updated all vendor contact forms to use email-only communication
-- **2025-01-06**: Updated floating contact button to show email instead of WhatsApp/phone
-- **2025-01-06**: Removed phone/WhatsApp fields from business listing submission form
-- **2025-07-06**: Successfully migrated project from Replit Agent to Replit environment
-- **2025-07-06**: Set up PostgreSQL database with proper schema and sample data
-- **2025-07-06**: Removed dark mode system completely at user request (ThemeProvider, ThemeToggle, CSS variables)
-- **2025-07-06**: All core functionality verified working with database integration
-- **2025-07-06**: Added all 33 wedding vendor categories to database (was only showing 8)
-- **2025-07-06**: Fixed blog posts API and database schema compatibility issues
-- **2025-07-06**: Completely removed all dark mode classes from all components (CategoryGrid, Categories page, CreateRSVP, TrackRSVP)
-- **2025-07-06**: Fixed RSVP creation functionality - added missing database columns and updated schema
-- **2025-07-06**: RSVP system now fully operational with wedding page creation and guest management
-- **2025-07-06**: Successfully completed project migration from Replit Agent to Replit environment
-- **2025-07-06**: Completely removed all dark mode classes from entire codebase as requested
-- **2025-07-06**: Removed founder attribution and updated copyright year to 2025
-- **2025-07-15**: Enhanced RSVP privacy - guest list details are now hidden in tracking dashboard
-- **2025-07-15**: Added image upload functionality to RSVP creation (replaces cover image URL field)
-- **2025-07-15**: RSVP system now supports base64 image storage with 5MB limit and validation
-- **2025-07-18**: Successfully migrated project from Replit Agent to Replit environment
-- **2025-07-18**: Created PostgreSQL database and seeded with wedding vendor categories
-- **2025-07-18**: Fixed category icon display issues by replacing Font Awesome with Lucide React icons
-- **2025-07-18**: Removed "All Wedding Categories" header text from categories page as requested
-- **2025-07-18**: All core functionality verified working with proper database integration
-- **2025-07-18**: Successfully completed migration from Replit Agent to Replit environment
-- **2025-07-18**: Created PostgreSQL database and seeded with category icons and data
-- **2025-07-18**: Fixed category icons display by ensuring Font Awesome icons are properly loaded
-- **2025-07-18**: Updated Categories page to remove "All Wedding Categories" heading and description
-- **2025-07-18**: Verified all API endpoints working correctly (categories, vendors, blog, RSVP system)
-- **2025-07-20**: Added WhatsApp and call functionality to vendor contact system
-- **2025-07-20**: Enhanced VendorProfile and VendorCard with WhatsApp, phone, and email contact options
-- **2025-07-20**: WhatsApp integration includes pre-filled message "Hi! We got your contact info from TheGoanWedding.com"
-- **2025-07-20**: Call functionality opens phone dialer directly when "Call Now" is clicked
-- **2025-07-20**: Reverted design system changes per user request, keeping original styling
-- **2025-07-21**: Successfully completed migration from Replit Agent to Replit environment
-- **2025-07-21**: Created PostgreSQL database and applied schema migrations
-- **2025-07-21**: Fixed homepage hero image with improved fallback URLs
-- **2025-07-21**: Removed decorative ornamental elements from hero section text
-- **2025-07-21**: Fixed TypeScript errors in blog post category display
-- **2025-07-21**: Redesigned all category icons using modern Lucide React icons
-- **2025-07-21**: Expanded category collection to 20 comprehensive wedding service types
-- **2025-07-21**: Updated CategoryGrid component with new icon mapping system
-- **2025-07-21**: Implemented comprehensive UX improvements from enhancement document
-- **2025-07-21**: Added zero-login wishlist functionality using local storage
-- **2025-07-21**: Created enhanced search bar with autocomplete and popular searches
-- **2025-07-21**: Implemented advanced filtering system with price, rating, and verification filters
-- **2025-07-21**: Added mobile-optimized vendor cards with heart/share buttons
-- **2025-07-21**: Created dedicated wishlist page with category grouping
-- **2025-07-21**: Enhanced navigation with wishlist counter and improved mobile experience
-- **2025-07-21**: Removed "Find Your Perfect Vendors" search box section from homepage per user request
-- **2025-07-21**: Removed category display badges from blog posts on homepage and blog page per user request
-- **2025-07-21**: Removed "View Full Profile" buttons from vendor cards for cleaner design per user request
-- **2025-07-21**: Removed "About" link from navigation header per user request
-- **2025-07-21**: Changed "ceremony time" to "nuptials time" in RSVP forms per user request
-- **2025-07-21**: Converted all timing displays to 12-hour format in RSVP system per user request
-- **2025-07-21**: Removed "whose coming" section from guest RSVP page per user request
-- **2025-07-21**: Fixed couple name display in track RSVP page (was showing "& 's Wedding") per user request
-- **2025-07-21**: Successfully completed migration from Replit Agent to Replit environment
-- **2025-07-21**: Created PostgreSQL database and applied all database migrations
-- **2025-07-21**: Fixed main page hero image loading issues with better Unsplash URLs and fallback
-- **2025-07-21**: Resolved TypeScript errors in blog post component
-- **2025-07-22**: Successfully completed migration from Replit Agent to Replit environment
-- **2025-07-22**: Created PostgreSQL database and applied all schema migrations
-- **2025-07-22**: Seeded database with vendor categories, vendors, and blog content
-- **2025-07-22**: All core functionality verified working with database integration
-- **2025-07-22**: Removed all existing categories per user request to prepare for new category data
-- **2025-07-24**: Successfully implemented complete category overhaul with 43 modern wedding vendor categories
-- **2025-07-24**: Replaced old 31 categories with comprehensive new structure including drone photography, eco-friendly solutions, content creators
-- **2025-07-24**: Updated all category icons to use Lucide React components with proper icon mapping system
-- **2025-07-24**: Fixed icon compatibility issues by replacing non-existent icons (Drone→Zap, Sparkle→Star, Drama→Theater, etc.)
-- **2025-07-24**: Categories now display correctly with beautiful gradient backgrounds and modern icons
-- **2025-07-24**: Successfully implemented complete Wedding Invitation Generator feature
-- **2025-07-24**: Added secure token-based invitation generation with 6 distinct wedding styles
-- **2025-07-24**: Created Canvas-based image generation with customizable colors and fonts
-- **2025-07-24**: Implemented one-time download links with 24-hour expiry for security
-- **2025-07-24**: Added "Invitations" navigation link and complete frontend UI
-- **2025-07-24**: Enhanced invitation templates with 6 professional designs: Elegant Script, Botanical Watercolor, Modern Minimalist, Rustic Vintage, Traditional Indian, and Floral Photo
-- **2025-07-24**: Added template descriptions, color palettes, customization options, and improved live preview system
-- **2025-07-24**: Implemented template-specific background patterns and enhanced typography for each design style
-- **2025-07-24**: Updated templates to match user-provided designs: White Floral Elegance, Botanical Watercolor, Pink Modern Romance, Lavender Couple Portrait, Save the Date Floral
-- **2025-07-24**: Fixed template thumbnail display issues by properly importing image assets
-- **2025-07-24**: Enhanced invitation generator with visual template previews and automatic download functionality
-- **2025-07-24**: Implemented template-specific Canvas rendering functions for authentic design matching
-- **2025-07-24**: Added auto-generate toggle feature for instant invitation creation when details are filled
-- **2025-07-24**: Successfully migrated project from Replit Agent to Replit environment
-- **2025-07-24**: Created PostgreSQL database and applied all schema migrations
-- **2025-07-24**: Fixed invitation generator Canvas rendering to create beautiful designs matching template examples
-- **2025-07-24**: Enhanced lavender couple template with proper background gradients and coral typography
-- **2025-07-24**: Improved botanical watercolor template with mint green backgrounds and decorative borders
-- **2025-07-24**: Updated pink modern template with contemporary typography and couple illustrations
-- **2025-07-24**: Permanently removed all wedding invitation templates and generation functionality per user request
-- **2025-07-24**: Deleted InvitationGenerator page and removed "Invitations" navigation link
-- **2025-07-24**: Cleaned up invitation-related API routes and server-side code
-- **2025-07-24**: Application now focuses on vendor directory, RSVP system, and blog content only
-- **2025-07-24**: Re-implemented PDF-based wedding invitation generator using user-provided templates
-- **2025-07-24**: Created 4 new PDF templates: Save The Date Classic, Simple Invitation, Family Invitation, Detailed Save The Date
-- **2025-07-24**: Added secure PDF generation with self-destructing download links for privacy
-- **2025-07-24**: Integrated PDF-lib for professional PDF creation with customizable layouts
-- **2025-07-25**: Successfully migrated project from Replit Agent to Replit environment
-- **2025-07-25**: Created PostgreSQL database and applied all schema migrations
-- **2025-07-25**: Seeded database with comprehensive vendor data and blog content
-- **2025-07-25**: Added all 43 modern wedding vendor categories to database
-- **2025-07-25**: All core functionality verified working with database integration
-- **2025-07-25**: Application running successfully with full feature set operational
-- **2025-07-25**: Added all 43 modern wedding vendor categories to database
-- **2025-07-25**: All core functionality verified working with database integration
-- **2025-07-25**: Application running successfully with full feature set operational
-- **2025-07-28**: Successfully migrated project from Replit Agent to Replit environment
-- **2025-07-28**: Fixed missing tsx dependency and updated server configuration
-- **2025-07-28**: Resolved port binding issues (changed from 3000 to 5000 with 0.0.0.0 binding)
-- **2025-07-28**: Fixed TypeScript errors and CORS configuration issues
-- **2025-07-28**: Disabled restrictive CSP in development environment for proper JavaScript execution
-- **2025-07-28**: Adjusted rate limiting to be more lenient in development mode
-- **2025-07-28**: Added Express trust proxy configuration for Replit environment
-- **2025-07-28**: All core functionality verified working with proper database integration
-- **2025-07-28**: Successfully migrated project from Replit Agent to Replit environment
-- **2025-07-28**: Fixed missing tsx dependency and updated server configuration
-- **2025-07-28**: Resolved port binding issues (changed from 3000 to 5000 with 0.0.0.0 binding)
-- **2025-07-28**: Fixed TypeScript errors and CORS configuration issues
-- **2025-07-28**: Disabled restrictive CSP in development environment for proper JavaScript execution
-- **2025-07-28**: Adjusted rate limiting to be more lenient in development mode
-- **2025-07-28**: Added Express trust proxy configuration for Replit environment
-- **2025-07-28**: Updated invitation generator to use new floral template with proper text positioning
-- **2025-07-28**: Successfully integrated beautiful blue floral wedding invitation template
-- **2025-07-28**: Verified invitation generation working with new template layout matching demo design
-- **2025-07-31**: Fixed text positioning in invitation generator to prevent overlap with floral elements
-- **2025-07-31**: Optimized text positioning with Bible verse at Y=320 for perfect balance between floral clearance and layout
-- **2025-07-31**: Added optional QR code functionality for RSVP integration with automatic positioning
-- **2025-07-31**: Implemented base64 QR code image upload support with "Scan to RSVP" text label
-- **2025-07-31**: Dynamic layout adjustment - contact information moves down when QR code is present
-- **2025-07-31**: QR code positioned at Y=820 with 80x80px size for optimal scanning visibility
-
-## Project Architecture
-
-### Database Schema
-- **vendors**: Complete vendor information with social media integration (Instagram, YouTube, Facebook)
-- **reviews**: Customer reviews and ratings system
-- **categories**: Wedding service categories
-- **blog_posts**: Content management for wedding blog
-- **business_submissions**: Vendor listing applications
-- **contacts**: Contact form submissions
-- **weddings**: Couples wedding information and details
-- **rsvps**: Guest RSVP management system
-
-### Frontend Structure
-- React with TypeScript
-- Wouter for routing
-- TanStack Query for data fetching
-- Shadcn/UI components with Tailwind CSS
-- Mobile-first responsive design
-
-### Backend Structure
-- Express.js server
-- Drizzle ORM with PostgreSQL
-- RESTful API endpoints
-- Database storage layer with interface pattern
-
-## Key Features Implemented
-1. **Vendor Directory**: Complete vendor listings with categories, reviews, and social media
-2. **RSVP Tool**: Wedding invitation pages with guest management system
-3. **Blog System**: Content management for wedding-related articles
-4. **Business Listings**: Vendor application and submission system
-5. **Contact System**: Inquiry and communication management
-6. **Social Media Integration**: Instagram and YouTube content display
-7. **Mobile Optimization**: Responsive design for all devices
-8. **Dark Mode**: Comprehensive light/dark theme toggle with localStorage persistence
-9. **Enhanced RSVP System**: Dynamic RSVP page creation with QR codes and guest tracking
+TheGoanWedding.com is a premium online directory for wedding vendors in Goa. Its primary purpose is to connect couples planning their weddings with local service providers. Key capabilities include vendor listings with reviews, a comprehensive blog for wedding inspiration, business submission forms for vendors, and an elegant RSVP tool for wedding guests. The platform aims to be a public directory, sourcing vendor information from the internet, and is designed to be AdSense-compatible, relying exclusively on email for communication. The project envisions significant market potential as a central hub for wedding planning in Goa.
 
 ## User Preferences
 - Wedify-inspired elegant design aesthetic
@@ -211,21 +10,53 @@ A premium wedding vendor directory website for Goa operating as a public directo
 - Social media integration for vendor portfolios
 - Simplified location filtering (North/South Goa only)
 - Clean homepage without search overlay
+- All communication should be email-only for both user and vendor interactions.
+- Avoid all WhatsApp and phone contact methods.
+- No founder attribution.
+- The project should not include dark mode functionality.
+- Remove "All Wedding Categories" header text from categories page.
+- Remove decorative ornamental elements from hero section text.
+- Remove category display badges from blog posts on homepage and blog page.
+- Remove "View Full Profile" buttons from vendor cards.
+- Remove "About" link from navigation header.
+- Change "ceremony time" to "nuptials time" in RSVP forms.
+- Convert all timing displays to 12-hour format in RSVP system.
+- Remove "whose coming" section from guest RSVP page.
+- Fix couple name display in track RSVP page (should not show "& 's Wedding").
+- Wedding invitation templates and generation functionality should not be present.
 
-## Technical Decisions
-- PostgreSQL database for production-ready data persistence
-- Drizzle ORM for type-safe database operations
-- React Query for efficient data fetching and caching
-- Shadcn/UI for consistent component library
-- Express.js for robust backend API
-- TypeScript for type safety across full stack
+## System Architecture
 
-## Current Status
-- All core functionality implemented and operational
-- In-memory storage providing stable data persistence
-- API endpoints returning data successfully (200 status codes)
-- Wedding RSVP tool fully functional with demo data
-- Mobile responsiveness optimized across all device sizes
-- Social media integration active for vendor profiles
-- Replit CLI installed for deployment capabilities
-- Application ready for production deployment
+### UI/UX Decisions
+The design embraces a Wedify-inspired elegant aesthetic incorporating Goan cultural elements with coral, sea blue, and gold colors. The interface is mobile-first and fully responsive. Category icons use modern Lucide React icons, displayed with gradient backgrounds. The homepage features a clean design without a search overlay, and navigation prioritizes "Categories." Wishlist functionality is implemented using local storage, along with an enhanced search bar featuring autocomplete and popular searches, and advanced filtering options.
+
+### Technical Implementations
+The frontend is built with React and TypeScript, utilizing Wouter for client-side routing and TanStack Query for efficient data fetching and caching. Shadcn/UI components are used with Tailwind CSS for a consistent and responsive UI. The backend is an Express.js server, using Drizzle ORM to interact with a PostgreSQL database. The application provides RESTful API endpoints and implements a database storage layer following an interface pattern.
+
+### Feature Specifications
+- **Vendor Directory**: Comprehensive listings with 43 categories, reviews, and social media links (Instagram, YouTube). Includes WhatsApp, phone, and email contact options.
+- **RSVP Tool**: An elegant wedding RSVP system enabling couples to create personalized wedding pages, manage guest lists, and track responses. Supports image uploads (base64, 5MB limit) for cover images and QR code generation for RSVP integration. Timing displays are in 12-hour format.
+- **Blog System**: Content management for wedding-related articles.
+- **Business Listings**: Vendors can submit their businesses for listing or request removals via forms.
+- **Contact System**: Email-only inquiry and communication management.
+- **Search & Filtering**: Enhanced search with autocomplete and advanced filtering by price, rating, and verification.
+- **Wishlist**: Zero-login wishlist functionality using local storage.
+- **Legal Pages**: Comprehensive AdSense-compatible Privacy Policy, Terms & Conditions, and Cookie Policy pages.
+
+### System Design Choices
+- **Database**: PostgreSQL for robust data persistence.
+- **ORM**: Drizzle ORM for type-safe database operations.
+- **Data Fetching**: React Query for efficient client-side data management.
+- **Component Library**: Shadcn/UI for standardized UI components.
+- **Backend Framework**: Express.js for scalable API development.
+- **Language**: TypeScript for full-stack type safety.
+- **Port Configuration**: Backend runs on port 5000 with 0.0.0.0 binding for Replit environment compatibility.
+- **CSP & Rate Limiting**: Lenient CSP and rate limiting in development, configured for Replit's environment.
+
+## External Dependencies
+- **PostgreSQL**: Primary database for all application data.
+- **Instagram API**: For integrating vendor profiles.
+- **YouTube API**: For integrating vendor profiles.
+- **Google AdSense**: For monetization purposes.
+- **Lucide React**: Icon library for UI elements.
+- **PDF-lib**: For PDF generation capabilities (if re-enabled).

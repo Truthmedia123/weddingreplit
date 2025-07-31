@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Users, Calendar, MapPin, Mail, Phone, Download, Share } from "lucide-react";
+import { Users, Calendar, MapPin, Mail, Phone, Download, Share, MessageCircle } from "lucide-react";
 import type { Wedding, Rsvp } from "@shared/schema";
 
 // Utility function to convert 24-hour time to 12-hour format
@@ -95,6 +95,59 @@ export default function TrackRSVP() {
     } else {
       navigator.clipboard.writeText(rsvpUrl);
     }
+  };
+
+  const shareViaWhatsApp = () => {
+    const rsvpUrl = `${window.location.origin}/couples/${wedding.slug}`;
+    const message = `🎊 We're getting married! 💒
+
+${wedding.brideName} & ${wedding.groomName}
+
+📅 Date: ${new Date(wedding.weddingDate).toLocaleDateString()}
+🕐 Nuptials: ${formatTime12Hour(wedding.ceremonyTime)}
+${wedding.receptionTime ? `🎉 Reception: ${formatTime12Hour(wedding.receptionTime)}` : ''}
+📍 Venue: ${wedding.venue}
+
+Please RSVP here: ${rsvpUrl}
+
+We can't wait to celebrate with you! 💕`;
+
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
+  const downloadWeddingInfo = () => {
+    const weddingInfo = `
+${wedding.brideName} & ${wedding.groomName}'s Wedding
+
+Wedding Date: ${new Date(wedding.weddingDate).toLocaleDateString()}
+Ceremony Time: ${formatTime12Hour(wedding.ceremonyTime)}
+${wedding.receptionTime ? `Reception Time: ${formatTime12Hour(wedding.receptionTime)}` : ''}
+Venue: ${wedding.venue}
+Address: ${wedding.venueAddress}
+
+RSVP Statistics:
+- Total RSVPs: ${rsvps.length}
+- Total Guests: ${totalGuests}
+- Ceremony Attendees: ${ceremonyAttendees}
+- Reception Attendees: ${receptionAttendees}
+
+RSVP Link: ${window.location.origin}/couples/${wedding.slug}
+Track RSVPs: ${window.location.origin}/track/${wedding.slug}
+
+Contact: ${wedding.contactEmail}
+${wedding.contactPhone ? `Phone: ${wedding.contactPhone}` : ''}
+
+${wedding.story ? `Our Story: ${wedding.story}` : ''}
+    `.trim();
+
+    const blob = new Blob([weddingInfo], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${wedding.brideName}-${wedding.groomName}-wedding-details.txt`;
+    a.click();
+    window.URL.revokeObjectURL(url);
   };
 
   return (
@@ -207,11 +260,19 @@ export default function TrackRSVP() {
         <div className="flex flex-wrap gap-4 mb-8">
           <Button onClick={exportToCSV} className="flex items-center gap-2">
             <Download className="h-4 w-4" />
-            Export to CSV
+            Export Guest List CSV
+          </Button>
+          <Button onClick={downloadWeddingInfo} variant="outline" className="flex items-center gap-2">
+            <Download className="h-4 w-4" />
+            Download Wedding Info
+          </Button>
+          <Button onClick={shareViaWhatsApp} className="flex items-center gap-2 bg-green-600 hover:bg-green-700">
+            <MessageCircle className="h-4 w-4" />
+            Share via WhatsApp
           </Button>
           <Button onClick={shareRSVPPage} variant="outline" className="flex items-center gap-2">
             <Share className="h-4 w-4" />
-            Share RSVP Page
+            Share RSVP Link
           </Button>
         </div>
 
