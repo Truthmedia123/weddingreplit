@@ -73,86 +73,86 @@ export async function generateInvitation(data: InvitationData): Promise<Generate
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    // Bible verse at top (elegant italic style)
+    // Bible verse at top (moved down to avoid floral overlap)
     ctx.fillStyle = '#2c3e50';
     ctx.font = 'italic 18px "Times New Roman", serif';
-    ctx.fillText(`"${data.bibleVerse}"`, 400, 240);
+    ctx.fillText(`"${data.bibleVerse}"`, 400, 280);
     
     // Bible reference 
     ctx.font = 'italic 16px "Times New Roman", serif';
-    ctx.fillText(`- ${data.bibleReference}`, 400, 265);
+    ctx.fillText(`- ${data.bibleReference}`, 400, 305);
 
     // "We," section
     ctx.font = 'italic 24px "Times New Roman", serif';
-    ctx.fillText('We,', 400, 320);
+    ctx.fillText('We,', 400, 360);
 
     // Names in beautiful script style (matching demo)
     ctx.font = 'italic 48px "Times New Roman", serif';
     ctx.fillStyle = '#1e40af'; // Blue color
-    ctx.fillText(data.groomName, 280, 380);
+    ctx.fillText(data.groomName, 280, 420);
     
     ctx.font = '32px "Times New Roman", serif';
     ctx.fillStyle = '#2c3e50';
-    ctx.fillText('&', 400, 380);
+    ctx.fillText('&', 400, 420);
     
     ctx.font = 'italic 48px "Times New Roman", serif';
     ctx.fillStyle = '#1e40af';
-    ctx.fillText(data.brideName, 520, 380);
+    ctx.fillText(data.brideName, 520, 420);
 
     // Parent details
     ctx.font = '16px "Times New Roman", serif';
     ctx.fillStyle = '#4a5568';
-    ctx.fillText(`(s/o Mr. ${data.groomFatherName}`, 280, 415);
-    ctx.fillText(`& Mrs. ${data.groomMotherName})`, 280, 435);
+    ctx.fillText(`(s/o Mr. ${data.groomFatherName}`, 280, 455);
+    ctx.fillText(`& Mrs. ${data.groomMotherName})`, 280, 475);
     
-    ctx.fillText(`(d/o Mr. ${data.brideFatherName}`, 520, 415);
-    ctx.fillText(`& Mrs. ${data.brideMotherName})`, 520, 435);
+    ctx.fillText(`(d/o Mr. ${data.brideFatherName}`, 520, 455);
+    ctx.fillText(`& Mrs. ${data.brideMotherName})`, 520, 475);
 
     // Main invitation text
     ctx.font = '18px "Times New Roman", serif';
     ctx.fillStyle = '#2c3e50';
     ctx.textAlign = 'center';
-    ctx.fillText('Together with our parents', 400, 490);
-    ctx.fillText('cordially invite you & your family', 400, 515);
-    ctx.fillText('to witness the most memorable event of our lives', 400, 540);
-    ctx.fillText('as we exchange our marriage vows to pledge our love to each other', 400, 565);
+    ctx.fillText('Together with our parents', 400, 530);
+    ctx.fillText('cordially invite you & your family', 400, 555);
+    ctx.fillText('to witness the most memorable event of our lives', 400, 580);
+    ctx.fillText('as we exchange our marriage vows to pledge our love to each other', 400, 605);
 
     // Ceremony details
     ctx.font = '20px "Times New Roman", serif';
     ctx.fillStyle = '#1e40af';
-    ctx.fillText(`at ${data.ceremonyVenue}, on ${data.ceremonyDay},`, 400, 620);
+    ctx.fillText(`at ${data.ceremonyVenue}, on ${data.ceremonyDay},`, 400, 660);
     
     // Date and time in larger text
     ctx.font = 'bold 22px "Times New Roman", serif';
-    ctx.fillText(`${data.ceremonyDate} at ${data.ceremonyTime}`, 400, 650);
+    ctx.fillText(`${data.ceremonyDate} at ${data.ceremonyTime}`, 400, 690);
 
     // Reception details
     ctx.font = '18px "Times New Roman", serif';
     ctx.fillStyle = '#2c3e50';
-    ctx.fillText('And thereafter to join us for our celebration', 400, 690);
+    ctx.fillText('And thereafter to join us for our celebration', 400, 730);
     
     ctx.font = '20px "Times New Roman", serif';
     ctx.fillStyle = '#1e40af';
-    ctx.fillText(`at ${data.receptionVenue} at ${data.receptionTime} sharp`, 400, 720);
+    ctx.fillText(`at ${data.receptionVenue} at ${data.receptionTime} sharp`, 400, 760);
 
-    // Contact information
+    // Contact information (moved up slightly to maintain balance)
     ctx.font = '16px "Times New Roman", serif';
     ctx.fillStyle = '#4a5568';
     ctx.textAlign = 'left';
-    ctx.fillText(data.address1, 100, 1050);
-    ctx.fillText(data.location1, 100, 1070);
-    ctx.fillText(`Mob.: ${data.contact1}`, 100, 1090);
+    ctx.fillText(data.address1, 100, 1020);
+    ctx.fillText(data.location1, 100, 1040);
+    ctx.fillText(`Mob.: ${data.contact1}`, 100, 1060);
 
     ctx.textAlign = 'right';
-    ctx.fillText(data.address2, 700, 1050);
-    ctx.fillText(data.location2, 700, 1070);
-    ctx.fillText(`Mob.: ${data.contact2}`, 700, 1090);
+    ctx.fillText(data.address2, 700, 1020);
+    ctx.fillText(data.location2, 700, 1040);
+    ctx.fillText(`Mob.: ${data.contact2}`, 700, 1060);
 
     // Final blessing
     ctx.textAlign = 'center';
     ctx.font = 'italic 20px "Times New Roman", serif';
     ctx.fillStyle = '#1e40af';
-    ctx.fillText('Your presence is our blessing', 400, 1130);
+    ctx.fillText('Your presence is our blessing', 400, 1100);
 
     // Generate token and filename
     const token = crypto.randomBytes(16).toString('hex');
