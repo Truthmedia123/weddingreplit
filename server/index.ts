@@ -15,28 +15,28 @@ import {
   notFoundHandler, 
   asyncHandler 
 } from "./middleware/errorHandler";
-import { 
-  healthCheckHandler, 
-  readinessCheckHandler, 
-  livenessCheckHandler 
-} from "./monitoring/healthCheck";
-import { imageOptimizationMiddleware } from "./middleware/imageOptimization";
-import { generateSitemap, generateRobotsTxt } from "./seo/sitemap";
+// import { 
+//   healthCheckHandler, 
+//   readinessCheckHandler, 
+//   livenessCheckHandler 
+// } from "./monitoring/healthCheck";
+// import { imageOptimizationMiddleware } from "./middleware/imageOptimization";
+// import { generateSitemap, generateRobotsTxt } from "./seo/sitemap";
 import path from "path";
 
 const app = express();
 
-// Security middleware
-app.use(securityHeaders);
+// Security middleware (temporarily simplified for debugging)
+// app.use(securityHeaders);
 app.use(cors(corsOptions));
-app.use(generalRateLimit);
+// app.use(generalRateLimit);
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
-// Input sanitization
-app.use(sanitizeInput);
+// Input sanitization (temporarily disabled for debugging)
+// app.use(sanitizeInput);
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -69,20 +69,20 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Health check endpoints (before rate limiting)
-  app.get('/health', asyncHandler(healthCheckHandler));
-  app.get('/health/ready', readinessCheckHandler);
-  app.get('/health/live', livenessCheckHandler);
+  // Health check endpoints (temporarily disabled for debugging)
+  // app.get('/health', asyncHandler(healthCheckHandler));
+  // app.get('/health/ready', readinessCheckHandler);
+  // app.get('/health/live', livenessCheckHandler);
 
-  // SEO endpoints
-  app.get('/sitemap.xml', asyncHandler(generateSitemap));
-  app.get('/robots.txt', generateRobotsTxt);
+  // SEO endpoints (temporarily disabled)
+  // app.get('/sitemap.xml', asyncHandler(generateSitemap));
+  // app.get('/robots.txt', generateRobotsTxt);
 
-  // Image optimization endpoint
-  app.get('/api/images/optimize', asyncHandler(imageOptimizationMiddleware));
+  // Image optimization endpoint (temporarily disabled)
+  // app.get('/api/images/optimize', asyncHandler(imageOptimizationMiddleware));
 
-  // API routes with stricter rate limiting
-  app.use('/api', apiRateLimit);
+  // API routes with stricter rate limiting (temporarily disabled)
+  // app.use('/api', apiRateLimit);
   const server = await registerRoutes(app);
 
   // Serve static files from attached_assets directory
@@ -120,7 +120,7 @@ app.use((req, res, next) => {
   process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
   process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
-  const port = process.env.PORT || 3000;
+  const port = process.env.PORT || 5005;
   server.listen(port, () => {
     log(`🚀 Server running on port ${port}`);
     log(`📊 Health check: http://localhost:${port}/health`);
