@@ -238,6 +238,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         address2: z.string().min(1),
         location2: z.string().min(1),
         contact2: z.string().min(1),
+        qrCodeImage: z.string().optional(), // Optional base64 encoded QR code
       });
 
       const validatedData = invitationSchema.parse(req.body);

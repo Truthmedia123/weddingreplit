@@ -162,9 +162,11 @@ A premium wedding vendor directory website for Goa operating as a public directo
 - **2025-07-28**: Successfully integrated beautiful blue floral wedding invitation template
 - **2025-07-28**: Verified invitation generation working with new template layout matching demo design
 - **2025-07-31**: Fixed text positioning in invitation generator to prevent overlap with floral elements
-- **2025-07-31**: Moved all text content down significantly (70px+) to provide proper clearance from blue petals
-- **2025-07-31**: Repositioned Bible verse to Y=350 and all subsequent text elements for optimal visibility
-- **2025-07-31**: Adjusted contact information and blessing text positioning for optimal layout balance
+- **2025-07-31**: Optimized text positioning with Bible verse at Y=320 for perfect balance between floral clearance and layout
+- **2025-07-31**: Added optional QR code functionality for RSVP integration with automatic positioning
+- **2025-07-31**: Implemented base64 QR code image upload support with "Scan to RSVP" text label
+- **2025-07-31**: Dynamic layout adjustment - contact information moves down when QR code is present
+- **2025-07-31**: QR code positioned at Y=820 with 80x80px size for optimal scanning visibility
 
 ## Project Architecture
 

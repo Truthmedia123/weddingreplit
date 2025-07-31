@@ -23,6 +23,7 @@ export interface InvitationData {
   address2: string;
   location2: string;
   contact2: string;
+  qrCodeImage?: string; // Optional base64 encoded QR code image
 }
 
 export interface GeneratedInvitation {
@@ -73,86 +74,113 @@ export async function generateInvitation(data: InvitationData): Promise<Generate
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    // Bible verse at top (moved significantly down to clear floral area)
+    // Bible verse at top (balanced position to clear floral area)
     ctx.fillStyle = '#2c3e50';
     ctx.font = 'italic 18px "Times New Roman", serif';
-    ctx.fillText(`"${data.bibleVerse}"`, 400, 350);
+    ctx.fillText(`"${data.bibleVerse}"`, 400, 320);
     
     // Bible reference 
     ctx.font = 'italic 16px "Times New Roman", serif';
-    ctx.fillText(`- ${data.bibleReference}`, 400, 375);
+    ctx.fillText(`- ${data.bibleReference}`, 400, 345);
 
     // "We," section
     ctx.font = 'italic 24px "Times New Roman", serif';
-    ctx.fillText('We,', 400, 430);
+    ctx.fillText('We,', 400, 390);
 
     // Names in beautiful script style (matching demo)
     ctx.font = 'italic 48px "Times New Roman", serif';
     ctx.fillStyle = '#1e40af'; // Blue color
-    ctx.fillText(data.groomName, 280, 490);
+    ctx.fillText(data.groomName, 280, 450);
     
     ctx.font = '32px "Times New Roman", serif';
     ctx.fillStyle = '#2c3e50';
-    ctx.fillText('&', 400, 490);
+    ctx.fillText('&', 400, 450);
     
     ctx.font = 'italic 48px "Times New Roman", serif';
     ctx.fillStyle = '#1e40af';
-    ctx.fillText(data.brideName, 520, 490);
+    ctx.fillText(data.brideName, 520, 450);
 
     // Parent details
     ctx.font = '16px "Times New Roman", serif';
     ctx.fillStyle = '#4a5568';
-    ctx.fillText(`(s/o Mr. ${data.groomFatherName}`, 280, 525);
-    ctx.fillText(`& Mrs. ${data.groomMotherName})`, 280, 545);
+    ctx.fillText(`(s/o Mr. ${data.groomFatherName}`, 280, 485);
+    ctx.fillText(`& Mrs. ${data.groomMotherName})`, 280, 505);
     
-    ctx.fillText(`(d/o Mr. ${data.brideFatherName}`, 520, 525);
-    ctx.fillText(`& Mrs. ${data.brideMotherName})`, 520, 545);
+    ctx.fillText(`(d/o Mr. ${data.brideFatherName}`, 520, 485);
+    ctx.fillText(`& Mrs. ${data.brideMotherName})`, 520, 505);
 
     // Main invitation text
     ctx.font = '18px "Times New Roman", serif';
     ctx.fillStyle = '#2c3e50';
     ctx.textAlign = 'center';
-    ctx.fillText('Together with our parents', 400, 600);
-    ctx.fillText('cordially invite you & your family', 400, 625);
-    ctx.fillText('to witness the most memorable event of our lives', 400, 650);
-    ctx.fillText('as we exchange our marriage vows to pledge our love to each other', 400, 675);
+    ctx.fillText('Together with our parents', 400, 550);
+    ctx.fillText('cordially invite you & your family', 400, 575);
+    ctx.fillText('to witness the most memorable event of our lives', 400, 600);
+    ctx.fillText('as we exchange our marriage vows to pledge our love to each other', 400, 625);
 
     // Ceremony details
     ctx.font = '20px "Times New Roman", serif';
     ctx.fillStyle = '#1e40af';
-    ctx.fillText(`at ${data.ceremonyVenue}, on ${data.ceremonyDay},`, 400, 730);
+    ctx.fillText(`at ${data.ceremonyVenue}, on ${data.ceremonyDay},`, 400, 670);
     
     // Date and time in larger text
     ctx.font = 'bold 22px "Times New Roman", serif';
-    ctx.fillText(`${data.ceremonyDate} at ${data.ceremonyTime}`, 400, 760);
+    ctx.fillText(`${data.ceremonyDate} at ${data.ceremonyTime}`, 400, 700);
 
     // Reception details
     ctx.font = '18px "Times New Roman", serif';
     ctx.fillStyle = '#2c3e50';
-    ctx.fillText('And thereafter to join us for our celebration', 400, 800);
+    ctx.fillText('And thereafter to join us for our celebration', 400, 740);
     
     ctx.font = '20px "Times New Roman", serif';
     ctx.fillStyle = '#1e40af';
-    ctx.fillText(`at ${data.receptionVenue} at ${data.receptionTime} sharp`, 400, 830);
+    ctx.fillText(`at ${data.receptionVenue} at ${data.receptionTime} sharp`, 400, 770);
 
-    // Contact information (moved up slightly to maintain balance)
+    // QR Code (if provided)
+    if (data.qrCodeImage) {
+      try {
+        // Decode base64 QR code image
+        const qrImageData = data.qrCodeImage.replace(/^data:image\/[a-z]+;base64,/, '');
+        const qrBuffer = Buffer.from(qrImageData, 'base64');
+        const qrImage = await loadImage(qrBuffer);
+        
+        // Position QR code at bottom center
+        const qrSize = 80;
+        const qrX = 400 - qrSize / 2;
+        const qrY = 820;
+        
+        ctx.drawImage(qrImage, qrX, qrY, qrSize, qrSize);
+        
+        // Add RSVP text below QR code
+        ctx.textAlign = 'center';
+        ctx.font = '14px "Times New Roman", serif';
+        ctx.fillStyle = '#4a5568';
+        ctx.fillText('Scan to RSVP', 400, 915);
+      } catch (error) {
+        console.error('[INVITATION] QR Code loading error:', error);
+      }
+    }
+
+    // Contact information (adjusted for QR code space)
+    const contactY = data.qrCodeImage ? 950 : 920;
     ctx.font = '16px "Times New Roman", serif';
     ctx.fillStyle = '#4a5568';
     ctx.textAlign = 'left';
-    ctx.fillText(data.address1, 100, 1020);
-    ctx.fillText(data.location1, 100, 1040);
-    ctx.fillText(`Mob.: ${data.contact1}`, 100, 1060);
+    ctx.fillText(data.address1, 100, contactY);
+    ctx.fillText(data.location1, 100, contactY + 20);
+    ctx.fillText(`Mob.: ${data.contact1}`, 100, contactY + 40);
 
     ctx.textAlign = 'right';
-    ctx.fillText(data.address2, 700, 1020);
-    ctx.fillText(data.location2, 700, 1040);
-    ctx.fillText(`Mob.: ${data.contact2}`, 700, 1060);
+    ctx.fillText(data.address2, 700, contactY);
+    ctx.fillText(data.location2, 700, contactY + 20);
+    ctx.fillText(`Mob.: ${data.contact2}`, 700, contactY + 40);
 
     // Final blessing
     ctx.textAlign = 'center';
     ctx.font = 'italic 20px "Times New Roman", serif';
     ctx.fillStyle = '#1e40af';
-    ctx.fillText('Your presence is our blessing', 400, 1100);
+    const blessingY = data.qrCodeImage ? 1030 : 1000;
+    ctx.fillText('Your presence is our blessing', 400, blessingY);
 
     // Generate token and filename
     const token = crypto.randomBytes(16).toString('hex');
