@@ -155,12 +155,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log("Wedding creation request body:", req.body);
       
-      // Manual validation and transformation
+      // Manual validation and transformation for SQLite compatibility
       const { weddingDate, rsvpDeadline, ...rest } = req.body;
       const weddingData = {
         ...rest,
-        weddingDate: new Date(weddingDate),
-        rsvpDeadline: rsvpDeadline ? new Date(rsvpDeadline) : null,
+        weddingDate: weddingDate ? new Date(weddingDate).toISOString() : null,
+        rsvpDeadline: rsvpDeadline ? new Date(rsvpDeadline).toISOString() : null,
         maxGuests: rest.maxGuests || 100,
         isPublic: rest.isPublic !== false,
       };
@@ -186,14 +186,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/weddings", async (req, res) => {
-    try {
-      const wedding = await storage.createWedding(req.body);
-      res.json(wedding);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to create wedding" });
-    }
-  });
+
 
   app.get("/api/weddings/:id/rsvps", async (req, res) => {
     try {
