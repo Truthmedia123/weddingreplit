@@ -162,7 +162,8 @@ A premium wedding vendor directory website for Goa operating as a public directo
 - **2025-07-28**: Successfully integrated beautiful blue floral wedding invitation template
 - **2025-07-28**: Verified invitation generation working with new template layout matching demo design
 - **2025-07-31**: Fixed text positioning in invitation generator to prevent overlap with floral elements
-- **2025-07-31**: Moved all text content down 40px to provide proper clearance from blue petals at top
+- **2025-07-31**: Moved all text content down significantly (70px+) to provide proper clearance from blue petals
+- **2025-07-31**: Repositioned Bible verse to Y=350 and all subsequent text elements for optimal visibility
 - **2025-07-31**: Adjusted contact information and blessing text positioning for optimal layout balance
 
 ## Project Architecture
