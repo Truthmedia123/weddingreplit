@@ -19,7 +19,7 @@ interface InvitationFormData {
   ceremonyVenue: string;
   ceremonyDay: string;
   ceremonyDate: string;
-  ceremonyTime: string;
+  nuptialsTime: string;
   receptionVenue: string;
   receptionTime: string;
   address1: string;
@@ -51,7 +51,7 @@ export default function InvitationGenerator() {
     ceremonyVenue: "",
     ceremonyDay: "",
     ceremonyDate: "",
-    ceremonyTime: "",
+    nuptialsTime: "",
     receptionVenue: "",
     receptionTime: "",
     address1: "",
@@ -309,11 +309,11 @@ export default function InvitationGenerator() {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="ceremonyTime" className="text-green-700">Time</Label>
+                    <Label htmlFor="nuptialsTime" className="text-green-700">Time</Label>
                     <Input
-                      id="ceremonyTime"
-                      value={formData.ceremonyTime}
-                      onChange={(e) => handleInputChange('ceremonyTime', e.target.value)}
+                      id="nuptialsTime"
+                      value={formData.nuptialsTime}
+                      onChange={(e) => handleInputChange('nuptialsTime', e.target.value)}
                       placeholder="e.g., 3:30 p.m."
                       className="mt-1"
                     />

@@ -62,7 +62,7 @@ db.exec(`
     wedding_date TEXT NOT NULL,
     venue TEXT NOT NULL,
     venue_address TEXT NOT NULL,
-    ceremony_time TEXT NOT NULL,
+    nuptials_time TEXT NOT NULL,
     reception_time TEXT,
     cover_image TEXT,
     story TEXT,

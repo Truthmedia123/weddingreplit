@@ -52,7 +52,7 @@ export default function Home() {
                 Where Dreams Come True
               </p>
               
-              {/* Main heading with ornaments */}
+              {/* Main heading */}
               <h1 className="text-3xl sm:text-4xl md:text-7xl lg:text-8xl font-bold text-white mb-4 md:mb-6 leading-tight px-2 sm:px-0">
                 <span className="block mb-1 md:mb-2">Celebrate Your</span>
                 <span className="goan-text-gradient wedding-script text-4xl sm:text-5xl md:text-8xl lg:text-9xl">

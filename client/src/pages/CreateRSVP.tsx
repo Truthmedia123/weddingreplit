@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { MapPin, Heart, Upload, X, Download, MessageCircle } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
+import { formatLongDate } from "@/utils/dateTime";
 
 import { useToast } from "@/hooks/use-toast";
 
@@ -18,7 +19,7 @@ const createRSVPSchema = z.object({
   brideName: z.string().min(1, "Bride name is required"),
   groomName: z.string().min(1, "Groom name is required"),
   weddingDate: z.string().min(1, "Wedding date is required"),
-  ceremonyTime: z.string().min(1, "Ceremony time is required"),
+  nuptialsTime: z.string().min(1, "Nuptials time is required"),
   receptionTime: z.string().optional(),
   venue: z.string().min(1, "Venue is required"),
   venueAddress: z.string().min(1, "Venue address is required"),
@@ -46,7 +47,7 @@ export default function CreateRSVP() {
       brideName: "",
       groomName: "",
       weddingDate: "",
-      ceremonyTime: "",
+      nuptialsTime: "",
       receptionTime: "",
       venue: "",
       venueAddress: "",
@@ -149,8 +150,8 @@ export default function CreateRSVP() {
     const rsvpInfo = `
 ${createdWedding.brideName} & ${createdWedding.groomName}'s Wedding
 
-Wedding Date: ${new Date(createdWedding.weddingDate).toLocaleDateString()}
-Ceremony Time: ${createdWedding.ceremonyTime}
+Wedding Date: ${formatLongDate(createdWedding.weddingDate)}
+Nuptials Time: ${createdWedding.nuptialsTime}
 Reception Time: ${createdWedding.receptionTime || 'TBD'}
 Venue: ${createdWedding.venue}
 Address: ${createdWedding.venueAddress}
@@ -181,8 +182,8 @@ ${createdWedding.story ? `Our Story: ${createdWedding.story}` : ''}
 
 ${createdWedding.brideName} & ${createdWedding.groomName}
 
-📅 Date: ${new Date(createdWedding.weddingDate).toLocaleDateString()}
-🕐 Time: ${createdWedding.ceremonyTime}
+📅 Date: ${formatLongDate(createdWedding.weddingDate)}
+🕐 Time: ${createdWedding.nuptialsTime}
 📍 Venue: ${createdWedding.venue}
 
 Please RSVP here: ${rsvpUrl}
@@ -384,14 +385,14 @@ We can't wait to celebrate with you! 💕`;
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <Label htmlFor="ceremonyTime">Nuptials Time *</Label>
+                  <Label htmlFor="nuptialsTime">Nuptials Time *</Label>
                   <Input
-                    id="ceremonyTime"
+                    id="nuptialsTime"
                     type="time"
-                    {...form.register("ceremonyTime")}
+                    {...form.register("nuptialsTime")}
                   />
-                  {form.formState.errors.ceremonyTime && (
-                    <p className="text-sm text-red-500 mt-1">{form.formState.errors.ceremonyTime.message}</p>
+                  {form.formState.errors.nuptialsTime && (
+                    <p className="text-sm text-red-500 mt-1">{form.formState.errors.nuptialsTime.message}</p>
                   )}
                 </div>
 

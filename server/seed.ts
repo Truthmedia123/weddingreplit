@@ -145,7 +145,7 @@ const weddingsData = [
     weddingDate: new Date("2024-12-15T16:00:00"),
     venue: "Paradise Beach Resort",
     venueAddress: "Calangute Beach, North Goa",
-    ceremonyTime: "4:00 PM",
+    nuptialsTime: "4:00 PM",
     receptionTime: "7:00 PM",
     coverImage: "https://images.unsplash.com/photo-1519741497674-611481863552",
     story: "Our love story began five years ago when we met at a college festival in Mumbai. What started as a friendship over shared cups of chai turned into something beautiful. From late-night conversations to exploring the streets of Mumbai together, we knew we had found our perfect match. Now, we invite you to celebrate with us as we begin this new chapter of our lives in the beautiful state of Goa.",

@@ -19,7 +19,7 @@ CREATE TABLE "weddings" (
 	"wedding_date" timestamp NOT NULL,
 	"venue" text NOT NULL,
 	"venue_address" text NOT NULL,
-	"ceremony_time" text NOT NULL,
+	"nuptials_time" text NOT NULL,
 	"reception_time" text,
 	"cover_image" text,
 	"gallery_images" text[],

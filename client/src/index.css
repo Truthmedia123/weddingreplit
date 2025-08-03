@@ -143,21 +143,7 @@ button, [role="button"], input, textarea, select {
     font-family: 'Dancing Script', cursive;
   }
 
-  .ornament::before,
-  .ornament::after {
-    content: '❦';
-    color: var(--goan-coral);
-    font-size: 1.5em;
-    opacity: 0.6;
-  }
 
-  .ornament::before {
-    margin-right: 0.5em;
-  }
-
-  .ornament::after {
-    margin-left: 0.5em;
-  }
 }
 
 @layer utilities {

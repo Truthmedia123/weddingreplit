@@ -222,7 +222,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ceremonyVenue: z.string().min(1),
         ceremonyDay: z.string().min(1),
         ceremonyDate: z.string().min(1),
-        ceremonyTime: z.string().min(1),
+        nuptialsTime: z.string().min(1),
         receptionVenue: z.string().min(1),
         receptionTime: z.string().min(1),
         address1: z.string().min(1),

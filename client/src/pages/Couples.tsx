@@ -3,24 +3,13 @@ import { useParams } from "wouter";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { formatTime12Hour, formatFullDate, formatShortDate } from "@/utils/dateTime";
 import type { Wedding, Rsvp } from "@shared/schema";
-
-// Utility function to convert 24-hour time to 12-hour format
-const formatTime12Hour = (time24: string): string => {
-  if (!time24) return '';
-  const [hours, minutes] = time24.split(':');
-  const hour = parseInt(hours, 10);
-  const ampm = hour >= 12 ? 'PM' : 'AM';
-  const hour12 = hour % 12 || 12;
-  return `${hour12}:${minutes} ${ampm}`;
-};
 
 export default function Couples() {
   const { slug } = useParams();
@@ -146,17 +135,12 @@ export default function Couples() {
             <div className="flex items-center justify-center gap-8 text-lg">
               <div className="text-center">
                 <i className="fas fa-calendar-alt text-red-500 text-2xl mb-2"></i>
-                <p className="font-semibold">{weddingDate.toLocaleDateString('en-US', { 
-                  weekday: 'long', 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
-                })}</p>
+                <p className="font-semibold">{formatFullDate(weddingDate)}</p>
               </div>
               
               <div className="text-center">
                 <i className="fas fa-clock text-teal-500 text-2xl mb-2"></i>
-                <p className="font-semibold">{formatTime12Hour(wedding.ceremonyTime)}</p>
+                <p className="font-semibold">{formatTime12Hour(wedding.nuptialsTime)}</p>
               </div>
               
               <div className="text-center">
@@ -216,12 +200,7 @@ export default function Couples() {
                   <i className="fas fa-calendar-alt text-red-500 mt-1"></i>
                   <div>
                     <p className="font-semibold">Date</p>
-                    <p className="text-gray-600">{weddingDate.toLocaleDateString('en-US', { 
-                      weekday: 'long', 
-                      year: 'numeric', 
-                      month: 'long', 
-                      day: 'numeric' 
-                    })}</p>
+                    <p className="text-gray-600">{formatFullDate(weddingDate)}</p>
                   </div>
                 </div>
 
@@ -229,7 +208,7 @@ export default function Couples() {
                   <i className="fas fa-clock text-teal-500 mt-1"></i>
                   <div>
                     <p className="font-semibold">Nuptials</p>
-                    <p className="text-gray-600">{formatTime12Hour(wedding.ceremonyTime)}</p>
+                    <p className="text-gray-600">{formatTime12Hour(wedding.nuptialsTime)}</p>
                   </div>
                 </div>
 
@@ -258,7 +237,7 @@ export default function Couples() {
                     <div>
                       <p className="font-semibold">RSVP Deadline</p>
                       <p className="text-gray-600">
-                        {new Date(wedding.rsvpDeadline).toLocaleDateString()}
+                        {formatShortDate(wedding.rsvpDeadline)}
                       </p>
                     </div>
                   </div>

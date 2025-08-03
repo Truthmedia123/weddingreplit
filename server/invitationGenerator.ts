@@ -14,7 +14,7 @@ export interface InvitationData {
   ceremonyVenue: string;
   ceremonyDay: string;
   ceremonyDate: string;
-  ceremonyTime: string;
+  nuptialsTime: string;
   receptionVenue: string;
   receptionTime: string;
   address1: string;
@@ -161,7 +161,7 @@ export async function generateInvitation(data: InvitationData): Promise<Generate
     
     // Date and time in larger text
     ctx.font = 'bold 22px "Times New Roman", serif';
-    ctx.fillText(`${data.ceremonyDate} at ${data.ceremonyTime}`, 400, 650);
+    ctx.fillText(`${data.ceremonyDate} at ${data.nuptialsTime}`, 400, 650);
 
     // Reception details
     ctx.font = '18px "Times New Roman", serif';

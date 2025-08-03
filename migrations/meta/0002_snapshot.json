@@ -694,8 +694,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "ceremony_time": {
-          "name": "ceremony_time",
+        "nuptials_time": {
+          "name": "nuptials_time",
           "type": "text",
           "primaryKey": false,
           "notNull": true

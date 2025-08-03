@@ -1,21 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { useRoute } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Users, Calendar, MapPin, Mail, Phone, Download, Share, MessageCircle } from "lucide-react";
+import { formatTime12Hour, formatLongDate, formatShortDate } from "@/utils/dateTime";
 import type { Wedding, Rsvp } from "@shared/schema";
-
-// Utility function to convert 24-hour time to 12-hour format
-const formatTime12Hour = (time24: string): string => {
-  if (!time24) return '';
-  const [hours, minutes] = time24.split(':');
-  const hour = parseInt(hours, 10);
-  const ampm = hour >= 12 ? 'PM' : 'AM';
-  const hour12 = hour % 12 || 12;
-  return `${hour12}:${minutes} ${ampm}`;
-};
 
 export default function TrackRSVP() {
   const [, params] = useRoute("/track/:slug");
@@ -68,7 +57,7 @@ export default function TrackRSVP() {
       rsvp.attendingReception ? 'Yes' : 'No',
       rsvp.dietaryRestrictions || '',
       rsvp.message || '',
-      rsvp.createdAt ? new Date(rsvp.createdAt).toLocaleDateString() : ''
+      rsvp.createdAt ? formatShortDate(rsvp.createdAt) : ''
     ]);
 
     const csvContent = [headers, ...csvData]
@@ -103,8 +92,8 @@ export default function TrackRSVP() {
 
 ${wedding.brideName} & ${wedding.groomName}
 
-📅 Date: ${new Date(wedding.weddingDate).toLocaleDateString()}
-🕐 Nuptials: ${formatTime12Hour(wedding.ceremonyTime)}
+📅 Date: ${formatLongDate(wedding.weddingDate)}
+🕐 Nuptials: ${formatTime12Hour(wedding.nuptialsTime)}
 ${wedding.receptionTime ? `🎉 Reception: ${formatTime12Hour(wedding.receptionTime)}` : ''}
 📍 Venue: ${wedding.venue}
 
@@ -120,8 +109,8 @@ We can't wait to celebrate with you! 💕`;
     const weddingInfo = `
 ${wedding.brideName} & ${wedding.groomName}'s Wedding
 
-Wedding Date: ${new Date(wedding.weddingDate).toLocaleDateString()}
-Ceremony Time: ${formatTime12Hour(wedding.ceremonyTime)}
+Wedding Date: ${formatLongDate(wedding.weddingDate)}
+Nuptials Time: ${formatTime12Hour(wedding.nuptialsTime)}
 ${wedding.receptionTime ? `Reception Time: ${formatTime12Hour(wedding.receptionTime)}` : ''}
 Venue: ${wedding.venue}
 Address: ${wedding.venueAddress}
@@ -174,12 +163,12 @@ ${wedding.story ? `Our Story: ${wedding.story}` : ''}
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-gray-500" />
                 <span className="text-sm">
-                  {new Date(wedding.weddingDate).toLocaleDateString()}
+                  {formatLongDate(wedding.weddingDate)}
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-gray-500" />
-                <span className="text-sm">Nuptials: {formatTime12Hour(wedding.ceremonyTime)}</span>
+                <span className="text-sm">Nuptials: {formatTime12Hour(wedding.nuptialsTime)}</span>
               </div>
               {wedding.receptionTime && (
                 <div className="flex items-center gap-2">

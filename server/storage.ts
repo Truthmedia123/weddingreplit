@@ -1,6 +1,6 @@
 import { vendors, categories, blogPosts, weddings, rsvps } from "@shared/schema-sqlite";
 import { db } from "./db";
-import { eq, and, desc, sql, like, or } from "drizzle-orm";
+import { eq, and, desc, like, or } from "drizzle-orm";
 import type { 
   Vendor, InsertVendor, 
   Category, InsertCategory,
@@ -64,7 +64,7 @@ export class DatabaseStorage implements IStorage {
     }
     
     if (conditions.length > 0) {
-      query = query.where(and(...conditions));
+      query = query.where(and(...conditions)) as any;
     }
     
     return await query;
@@ -72,7 +72,7 @@ export class DatabaseStorage implements IStorage {
 
   async getVendor(id: number): Promise<Vendor | undefined> {
     const result = await db.select().from(vendors).where(eq(vendors.id, id));
-    return result[0];
+    return result[0] || undefined;
   }
 
   async getFeaturedVendors(): Promise<Vendor[]> {
@@ -106,7 +106,7 @@ export class DatabaseStorage implements IStorage {
     let query = db.select().from(blogPosts);
     
     if (published !== undefined) {
-      query = query.where(eq(blogPosts.published, published));
+      query = query.where(eq(blogPosts.published, published)) as any;
     }
     
     return await query.orderBy(desc(blogPosts.createdAt));
@@ -114,7 +114,7 @@ export class DatabaseStorage implements IStorage {
 
   async getBlogPost(slug: string): Promise<BlogPost | undefined> {
     const result = await db.select().from(blogPosts).where(eq(blogPosts.slug, slug));
-    return result[0];
+    return result[0] || undefined;
   }
 
   async createBlogPost(post: InsertBlogPost): Promise<BlogPost> {
@@ -132,7 +132,7 @@ export class DatabaseStorage implements IStorage {
 
   async getWedding(slug: string): Promise<Wedding | undefined> {
     const result = await db.select().from(weddings).where(eq(weddings.slug, slug));
-    return result[0];
+    return result[0] || undefined;
   }
 
   async createWedding(wedding: InsertWedding): Promise<Wedding> {
@@ -151,6 +151,32 @@ export class DatabaseStorage implements IStorage {
   async createRsvp(rsvp: InsertRsvp): Promise<Rsvp> {
     const result = await db.insert(rsvps).values(rsvp).returning();
     return result[0];
+  }
+
+  async getWeddingBySlug(slug: string): Promise<Wedding | undefined> {
+    return this.getWedding(slug);
+  }
+
+  async getAllWeddings(): Promise<Wedding[]> {
+    return this.getWeddings();
+  }
+
+  async getRsvpsByWeddingId(weddingId: number): Promise<Rsvp[]> {
+    return this.getWeddingRsvps(weddingId);
+  }
+
+  async getRsvpByEmail(weddingId: number, email: string): Promise<Rsvp | undefined> {
+    const result = await db.select().from(rsvps)
+      .where(and(eq(rsvps.weddingId, weddingId), eq(rsvps.guestEmail, email)));
+    return result[0] || undefined;
+  }
+
+  async updateRsvp(rsvpId: number, updateData: any): Promise<Rsvp | undefined> {
+    const result = await db.update(rsvps)
+      .set(updateData)
+      .where(eq(rsvps.id, rsvpId))
+      .returning();
+    return result[0] || undefined;
   }
 
 

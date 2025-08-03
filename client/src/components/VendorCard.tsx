@@ -198,13 +198,7 @@ export default function VendorCard({ vendor }: VendorCardProps) {
           
 
         </div>
-        
-        {/* View profile link */}
-        <Link href={`/vendor/${vendor.id}`}>
-          <div className="mt-4 text-center text-sm text-gray-600 hover:text-red-600 transition-colors cursor-pointer">
-            View Full Profile <i className="fas fa-arrow-right ml-1"></i>
-          </div>
-        </Link>
+
       </CardContent>
     </Card>
   );
