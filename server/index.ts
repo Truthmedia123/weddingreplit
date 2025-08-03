@@ -88,7 +88,7 @@ app.use((req, res, next) => {
   const server = await registerRoutes(app);
 
   // Serve static files from attached_assets directory
-  app.use('/attached_assets', express.static(path.resolve(import.meta.dirname, '../attached_assets')));
+  app.use('/attached_assets', express.static(path.resolve(__dirname, '../attached_assets')));
 
   // 404 handler for API routes
   app.use('/api/*', notFoundHandler);
@@ -123,7 +123,7 @@ app.use((req, res, next) => {
   process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
   const port = process.env.PORT || 5002;
-  server.listen(port, "0.0.0.0", () => {
+  server.listen(port as number, "0.0.0.0", () => {
     log(`🚀 Server running on port ${port}`);
     log(`📊 Health check: http://localhost:${port}/health`);
     log(`🔍 Environment: ${process.env.NODE_ENV || 'development'}`);

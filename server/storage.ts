@@ -15,6 +15,9 @@ export interface IStorage {
   getVendor(id: number): Promise<Vendor | undefined>;
   getFeaturedVendors(): Promise<Vendor[]>;
   createVendor(vendor: InsertVendor): Promise<Vendor>;
+  updateVendor(id: number, updateData: Partial<InsertVendor>): Promise<Vendor | undefined>;
+  deleteVendor(id: number): Promise<void>;
+  getVendorByEmail(email: string): Promise<Vendor | undefined>;
 
   // Categories
   getCategories(): Promise<Category[]>;
@@ -35,7 +38,15 @@ export interface IStorage {
   getWeddingRsvps(weddingId: number): Promise<Rsvp[]>;
   createRsvp(rsvp: InsertRsvp): Promise<Rsvp>;
 
+  // Reviews (placeholder methods)
+  getVendorReviews(vendorId: number): Promise<any[]>;
+  createReview(reviewData: any): Promise<any>;
 
+  // Business Submissions (placeholder methods)
+  createBusinessSubmission(submissionData: any): Promise<any>;
+
+  // Contact (placeholder methods)
+  createContact(contactData: any): Promise<any>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -82,6 +93,23 @@ export class DatabaseStorage implements IStorage {
   async createVendor(vendor: InsertVendor): Promise<Vendor> {
     const result = await db.insert(vendors).values(vendor).returning();
     return result[0];
+  }
+
+  async updateVendor(id: number, updateData: Partial<InsertVendor>): Promise<Vendor | undefined> {
+    const result = await db.update(vendors)
+      .set(updateData)
+      .where(eq(vendors.id, id))
+      .returning();
+    return result[0] || undefined;
+  }
+
+  async deleteVendor(id: number): Promise<void> {
+    await db.delete(vendors).where(eq(vendors.id, id));
+  }
+
+  async getVendorByEmail(email: string): Promise<Vendor | undefined> {
+    const result = await db.select().from(vendors).where(eq(vendors.email, email));
+    return result[0] || undefined;
   }
 
   // Reviews - Not implemented in SQLite schema yet
@@ -179,7 +207,32 @@ export class DatabaseStorage implements IStorage {
     return result[0] || undefined;
   }
 
+  // Reviews (placeholder implementations)
+  async getVendorReviews(vendorId: number): Promise<any[]> {
+    // Placeholder implementation - return empty array for now
+    console.log(`Getting reviews for vendor ${vendorId}`);
+    return [];
+  }
 
+  async createReview(reviewData: any): Promise<any> {
+    // Placeholder implementation - return the data with an ID
+    console.log('Creating review:', reviewData);
+    return { id: Date.now(), ...reviewData, createdAt: new Date().toISOString() };
+  }
+
+  // Business Submissions (placeholder implementation)
+  async createBusinessSubmission(submissionData: any): Promise<any> {
+    // Placeholder implementation - return the data with an ID
+    console.log('Creating business submission:', submissionData);
+    return { id: Date.now(), ...submissionData, createdAt: new Date().toISOString(), status: 'pending' };
+  }
+
+  // Contact (placeholder implementation)
+  async createContact(contactData: any): Promise<any> {
+    // Placeholder implementation - return the data with an ID
+    console.log('Creating contact:', contactData);
+    return { id: Date.now(), ...contactData, createdAt: new Date().toISOString() };
+  }
 }
 
 export const storage: IStorage = new DatabaseStorage();

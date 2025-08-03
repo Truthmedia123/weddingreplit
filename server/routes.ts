@@ -1,11 +1,40 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertReviewSchema, insertBusinessSubmissionSchema, insertContactSchema, insertWeddingSchema, insertRsvpSchema } from "@shared/schema";
+import { insertReviewSchema, insertBusinessSubmissionSchema, insertContactSchema } from "@shared/schema";
 import { z } from "zod";
-import { generateInvitation, getInvitation, type InvitationData } from "./simpleInvitationGenerator";
+import { generateInvitation, getInvitation } from "./simpleInvitationGenerator";
+import type { InvitationData } from "./simpleInvitationGenerator";
+import { healthCheckHandler, readinessHandler, livenessHandler, metricsHandler } from "./health";
+import { PerformanceMonitor, createPerformanceMiddleware } from "./monitoring/performance";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Initialize performance monitoring
+  const performanceMonitor = new PerformanceMonitor();
+  const performanceMiddleware = createPerformanceMiddleware(performanceMonitor);
+  
+  // Store performance monitor in app for access in middleware
+  app.set('performanceMonitor', performanceMonitor);
+  
+  // Apply performance tracking middleware globally
+  app.use(performanceMiddleware.requestTracker);
+
+  // Health check endpoints
+  app.get("/health", healthCheckHandler);
+  app.get("/health/ready", readinessHandler);
+  app.get("/health/live", livenessHandler);
+  app.get("/metrics", metricsHandler);
+  
+  // Performance monitoring endpoint
+  app.get("/api/monitoring/performance", (req, res) => {
+    try {
+      const stats = performanceMonitor.getStats();
+      res.json(stats);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get performance stats" });
+    }
+  });
+
   // Vendors
   app.get("/api/vendors", async (req, res) => {
     try {
@@ -21,7 +50,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/vendors/featured", async (req, res) => {
+  app.get("/api/vendors/featured", async (_req, res) => {
     try {
       const vendors = await storage.getFeaturedVendors();
       res.json(vendors);
@@ -40,6 +69,87 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(vendor);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch vendor" });
+    }
+  });
+
+  // Vendor CRUD operations
+  app.post("/api/vendors", async (req, res) => {
+    try {
+      const vendorData = req.body;
+      
+      // Basic validation
+      if (!vendorData.name || !vendorData.email || !vendorData.category) {
+        return res.status(400).json({ error: 'Missing required fields: name, email, category' });
+      }
+
+      // Email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(vendorData.email)) {
+        return res.status(400).json({ error: 'Invalid email format' });
+      }
+
+      // Check for duplicate email
+      const existingVendor = await storage.getVendorByEmail(vendorData.email);
+      if (existingVendor) {
+        return res.status(409).json({ error: 'Vendor with this email already exists' });
+      }
+
+      const newVendor = await storage.createVendor(vendorData);
+      res.status(201).json(newVendor);
+    } catch (error) {
+      console.error('Error creating vendor:', error);
+      res.status(500).json({ error: 'Failed to create vendor' });
+    }
+  });
+
+  app.put("/api/vendors/:id", async (req, res) => {
+    try {
+      const vendorId = parseInt(req.params.id);
+      const updateData = req.body;
+
+      // Check if vendor exists
+      const existingVendor = await storage.getVendor(vendorId);
+      if (!existingVendor) {
+        return res.status(404).json({ error: 'Vendor not found' });
+      }
+
+      // Email validation if email is being updated
+      if (updateData.email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(updateData.email)) {
+          return res.status(400).json({ error: 'Invalid email format' });
+        }
+
+        // Check for duplicate email (excluding current vendor)
+        const duplicateVendor = await storage.getVendorByEmail(updateData.email);
+        if (duplicateVendor && duplicateVendor.id !== vendorId) {
+          return res.status(409).json({ error: 'Another vendor with this email already exists' });
+        }
+      }
+
+      const updatedVendor = await storage.updateVendor(vendorId, updateData);
+      res.json(updatedVendor);
+    } catch (error) {
+      console.error('Error updating vendor:', error);
+      res.status(500).json({ error: 'Failed to update vendor' });
+    }
+  });
+
+  app.delete("/api/vendors/:id", async (req, res) => {
+    try {
+      const vendorId = parseInt(req.params.id);
+
+      // Check if vendor exists
+      const existingVendor = await storage.getVendor(vendorId);
+      if (!existingVendor) {
+        return res.status(404).json({ error: 'Vendor not found' });
+      }
+
+      await storage.deleteVendor(vendorId);
+      res.json({ message: 'Vendor deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting vendor:', error);
+      res.status(500).json({ error: 'Failed to delete vendor' });
     }
   });
 
@@ -69,7 +179,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Categories
-  app.get("/api/categories", async (req, res) => {
+  app.get("/api/categories", async (_req, res) => {
     try {
       const categories = await storage.getCategories();
       res.json(categories);
@@ -91,7 +201,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Blog Posts
-  app.get("/api/blog", async (req, res) => {
+  app.get("/api/blog", async (_req, res) => {
     try {
       const posts = await storage.getBlogPosts(true);
       res.json(posts);
@@ -142,7 +252,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Wedding routes
-  app.get("/api/weddings", async (req, res) => {
+  app.get("/api/weddings", async (_req, res) => {
     try {
       const weddings = await storage.getWeddings();
       res.json(weddings);
@@ -231,11 +341,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         address2: z.string().min(1),
         location2: z.string().min(1),
         contact2: z.string().min(1),
-        qrCodeImage: z.string().optional(), // Optional base64 encoded QR code
+        qrCodeImage: z.string().optional().default(""), // Optional base64 encoded QR code
       });
 
       const validatedData = invitationSchema.parse(req.body);
-      const result = await generateInvitation(validatedData);
+      const result = await generateInvitation(validatedData as InvitationData);
 
       res.json({
         downloadToken: result.token,
