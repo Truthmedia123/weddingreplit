@@ -1,0 +1,138 @@
+name: Monitoring & Health Checks
+
+on:
+  schedule:
+    # Run every 15 minutes
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  health-checks:
+    name: Application Health Checks
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        environment: [staging, production]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run health checks
+        run: npm run health-check:${{ matrix.environment }}
+        env:
+          HEALTH_CHECK_URL: ${{ matrix.environment == 'production' && secrets.PROD_URL || secrets.STAGING_URL }}
+          
+      - name: Check API endpoints
+        run: |
+          echo "🔍 Checking API endpoints for ${{ matrix.environment }}"
+          npm run test:api:health -- --env=${{ matrix.environment }}
+          
+      - name: Monitor performance metrics
+        run: npm run monitor:performance -- --env=${{ matrix.environment }}
+        
+      - name: Check database connectivity
+        run: npm run health-check:database -- --env=${{ matrix.environment }}
+        
+      - name: Validate SSL certificates
+        run: |
+          URL=${{ matrix.environment == 'production' && secrets.PROD_URL || secrets.STAGING_URL }}
+          openssl s_client -connect ${URL#https://}:443 -servername ${URL#https://} < /dev/null 2>/dev/null | openssl x509 -noout -dates
+          
+      - name: Send alerts on failure
+        if: failure()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: failure
+          channel: '#alerts'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+          text: '🚨 Health check failed for ${{ matrix.environment }} environment'
+
+  performance-monitoring:
+    name: Performance Monitoring
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run Lighthouse CI
+        run: |
+          npm install -g @lhci/cli
+          lhci autorun
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+          
+      - name: Monitor Core Web Vitals
+        run: npm run monitor:web-vitals
+        
+      - name: Check bundle sizes
+        run: npm run analyze:bundle-size
+        
+      - name: Upload performance metrics
+        uses: actions/upload-artifact@v3
+        with:
+          name: performance-metrics
+          path: ./performance-metrics/
+
+  test-health:
+    name: Test Suite Health
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Check test execution time
+        run: |
+          echo "📊 Monitoring test execution times"
+          npm run test:timing-report
+          
+      - name: Validate test coverage trends
+        run: npm run test:coverage:trend
+        
+      - name: Check for flaky tests
+        run: npm run test:flaky-detection
+        
+      - name: Snapshot freshness check
+        run: npm run test:snapshots:freshness
+        
+      - name: Generate test health report
+        run: npm run test:health-report
+        
+      - name: Upload test metrics
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-health-metrics
+          path: ./test-health-metrics/
