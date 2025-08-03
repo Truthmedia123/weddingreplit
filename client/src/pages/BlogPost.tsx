@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams, Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import OptimizedImage from "@/components/OptimizedImage";
 import type { BlogPost } from "@shared/schema";
 
 export default function BlogPostPage() {
@@ -68,9 +69,10 @@ export default function BlogPostPage() {
     <div className="min-h-screen bg-slate-50">
       {/* Hero Section */}
       <section className="relative h-96">
-        <img 
+        <OptimizedImage 
           src={post.featuredImage || "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&h=800"} 
           alt={post.title}
+          preset="cover"
           className="w-full h-full object-cover" 
         />
         <div className="absolute inset-0 bg-black/50"></div>
@@ -159,9 +161,10 @@ export default function BlogPostPage() {
                   {recentPosts?.filter(p => p.id !== post.id).slice(0, 3).map((relatedPost) => (
                     <Link key={relatedPost.id} href={`/blog/${relatedPost.slug}`}>
                       <div className="flex gap-3 group cursor-pointer">
-                        <img 
+                        <OptimizedImage 
                           src={relatedPost.featuredImage || "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=80"} 
                           alt={relatedPost.title}
+                          preset="small"
                           className="w-16 h-12 object-cover rounded" 
                         />
                         <div>

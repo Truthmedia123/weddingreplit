@@ -1,4 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
+import OptimizedImage from "@/components/OptimizedImage";
 
 export default function About() {
   return (
@@ -38,9 +39,10 @@ export default function About() {
               </p>
             </div>
             <div className="relative">
-              <img 
+              <OptimizedImage 
                 src="https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" 
                 alt="Beautiful Goan wedding ceremony"
+                preset="gallery"
                 className="w-full h-96 object-cover rounded-2xl shadow-2xl" 
               />
               <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-gradient-to-br from-red-500 to-teal-500 rounded-2xl opacity-20"></div>
@@ -54,9 +56,10 @@ export default function About() {
             <CardContent className="p-8">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
                 <div className="text-center">
-                  <img 
+                  <OptimizedImage 
                     src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300" 
                     alt="Noel Fernandes - Founder"
+                    preset="thumbnail"
                     className="w-48 h-48 object-cover rounded-full mx-auto mb-4 shadow-lg" 
                   />
                   <h3 className="text-2xl font-bold text-slate-800 mb-2">Noel Fernandes</h3>
@@ -142,9 +145,10 @@ export default function About() {
         <section className="mb-16">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="relative">
-              <img 
+              <OptimizedImage 
                 src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" 
                 alt="Wedding planning and vendor coordination"
+                preset="gallery"
                 className="w-full h-96 object-cover rounded-2xl shadow-2xl" 
               />
               <div className="absolute -top-6 -left-6 w-32 h-32 bg-gradient-to-br from-teal-500 to-yellow-500 rounded-2xl opacity-20"></div>

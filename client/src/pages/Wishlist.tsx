@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Heart, Trash2, Share2, Phone, Mail, Calendar } from "lucide-react";
 import { Link } from "wouter";
 import { useToast } from "@/hooks/use-toast";
+import OptimizedImage from "@/components/OptimizedImage";
 
 export default function Wishlist() {
   const { wishlist, removeFromWishlist, clearWishlist, getWishlistByCategory } = useWishlist();
@@ -127,12 +128,11 @@ export default function Wishlist() {
                 {items.map((item) => (
                   <Card key={item.vendor.id} className="group hover:shadow-xl transition-all duration-300 overflow-hidden">
                     <div className="relative">
-                      <img
+                      <OptimizedImage
                         src={item.vendor.profileImage || "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=300"}
                         alt={item.vendor.name}
+                        preset="card"
                         className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                        loading="lazy"
-                        decoding="async"
                       />
                       
                       {/* Actions overlay */}

@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Download, Heart, Sparkles, Upload, QrCode } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
+import OptimizedImage from '@/components/OptimizedImage';
 
 interface InvitationFormData {
   bibleVerse: string;
@@ -452,9 +453,10 @@ export default function InvitationGenerator() {
                   </div>
                 ) : (
                   <div className="flex items-center gap-4 p-4 bg-white rounded-lg border border-indigo-200">
-                    <img
+                    <OptimizedImage
                       src={qrCodePreview}
                       alt="QR Code Preview"
+                      preset="small"
                       className="w-16 h-16 object-contain border border-gray-200 rounded"
                     />
                     <div className="flex-1">

@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import SEOHead from "@/components/SEOHead";
+import OptimizedImage from "@/components/OptimizedImage";
 import type { Vendor, Review } from "@shared/schema";
 
 export default function VendorProfile() {
@@ -126,12 +127,11 @@ export default function VendorProfile() {
       <div className="min-h-screen bg-slate-50">
       {/* Hero Section */}
       <section className="relative h-96">
-        <img 
+        <OptimizedImage 
           src={vendor.coverImage || vendor.profileImage || "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&h=800"} 
           alt={vendor.name}
+          preset="cover"
           className="w-full h-full object-cover"
-          loading="lazy"
-          decoding="async" 
         />
         <div className="absolute inset-0 bg-black/50"></div>
         <div className="absolute bottom-8 left-8 text-white">
@@ -180,12 +180,11 @@ export default function VendorProfile() {
                     <CarouselContent>
                       {vendor.gallery.map((image, index) => (
                         <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-                          <img 
+                          <OptimizedImage 
                             src={image} 
                             alt={`${vendor.name} gallery ${index + 1}`}
+                            preset="gallery"
                             className="w-full h-64 object-cover rounded-lg"
-                            loading="lazy"
-                            decoding="async" 
                           />
                         </CarouselItem>
                       ))}

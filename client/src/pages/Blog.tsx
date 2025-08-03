@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import OptimizedImage from "@/components/OptimizedImage";
 import type { BlogPost } from "@shared/schema";
 
 export default function Blog() {
@@ -68,9 +69,10 @@ export default function Blog() {
                 {filteredPosts.map((post) => (
                   <Link key={post.id} href={`/blog/${post.slug}`}>
                     <Card className="group cursor-pointer hover:shadow-2xl transition-all transform hover:-translate-y-2 overflow-hidden">
-                      <img 
+                      <OptimizedImage 
                         src={post.featuredImage || "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400"} 
                         alt={post.title}
+                        preset="card"
                         className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500" 
                       />
                       <CardContent className="p-6">
@@ -129,9 +131,10 @@ export default function Blog() {
                   {blogPosts?.slice(0, 3).map((post) => (
                     <Link key={post.id} href={`/blog/${post.slug}`}>
                       <div className="flex gap-3 group cursor-pointer">
-                        <img 
+                        <OptimizedImage 
                           src={post.featuredImage || "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=80"} 
                           alt={post.title}
+                          preset="small"
                           className="w-16 h-12 object-cover rounded" 
                         />
                         <div>

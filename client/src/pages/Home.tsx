@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import CategoryGrid from "@/components/CategoryGrid";
 import VendorCard from "@/components/VendorCard";
 import TestimonialSlider from "@/components/TestimonialSlider";
+import OptimizedImage from "@/components/OptimizedImage";
 import type { Vendor, BlogPost } from "@shared/schema";
 
 export default function Home() {
@@ -23,12 +24,12 @@ export default function Home() {
       <section className="hero-section relative min-h-screen flex items-center overflow-hidden">
         {/* Background with parallax effect */}
         <div className="absolute inset-0 z-0">
-          <img 
+          <OptimizedImage 
             src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" 
             alt="Beautiful Goan beach wedding ceremony" 
+            preset="hero"
             className="w-full h-full object-cover scale-110" 
             loading="eager"
-            decoding="async"
             onError={(e) => {
               e.currentTarget.src = "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80";
             }}
@@ -188,12 +189,11 @@ export default function Home() {
             {blogPosts?.slice(0, 3).map((post) => (
               <Link key={post.id} href={`/blog/${post.slug}`}>
                 <Card className="group cursor-pointer hover:shadow-2xl transition-all transform hover:-translate-y-2 overflow-hidden">
-                  <img 
+                  <OptimizedImage 
                     src={post.featuredImage || "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400"} 
                     alt={post.title}
+                    preset="card"
                     className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
-                    loading="lazy"
-                    decoding="async" 
                   />
                   <CardContent className="p-6">
                     <h3 className="text-xl font-semibold text-slate-800 mb-3 group-hover:text-red-500 transition-colors">

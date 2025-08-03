@@ -41,7 +41,6 @@ export default function CookiePolicy() {
                   </p>
                   <ul className="list-disc pl-6 text-gray-600 space-y-1">
                     <li>Language preferences</li>
-                    <li>Theme settings (light/dark mode)</li>
                     <li>Search preferences</li>
                   </ul>
                 </div>

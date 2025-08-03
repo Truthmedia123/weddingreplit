@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import OptimizedImage from "@/components/OptimizedImage";
 
 const testimonials = [
   {
@@ -76,9 +77,10 @@ export default function TestimonialSlider() {
                     {/* Author info */}
                     <div className="flex flex-col items-center text-center">
                       <div className="relative mb-3 md:mb-4">
-                        <img 
+                        <OptimizedImage 
                           src={testimonial.image} 
                           alt={testimonial.name}
+                          preset="thumbnail"
                           className="w-12 h-12 md:w-16 md:h-16 rounded-full object-cover border-4 border-white shadow-lg" 
                         />
                         <div className="absolute -bottom-1 -right-1 w-5 h-5 md:w-6 md:h-6 bg-red-500 rounded-full flex items-center justify-center">

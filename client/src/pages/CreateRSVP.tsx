@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { MapPin, Heart, Upload, X, Download, MessageCircle } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { formatLongDate } from "@/utils/dateTime";
+import OptimizedImage from "@/components/OptimizedImage";
 
 import { useToast } from "@/hooks/use-toast";
 
@@ -492,9 +493,10 @@ We can't wait to celebrate with you! 💕`;
                     </div>
                     {imagePreview && (
                       <div className="relative">
-                        <img
+                        <OptimizedImage
                           src={imagePreview}
                           alt="Cover preview"
+                          preset="card"
                           className="w-full h-32 object-cover rounded-lg"
                         />
                         <Button

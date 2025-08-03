@@ -1,148 +1,48 @@
-// Image optimization utilities
-export interface ImageOptions {
-  width?: number;
-  height?: number;
-  quality?: number;
-  format?: 'webp' | 'jpeg' | 'png';
-  fit?: 'cover' | 'contain' | 'fill';
-}
+/**
+ * Utility functions for image optimization and lazy loading
+ */
 
-export function generateImageUrl(
-  src: string, 
-  options: ImageOptions = {}
-): string {
-  if (!src) return '';
-  
-  // If it's already an external URL, return as-is
-  if (src.startsWith('http')) return src;
-  
-  const {
-    width,
-    height,
-    quality = 80,
-    format = 'webp',
-    fit = 'cover'
-  } = options;
-  
-  // Build query parameters for image optimization service
+/**
+ * Generates an optimized image URL using the image optimization API
+ * @param originalUrl - The original image URL
+ * @param options - Optimization options
+ * @returns Optimized image URL for production, original URL for development
+ */
+export const getOptimizedImageUrl = (
+  originalUrl: string,
+  options: {
+    width?: number;
+    height?: number;
+    quality?: number;
+    format?: 'webp' | 'jpeg' | 'png';
+  } = {}
+): string => {
+  // In development, return original URL
+  if (process.env.NODE_ENV === 'development') {
+    return originalUrl;
+  }
+
+  // In production, use the optimization API
   const params = new URLSearchParams();
+  params.set('src', originalUrl);
   
-  if (width) params.set('w', width.toString());
-  if (height) params.set('h', height.toString());
-  params.set('q', quality.toString());
-  params.set('f', format);
-  params.set('fit', fit);
-  
-  return `/api/images/optimize?src=${encodeURIComponent(src)}&${params.toString()}`;
-}
+  if (options.width) params.set('w', options.width.toString());
+  if (options.height) params.set('h', options.height.toString());
+  if (options.quality) params.set('q', options.quality.toString());
+  if (options.format) params.set('f', options.format);
 
-export function generateSrcSet(
-  src: string,
-  sizes: number[] = [320, 640, 768, 1024, 1280, 1920]
-): string {
-  return sizes
-    .map(size => `${generateImageUrl(src, { width: size })} ${size}w`)
-    .join(', ');
-}
+  return `/api/images/optimize?${params.toString()}`;
+};
 
-export function generateSizes(breakpoints: Record<string, string> = {
-  '(max-width: 640px)': '100vw',
-  '(max-width: 1024px)': '50vw',
-  default: '33vw'
-}): string {
-  const entries = Object.entries(breakpoints);
-  const mediaQueries = entries.slice(0, -1).map(([query, size]) => `${query} ${size}`);
-  const defaultSize = breakpoints.default || '100vw';
-  
-  return [...mediaQueries, defaultSize].join(', ');
-}
-
-// Lazy loading intersection observer
-export function createLazyLoadObserver(
-  callback: (entry: IntersectionObserverEntry) => void,
-  options: IntersectionObserverInit = {}
-): IntersectionObserver {
-  const defaultOptions: IntersectionObserverInit = {
-    root: null,
-    rootMargin: '50px',
-    threshold: 0.1,
-    ...options
-  };
-
-  return new IntersectionObserver((entries) => {
-    entries.forEach(callback);
-  }, defaultOptions);
-}
-
-// Preload critical images
-export function preloadImage(src: string, options: ImageOptions = {}): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    
-    img.onload = () => resolve();
-    img.onerror = reject;
-    
-    // Set srcset for responsive images
-    if (options.width) {
-      img.src = generateImageUrl(src, options);
-    } else {
-      img.src = src;
-    }
-  });
-}
-
-// WebP support detection
-export function supportsWebP(): Promise<boolean> {
-  return new Promise((resolve) => {
-    const webP = new Image();
-    webP.onload = webP.onerror = () => {
-      resolve(webP.height === 2);
-    };
-    webP.src = 'data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACyAgCdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA';
-  });
-}
-
-// Image compression for uploads
-export function compressImage(
-  file: File,
-  maxWidth: number = 1920,
-  maxHeight: number = 1080,
-  quality: number = 0.8
-): Promise<Blob> {
-  return new Promise((resolve) => {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d')!;
-    const img = new Image();
-
-    img.onload = () => {
-      // Calculate new dimensions
-      let { width, height } = img;
-      
-      if (width > height) {
-        if (width > maxWidth) {
-          height = (height * maxWidth) / width;
-          width = maxWidth;
-        }
-      } else {
-        if (height > maxHeight) {
-          width = (width * maxHeight) / height;
-          height = maxHeight;
-        }
-      }
-
-      canvas.width = width;
-      canvas.height = height;
-
-      // Draw and compress
-      ctx.drawImage(img, 0, 0, width, height);
-      
-      canvas.toBlob(
-        (blob) => resolve(blob!),
-        'image/jpeg',
-        quality
-      );
-    };
-
-    img.src = URL.createObjectURL(file);
-  });
-}
+/**
+ * Default image optimization settings for different use cases
+ */
+export const imageOptimizationPresets = {
+  hero: { width: 2000, height: 800, quality: 85, format: 'webp' as const },
+  card: { width: 800, height: 400, quality: 80, format: 'webp' as const },
+  thumbnail: { width: 300, height: 300, quality: 75, format: 'webp' as const },
+  gallery: { width: 800, height: 600, quality: 85, format: 'webp' as const },
+  profile: { width: 800, height: 500, quality: 80, format: 'webp' as const },
+  cover: { width: 2000, height: 800, quality: 85, format: 'webp' as const },
+  small: { width: 100, height: 80, quality: 70, format: 'webp' as const },
+};
