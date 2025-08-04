@@ -1,7 +1,7 @@
 /** @type {import('jest').Config} */
 module.exports = {
   preset: 'ts-jest',
-  
+
   // Multiple test environments for different test types
   projects: [
     {
@@ -46,7 +46,7 @@ module.exports = {
       },
     }
   ],
-  
+
   // Global coverage settings
   collectCoverageFrom: [
     'server/**/*.{ts,js}',
@@ -58,10 +58,10 @@ module.exports = {
     '!**/__tests__/**',
     '!**/coverage/**',
   ],
-  
+
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html', 'json'],
-  
+
   // Coverage thresholds
   coverageThreshold: {
     global: {
@@ -71,22 +71,22 @@ module.exports = {
       statements: 80,
     },
   },
-  
+
   // Test timeout for integration tests
   testTimeout: 30000,
-  
+
   // Global test environment options
   testEnvironmentOptions: {
     NODE_ENV: 'test',
   },
-  
+
   // Snapshot serializers
   snapshotSerializers: ['jest-serializer-html'],
-  
+
   // Clear mocks between tests
   clearMocks: true,
   restoreMocks: true,
-  
+
   // Verbose output for better debugging
   verbose: true,
 };

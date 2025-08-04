@@ -5,7 +5,7 @@ import { insertReviewSchema, insertBusinessSubmissionSchema, insertContactSchema
 import { z } from "zod";
 import { generateInvitation, getInvitation } from "./simpleInvitationGenerator";
 import type { InvitationData } from "./simpleInvitationGenerator";
-import { healthCheckHandler, readinessHandler, livenessHandler, metricsHandler } from "./health";
+import { registerHealthRoutes, metricsMiddleware } from "./health";
 import { PerformanceMonitor, createPerformanceMiddleware } from "./monitoring/performance";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -18,12 +18,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Apply performance tracking middleware globally
   app.use(performanceMiddleware.requestTracker);
+  app.use(metricsMiddleware);
 
-  // Health check endpoints
-  app.get("/health", healthCheckHandler);
-  app.get("/health/ready", readinessHandler);
-  app.get("/health/live", livenessHandler);
-  app.get("/metrics", metricsHandler);
+  // Register health check endpoints
+  registerHealthRoutes(app);
   
   // Performance monitoring endpoint
   app.get("/api/monitoring/performance", (req, res) => {
