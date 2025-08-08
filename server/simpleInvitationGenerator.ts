@@ -144,42 +144,45 @@ export async function generateInvitation(data: InvitationData): Promise<Generate
         const qrBuffer = Buffer.from(qrImageData, 'base64');
         const qrImage = await loadImage(qrBuffer);
         
-        // Position QR code at bottom center
-        const qrSize = 80;
+        // Position QR code at bottom center with better spacing
+        const qrSize = 70;
         const qrX = 400 - qrSize / 2;
-        const qrY = 820;
+        const qrY = 800;
         
         ctx.drawImage(qrImage, qrX, qrY, qrSize, qrSize);
         
         // Add RSVP text below QR code
         ctx.textAlign = 'center';
-        ctx.font = '14px "Times New Roman", serif';
+        ctx.font = '12px "Times New Roman", serif';
         ctx.fillStyle = '#4a5568';
-        ctx.fillText('Scan to RSVP', 400, 915);
+        ctx.fillText('Scan to RSVP', 400, 885);
       } catch (error) {
         console.error('[INVITATION] QR Code loading error:', error);
       }
     }
 
-    // Contact information (adjusted for QR code space)
-    const contactY = data.qrCodeImage ? 950 : 920;
-    ctx.font = '16px "Times New Roman", serif';
+    // Contact information - positioned properly within the card boundaries
+    const contactY = data.qrCodeImage ? 920 : 880;
+    ctx.font = '14px "Times New Roman", serif';
     ctx.fillStyle = '#4a5568';
+    
+    // Left side contact info
     ctx.textAlign = 'left';
-    ctx.fillText(data.address1, 100, contactY);
-    ctx.fillText(data.location1, 100, contactY + 20);
-    ctx.fillText(`Mob.: ${data.contact1}`, 100, contactY + 40);
+    ctx.fillText(data.address1, 80, contactY);
+    ctx.fillText(data.location1, 80, contactY + 18);
+    ctx.fillText(`Mob.: ${data.contact1}`, 80, contactY + 36);
 
+    // Right side contact info
     ctx.textAlign = 'right';
-    ctx.fillText(data.address2, 700, contactY);
-    ctx.fillText(data.location2, 700, contactY + 20);
-    ctx.fillText(`Mob.: ${data.contact2}`, 700, contactY + 40);
+    ctx.fillText(data.address2, 720, contactY);
+    ctx.fillText(data.location2, 720, contactY + 18);
+    ctx.fillText(`Mob.: ${data.contact2}`, 720, contactY + 36);
 
-    // Final blessing
+    // Final blessing - positioned higher to ensure it's visible
     ctx.textAlign = 'center';
-    ctx.font = 'italic 20px "Times New Roman", serif';
+    ctx.font = 'italic 18px "Times New Roman", serif';
     ctx.fillStyle = '#1e40af';
-    const blessingY = data.qrCodeImage ? 1030 : 1000;
+    const blessingY = data.qrCodeImage ? 980 : 940;
     ctx.fillText('Your presence is our blessing', 400, blessingY);
 
     // Generate token and filename

@@ -82,6 +82,8 @@ export default function InvitationGenerator() {
         throw new Error(`Please fill in all required fields: ${missingFields.join(', ')}`);
       }
 
+      console.log('Sending invitation data:', JSON.stringify(data, null, 2));
+      
       const response = await fetch('/api/invitation/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
