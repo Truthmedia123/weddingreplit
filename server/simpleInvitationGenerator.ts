@@ -136,30 +136,30 @@ export async function generateInvitation(data: InvitationData): Promise<Generate
     ctx.fillStyle = '#1e40af';
     ctx.fillText(`at ${data.receptionVenue} at ${data.receptionTime} sharp`, 400, 770);
 
-    // Contact information - positioned within the geometric border (around Y: 800-850)
-    const contactY = 800;
-    ctx.font = '12px "Times New Roman", serif';
+    // Contact information - positioned much higher within the geometric border
+    const contactY = 780;
+    ctx.font = '11px "Times New Roman", serif';
     ctx.fillStyle = '#4a5568';
     
     // Left side contact info - positioned within left border area
     ctx.textAlign = 'left';
-    ctx.fillText(data.address1, 120, contactY);
-    ctx.fillText(data.location1, 120, contactY + 15);
-    ctx.fillText(`Mob.: ${data.contact1}`, 120, contactY + 30);
+    ctx.fillText(data.address1, 140, contactY);
+    ctx.fillText(data.location1, 140, contactY + 14);
+    ctx.fillText(`Mob.: ${data.contact1}`, 140, contactY + 28);
 
     // Right side contact info - positioned within right border area
     ctx.textAlign = 'right';
-    ctx.fillText(data.address2, 680, contactY);
-    ctx.fillText(data.location2, 680, contactY + 15);
-    ctx.fillText(`Mob.: ${data.contact2}`, 680, contactY + 30);
+    ctx.fillText(data.address2, 660, contactY);
+    ctx.fillText(data.location2, 660, contactY + 14);
+    ctx.fillText(`Mob.: ${data.contact2}`, 660, contactY + 28);
 
-    // Final blessing - positioned within the border, below contact info
+    // Final blessing - positioned at the bottom within the border
     ctx.textAlign = 'center';
-    ctx.font = 'italic 16px "Times New Roman", serif';
+    ctx.font = 'italic 14px "Times New Roman", serif';
     ctx.fillStyle = '#1e40af';
-    ctx.fillText('Your presence is our blessing', 400, 850);
+    ctx.fillText('Your presence is our blessing', 400, 820);
 
-    // QR Code (if provided) - positioned in available space within border
+    // QR Code (if provided) - positioned higher within border
     if (data.qrCodeImage) {
       try {
         // Decode base64 QR code image
@@ -167,18 +167,18 @@ export async function generateInvitation(data: InvitationData): Promise<Generate
         const qrBuffer = Buffer.from(qrImageData, 'base64');
         const qrImage = await loadImage(qrBuffer);
         
-        // Position QR code in center, above contact info
-        const qrSize = 60;
+        // Position QR code much higher, above contact info
+        const qrSize = 50;
         const qrX = 400 - qrSize / 2;
-        const qrY = 720;
+        const qrY = 700;
         
         ctx.drawImage(qrImage, qrX, qrY, qrSize, qrSize);
         
         // Add RSVP text below QR code
         ctx.textAlign = 'center';
-        ctx.font = '10px "Times New Roman", serif';
+        ctx.font = '9px "Times New Roman", serif';
         ctx.fillStyle = '#4a5568';
-        ctx.fillText('Scan to RSVP', 400, 790);
+        ctx.fillText('Scan to RSVP', 400, 760);
       } catch (error) {
         console.error('[INVITATION] QR Code loading error:', error);
       }
