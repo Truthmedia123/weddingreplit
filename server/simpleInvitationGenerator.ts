@@ -144,10 +144,10 @@ export async function generateInvitation(data: InvitationData): Promise<Generate
         const qrBuffer = Buffer.from(qrImageData, 'base64');
         const qrImage = await loadImage(qrBuffer);
         
-        // Position QR code within the frame, above contact info
-        const qrSize = 45;
+        // Position QR code much higher within the frame
+        const qrSize = 40;
         const qrX = 400 - qrSize / 2;
-        const qrY = 775;
+        const qrY = 680;
         
         ctx.drawImage(qrImage, qrX, qrY, qrSize, qrSize);
         
@@ -155,15 +155,14 @@ export async function generateInvitation(data: InvitationData): Promise<Generate
         ctx.textAlign = 'center';
         ctx.font = '8px "Times New Roman", serif';
         ctx.fillStyle = '#4a5568';
-        ctx.fillText('Scan to RSVP', 400, 830);
+        ctx.fillText('Scan to RSVP', 400, 730);
       } catch (error) {
         console.error('[INVITATION] QR Code loading error:', error);
       }
     }
 
-    // Contact information - positioned within the geometric frame boundaries
-    // Adjust Y position based on whether QR code is present
-    const contactY = data.qrCodeImage ? 840 : 780;
+    // Contact information - positioned much higher within the geometric frame
+    const contactY = 720; // Much higher position to stay within border
     ctx.font = '10px "Times New Roman", serif';
     ctx.fillStyle = '#4a5568';
     
@@ -179,12 +178,11 @@ export async function generateInvitation(data: InvitationData): Promise<Generate
     ctx.fillText(data.location2, 640, contactY + 12);
     ctx.fillText(`Mob.: ${data.contact2}`, 640, contactY + 24);
 
-    // Final blessing - positioned at the very bottom within the frame
+    // Final blessing - positioned within the frame, below contact info
     ctx.textAlign = 'center';
     ctx.font = 'italic 12px "Times New Roman", serif';
     ctx.fillStyle = '#1e40af';
-    const blessingY = data.qrCodeImage ? 880 : 820;
-    ctx.fillText('Your presence is our blessing', 400, blessingY);
+    ctx.fillText('Your presence is our blessing', 400, 760);
 
     // Generate token and filename
     const token = crypto.randomBytes(16).toString('hex');
