@@ -319,30 +319,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/invitation/generate", async (req, res) => {
     try {
       const invitationSchema = z.object({
-        bibleVerse: z.string().min(1),
-        bibleReference: z.string().min(1),
-        groomName: z.string().min(1),
-        groomFatherName: z.string().min(1),
-        groomMotherName: z.string().min(1),
-        brideName: z.string().min(1),
-        brideFatherName: z.string().min(1),
-        brideMotherName: z.string().min(1),
-        ceremonyVenue: z.string().min(1),
-        ceremonyDay: z.string().min(1),
-        ceremonyDate: z.string().min(1),
-        nuptialsTime: z.string().min(1),
-        receptionVenue: z.string().min(1),
-        receptionTime: z.string().min(1),
-        address1: z.string().min(1),
-        location1: z.string().min(1),
-        contact1: z.string().min(1),
-        address2: z.string().min(1),
-        location2: z.string().min(1),
-        contact2: z.string().min(1),
+        bibleVerse: z.string().min(1, "Bible verse is required"),
+        bibleReference: z.string().min(1, "Bible reference is required"),
+        groomName: z.string().min(1, "Groom's name is required"),
+        groomFatherName: z.string().min(1, "Groom's father's name is required"),
+        groomMotherName: z.string().min(1, "Groom's mother's name is required"),
+        brideName: z.string().min(1, "Bride's name is required"),
+        brideFatherName: z.string().min(1, "Bride's father's name is required"),
+        brideMotherName: z.string().min(1, "Bride's mother's name is required"),
+        ceremonyVenue: z.string().min(1, "Ceremony venue is required"),
+        ceremonyDay: z.string().min(1, "Ceremony day is required"),
+        ceremonyDate: z.string().min(1, "Ceremony date is required"),
+        nuptialsTime: z.string().min(1, "Nuptials time is required"),
+        receptionVenue: z.string().min(1, "Reception venue is required"),
+        receptionTime: z.string().min(1, "Reception time is required"),
+        address1: z.string().min(1, "Address 1 is required"),
+        location1: z.string().min(1, "Location 1 is required"),
+        contact1: z.string().min(1, "Contact 1 is required"),
+        address2: z.string().min(1, "Address 2 is required"),
+        location2: z.string().min(1, "Location 2 is required"),
+        contact2: z.string().min(1, "Contact 2 is required"),
         qrCodeImage: z.string().optional().default(""), // Optional base64 encoded QR code
       });
 
+      console.log("Received invitation data:", JSON.stringify(req.body, null, 2));
+      
       const validatedData = invitationSchema.parse(req.body);
+      console.log("Validated invitation data successfully");
+      
       const result = await generateInvitation(validatedData as InvitationData);
 
       res.json({
@@ -353,7 +357,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid invitation data", errors: error.errors });
+        console.error("Validation errors:", error.errors);
+        const formattedErrors = error.errors.map(err => ({
+          field: err.path.join('.'),
+          message: err.message,
+          value: err.code === 'too_small' ? 'empty or too short' : 'invalid'
+        }));
+        return res.status(400).json({ 
+          message: "Invalid invitation data", 
+          errors: formattedErrors,
+          details: error.errors 
+        });
       }
       console.error("Error generating invitation:", error);
       res.status(500).json({ message: "Failed to generate invitation", error: (error as Error).message });

@@ -68,6 +68,20 @@ export default function InvitationGenerator() {
 
   const generateMutation = useMutation({
     mutationFn: async (data: InvitationFormData): Promise<GenerationResult> => {
+      // Client-side validation
+      const requiredFields: (keyof InvitationFormData)[] = [
+        'bibleVerse', 'bibleReference', 'groomName', 'groomFatherName', 'groomMotherName',
+        'brideName', 'brideFatherName', 'brideMotherName', 'ceremonyVenue', 'ceremonyDay',
+        'ceremonyDate', 'nuptialsTime', 'receptionVenue', 'receptionTime', 'address1',
+        'location1', 'contact1', 'address2', 'location2', 'contact2'
+      ];
+
+      const missingFields = requiredFields.filter(field => !data[field] || data[field].trim() === '');
+      
+      if (missingFields.length > 0) {
+        throw new Error(`Please fill in all required fields: ${missingFields.join(', ')}`);
+      }
+
       const response = await fetch('/api/invitation/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -76,6 +90,10 @@ export default function InvitationGenerator() {
       
       if (!response.ok) {
         const error = await response.json();
+        if (error.errors && Array.isArray(error.errors)) {
+          const errorMessages = error.errors.map((err: any) => `${err.field}: ${err.message}`).join(', ');
+          throw new Error(`Validation errors: ${errorMessages}`);
+        }
         throw new Error(error.message || 'Failed to generate invitation');
       }
       
@@ -120,7 +138,46 @@ export default function InvitationGenerator() {
     setQrCodePreview(null);
   };
 
+  const validateForm = (): string[] => {
+    const errors: string[] = [];
+    const requiredFields: { key: keyof InvitationFormData; label: string }[] = [
+      { key: 'bibleVerse', label: 'Bible Verse' },
+      { key: 'bibleReference', label: 'Bible Reference' },
+      { key: 'groomName', label: "Groom's Name" },
+      { key: 'groomFatherName', label: "Groom's Father's Name" },
+      { key: 'groomMotherName', label: "Groom's Mother's Name" },
+      { key: 'brideName', label: "Bride's Name" },
+      { key: 'brideFatherName', label: "Bride's Father's Name" },
+      { key: 'brideMotherName', label: "Bride's Mother's Name" },
+      { key: 'ceremonyVenue', label: 'Ceremony Venue' },
+      { key: 'ceremonyDay', label: 'Ceremony Day' },
+      { key: 'ceremonyDate', label: 'Ceremony Date' },
+      { key: 'nuptialsTime', label: 'Nuptials Time' },
+      { key: 'receptionVenue', label: 'Reception Venue' },
+      { key: 'receptionTime', label: 'Reception Time' },
+      { key: 'address1', label: 'Address 1' },
+      { key: 'location1', label: 'Location 1' },
+      { key: 'contact1', label: 'Contact 1' },
+      { key: 'address2', label: 'Address 2' },
+      { key: 'location2', label: 'Location 2' },
+      { key: 'contact2', label: 'Contact 2' },
+    ];
+
+    requiredFields.forEach(({ key, label }) => {
+      if (!formData[key] || formData[key].trim() === '') {
+        errors.push(label);
+      }
+    });
+
+    return errors;
+  };
+
   const handleGenerate = () => {
+    const validationErrors = validateForm();
+    if (validationErrors.length > 0) {
+      alert(`Please fill in the following required fields:\n\n${validationErrors.join('\n')}`);
+      return;
+    }
     generateMutation.mutate(formData);
   };
 
@@ -178,6 +235,12 @@ export default function InvitationGenerator() {
           <Card>
             <CardHeader>
               <CardTitle className="text-2xl text-center text-gray-800">Fill in Your Wedding Details</CardTitle>
+              {generateMutation.error && (
+                <div className="bg-red-50 border border-red-200 rounded-md p-4 mt-4">
+                  <p className="text-red-800 text-sm font-medium">Error generating invitation:</p>
+                  <p className="text-red-700 text-sm mt-1">{generateMutation.error.message}</p>
+                </div>
+              )}
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Bible Verse Section */}
