@@ -130,36 +130,13 @@ export async function generateInvitation(data: InvitationData): Promise<Generate
     // Reception details
     ctx.font = '18px "Times New Roman", serif';
     ctx.fillStyle = '#2c3e50';
-    ctx.fillText('And thereafter to join us for our celebration', 400, 740);
+    ctx.fillText('And thereafter to join us for our celebration', 400, 730);
     
     ctx.font = '20px "Times New Roman", serif';
     ctx.fillStyle = '#1e40af';
-    ctx.fillText(`at ${data.receptionVenue} at ${data.receptionTime} sharp`, 400, 770);
+    ctx.fillText(`at ${data.receptionVenue} at ${data.receptionTime} sharp`, 400, 755);
 
-    // Contact information - positioned much higher within the geometric border
-    const contactY = 780;
-    ctx.font = '11px "Times New Roman", serif';
-    ctx.fillStyle = '#4a5568';
-    
-    // Left side contact info - positioned within left border area
-    ctx.textAlign = 'left';
-    ctx.fillText(data.address1, 140, contactY);
-    ctx.fillText(data.location1, 140, contactY + 14);
-    ctx.fillText(`Mob.: ${data.contact1}`, 140, contactY + 28);
-
-    // Right side contact info - positioned within right border area
-    ctx.textAlign = 'right';
-    ctx.fillText(data.address2, 660, contactY);
-    ctx.fillText(data.location2, 660, contactY + 14);
-    ctx.fillText(`Mob.: ${data.contact2}`, 660, contactY + 28);
-
-    // Final blessing - positioned at the bottom within the border
-    ctx.textAlign = 'center';
-    ctx.font = 'italic 14px "Times New Roman", serif';
-    ctx.fillStyle = '#1e40af';
-    ctx.fillText('Your presence is our blessing', 400, 820);
-
-    // QR Code (if provided) - positioned higher within border
+    // QR Code (if provided) - positioned within the geometric frame
     if (data.qrCodeImage) {
       try {
         // Decode base64 QR code image
@@ -167,22 +144,47 @@ export async function generateInvitation(data: InvitationData): Promise<Generate
         const qrBuffer = Buffer.from(qrImageData, 'base64');
         const qrImage = await loadImage(qrBuffer);
         
-        // Position QR code much higher, above contact info
-        const qrSize = 50;
+        // Position QR code within the frame, above contact info
+        const qrSize = 45;
         const qrX = 400 - qrSize / 2;
-        const qrY = 700;
+        const qrY = 775;
         
         ctx.drawImage(qrImage, qrX, qrY, qrSize, qrSize);
         
         // Add RSVP text below QR code
         ctx.textAlign = 'center';
-        ctx.font = '9px "Times New Roman", serif';
+        ctx.font = '8px "Times New Roman", serif';
         ctx.fillStyle = '#4a5568';
-        ctx.fillText('Scan to RSVP', 400, 760);
+        ctx.fillText('Scan to RSVP', 400, 830);
       } catch (error) {
         console.error('[INVITATION] QR Code loading error:', error);
       }
     }
+
+    // Contact information - positioned within the geometric frame boundaries
+    // Adjust Y position based on whether QR code is present
+    const contactY = data.qrCodeImage ? 840 : 780;
+    ctx.font = '10px "Times New Roman", serif';
+    ctx.fillStyle = '#4a5568';
+    
+    // Left side contact info - positioned well within left border
+    ctx.textAlign = 'left';
+    ctx.fillText(data.address1, 160, contactY);
+    ctx.fillText(data.location1, 160, contactY + 12);
+    ctx.fillText(`Mob.: ${data.contact1}`, 160, contactY + 24);
+
+    // Right side contact info - positioned well within right border
+    ctx.textAlign = 'right';
+    ctx.fillText(data.address2, 640, contactY);
+    ctx.fillText(data.location2, 640, contactY + 12);
+    ctx.fillText(`Mob.: ${data.contact2}`, 640, contactY + 24);
+
+    // Final blessing - positioned at the very bottom within the frame
+    ctx.textAlign = 'center';
+    ctx.font = 'italic 12px "Times New Roman", serif';
+    ctx.fillStyle = '#1e40af';
+    const blessingY = data.qrCodeImage ? 880 : 820;
+    ctx.fillText('Your presence is our blessing', 400, blessingY);
 
     // Generate token and filename
     const token = crypto.randomBytes(16).toString('hex');
