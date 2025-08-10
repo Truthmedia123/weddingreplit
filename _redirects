@@ -1,0 +1,10 @@
+# Redirects for SPA routing
+/*    /index.html   200
+
+# API redirects (if using serverless functions)
+/api/*  /api/:splat  200
+
+# Health check endpoints
+/health  /health.html  200
+/robots.txt  /robots.txt  200
+/sitemap.xml  /sitemap.xml  200

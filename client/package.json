@@ -1,0 +1,11 @@
+{
+  "name": "wedding-client",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "cd .. && npm run build:deploy",
+    "dev": "cd .. && npm run dev",
+    "install": "cd .. && npm install"
+  },
+  "description": "Client build wrapper for deployment platforms"
+}
