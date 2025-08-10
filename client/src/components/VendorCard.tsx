@@ -5,7 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Heart, Share2, Phone, Mail } from "lucide-react";
 import { useWishlist } from "@/hooks/use-wishlist";
 import { useToast } from "@/hooks/use-toast";
-import OptimizedImage from "@/components/OptimizedImage";
+import SimpleImage from "@/components/SimpleImage";
+import InlineSVGImage from "@/components/InlineSVGImage";
 import type { Vendor } from "@shared/schema";
 
 interface VendorCardProps {
@@ -82,12 +83,23 @@ export default function VendorCard({ vendor }: VendorCardProps) {
     <Card className="group cursor-pointer hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 overflow-hidden bg-white border-0 rounded-2xl">
       <Link href={`/vendor/${vendor.id}`}>
         <div className="relative overflow-hidden">
-          <OptimizedImage 
-            src={vendor.profileImage || "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500"} 
-            alt={vendor.name}
-            preset="card"
-            className="w-full h-72 object-cover group-hover:scale-110 transition-transform duration-700" 
-          />
+          {vendor.image || vendor.profileImage ? (
+            <SimpleImage 
+              src={vendor.image || vendor.profileImage || "/images/placeholder-photography.svg"} 
+              alt={vendor.name}
+              className="w-full h-72 object-cover group-hover:scale-110 transition-transform duration-700"
+              fallbackGradient="from-purple-500 via-pink-500 to-red-500"
+              fallbackIcon="📸"
+            />
+          ) : (
+            <InlineSVGImage
+              type={vendor.category.toLowerCase().includes('photo') ? 'photography' : 
+                   vendor.category.toLowerCase().includes('catering') ? 'catering' :
+                   vendor.category.toLowerCase().includes('floral') ? 'flowers' : 'default'}
+              className="w-full h-72 group-hover:scale-110 transition-transform duration-700"
+              alt={vendor.name}
+            />
+          )}
           
           {/* Gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
