@@ -38,7 +38,16 @@
     "monitor:web-vitals": "echo 'Web Vitals monitoring - implement with your analytics'",
     "analyze:bundle-size": "npm run build:analyze",
     "security:audit": "npm audit --audit-level moderate",
-    "security:fix": "npm audit fix"
+    "security:fix": "npm audit fix",
+    "deploy:staging": "NODE_ENV=staging npm run build && echo 'Deploy to staging'",
+    "deploy:production": "NODE_ENV=production npm run build && echo 'Deploy to production'",
+    "test:production": "node scripts/production-tests.js",
+    "test:e2e": "echo 'End-to-end tests - implement with Playwright or Cypress'",
+    "backup:database": "echo 'Database backup - implement based on your DB'",
+    "restore:database": "echo 'Database restore - implement based on your DB'",
+    "logs:production": "echo 'View production logs - implement based on your hosting'",
+    "maintenance:on": "echo 'Enable maintenance mode'",
+    "maintenance:off": "echo 'Disable maintenance mode'"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

@@ -7,6 +7,9 @@ import { generateInvitation, getInvitation } from "./simpleInvitationGenerator";
 import type { InvitationData } from "./simpleInvitationGenerator";
 import { registerHealthRoutes, metricsMiddleware } from "./health";
 import { PerformanceMonitor, createPerformanceMiddleware } from "./monitoring/performance";
+import { generateSitemap, generateRobotsTxt } from "./seo/sitemap";
+import { generateVendorJsonLd, generateWebsiteJsonLd } from "./seo/structuredData";
+import { generateVendorMetaTags, generateCategoryMetaTags } from "./seo/metaTags";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Initialize performance monitoring
@@ -22,6 +25,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Register health check endpoints
   registerHealthRoutes(app);
+  
+  // SEO endpoints
+  app.get("/sitemap.xml", generateSitemap);
+  app.get("/robots.txt", generateRobotsTxt);
   
   // Performance monitoring endpoint
   app.get("/api/monitoring/performance", (req, res) => {
