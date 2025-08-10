@@ -8,6 +8,7 @@ import Hero from "@/components/Hero";
 import CategoryGrid from "@/components/CategoryGrid";
 import VendorCard from "@/components/VendorCard";
 import OptimizedImage from "@/components/OptimizedImage";
+import { fetchFeaturedVendors, fetchBlogPosts } from "@/services/dataService";
 import type { Vendor, BlogPost } from "@shared/schema";
 
 // Lazy load heavy components
@@ -15,27 +16,19 @@ const TestimonialSlider = lazy(() => import("@/components/TestimonialSlider"));
 
 export default function Home() {
   const { data: vendorData } = useQuery<{vendors: Vendor[]}>({
-    queryKey: ["/data/featured-vendors.json"],
-    queryFn: async () => {
-      const response = await fetch('/data/featured-vendors.json');
-      if (!response.ok) {
-        throw new Error('Failed to fetch featured vendors');
-      }
-      return response.json();
-    }
+    queryKey: ['featured-vendors'],
+    queryFn: fetchFeaturedVendors,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 3
   });
   
   const featuredVendors = vendorData?.vendors || [];
 
   const { data: blogData } = useQuery<{posts: BlogPost[]}>({
-    queryKey: ["/data/blog-posts.json"],
-    queryFn: async () => {
-      const response = await fetch('/data/blog-posts.json');
-      if (!response.ok) {
-        throw new Error('Failed to fetch blog posts');
-      }
-      return response.json();
-    }
+    queryKey: ['blog-posts'],
+    queryFn: fetchBlogPosts,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 3
   });
   
   const blogPosts = blogData?.posts || [];

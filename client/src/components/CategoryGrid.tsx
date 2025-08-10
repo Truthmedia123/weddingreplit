@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import type { Category } from "@shared/schema-sqlite";
+import { fetchCategories } from "@/services/dataService";
 
 interface CategoryGridProps {
   showAll?: boolean;
@@ -13,14 +14,10 @@ interface CategoryGridProps {
 
 export default function CategoryGrid({ showAll = false, maxCategories = 8, searchFilter = "" }: CategoryGridProps) {
   const { data: categoryData, isLoading } = useQuery<{categories: Category[]}>({
-    queryKey: ['/data/categories.json'],
-    queryFn: async () => {
-      const response = await fetch('/data/categories.json');
-      if (!response.ok) {
-        throw new Error('Failed to fetch categories');
-      }
-      return response.json();
-    }
+    queryKey: ['categories'],
+    queryFn: fetchCategories,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 3
   });
   
   const allCategories = categoryData?.categories || [];
