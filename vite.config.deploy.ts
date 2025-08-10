@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 
 export default defineConfig({
+  root: 'client',
   plugins: [react()],
   resolve: {
     alias: {
@@ -11,7 +12,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: 'client/dist/public', // Output to client/dist/public for deployment platforms
+    outDir: 'dist/public', // Output to client/dist/public for deployment platforms
     emptyOutDir: true,
     sourcemap: false,
     minify: 'terser',
@@ -32,8 +33,8 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
-          ui: ['@radix-ui/react-dialog', '@radix-ui/react-button', '@radix-ui/react-card'],
-          utils: ['date-fns', 'clsx', 'tailwind-merge'],
+          ui: ['@radix-ui/react-dialog', '@radix-ui/react-select', '@radix-ui/react-tooltip'],
+          icons: ['lucide-react'],
         },
         chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js',
