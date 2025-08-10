@@ -87,7 +87,7 @@ const fallbackVendors: Vendor[] = [
     rating: 4.9,
     reviewCount: 127,
     priceRange: "₹50,000 - ₹2,00,000",
-    images: ["https://images.unsplash.com/photo-1606216794074-735e91aa2c92?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"],
+    images: ["/images/placeholder-photography.svg"],
     featured: true,
     verified: true,
     contactInfo: {
@@ -106,7 +106,7 @@ const fallbackVendors: Vendor[] = [
     rating: 4.8,
     reviewCount: 89,
     priceRange: "₹800 - ₹2,500 per person",
-    images: ["https://images.unsplash.com/photo-1555244162-803834f70033?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"],
+    images: ["/images/placeholder-catering.svg"],
     featured: true,
     verified: true,
     contactInfo: {
@@ -125,7 +125,7 @@ const fallbackVendors: Vendor[] = [
     rating: 4.7,
     reviewCount: 156,
     priceRange: "₹25,000 - ₹1,50,000",
-    images: ["https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"],
+    images: ["/images/placeholder-flowers.svg"],
     featured: true,
     verified: true,
     contactInfo: {
@@ -143,7 +143,7 @@ const fallbackBlogPosts: BlogPost[] = [
     slug: "planning-perfect-goan-beach-wedding",
     excerpt: "Everything you need to know about organizing a stunning beach wedding in Goa",
     content: "Planning a beach wedding in Goa...",
-    featuredImage: "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400",
+    featuredImage: "/images/placeholder-blog1.svg",
     published: true,
     createdAt: new Date().toISOString()
   },
@@ -153,7 +153,7 @@ const fallbackBlogPosts: BlogPost[] = [
     slug: "traditional-goan-wedding-customs",
     excerpt: "Discover the rich traditions and customs of Goan weddings",
     content: "Goan weddings are known for...",
-    featuredImage: "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400",
+    featuredImage: "/images/placeholder-blog2.svg",
     published: true,
     createdAt: new Date().toISOString()
   }

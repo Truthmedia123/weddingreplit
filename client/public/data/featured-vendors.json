@@ -11,7 +11,7 @@
       "rating": 4.9,
       "reviewCount": 127,
       "priceRange": "₹25,000 - ₹75,000",
-      "image": "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+      "image": "/images/placeholder-photography.svg",
       "featured": true,
       "verified": true,
       "tags": ["Beach Photography", "Candid", "Traditional", "Drone"]
@@ -27,7 +27,7 @@
       "rating": 4.8,
       "reviewCount": 89,
       "priceRange": "₹800 - ₹1,500 per plate",
-      "image": "https://images.unsplash.com/photo-1555244162-803834f70033?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+      "image": "/images/placeholder-catering.svg",
       "featured": true,
       "verified": true,
       "tags": ["Goan Cuisine", "Seafood", "Vegetarian", "Live Counters"]
@@ -43,7 +43,7 @@
       "rating": 4.9,
       "reviewCount": 156,
       "priceRange": "₹15,000 - ₹35,000",
-      "image": "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+      "image": "/images/placeholder-photography.svg",
       "featured": true,
       "verified": true,
       "tags": ["Bridal Makeup", "Hair Styling", "Traditional", "Airbrush"]
@@ -59,7 +59,7 @@
       "rating": 4.7,
       "reviewCount": 73,
       "priceRange": "₹20,000 - ₹1,00,000",
-      "image": "https://images.unsplash.com/photo-1478146896981-b80fe463b330?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+      "image": "/images/placeholder-flowers.svg",
       "featured": true,
       "verified": true,
       "tags": ["Tropical Flowers", "Beach Decor", "Mandap", "Centerpieces"]
@@ -75,7 +75,7 @@
       "rating": 4.8,
       "reviewCount": 94,
       "priceRange": "₹30,000 - ₹80,000",
-      "image": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+      "image": "/images/placeholder-photography.svg",
       "featured": true,
       "verified": true,
       "tags": ["Wedding DJ", "Sound System", "Lighting", "MC Services"]
@@ -91,7 +91,7 @@
       "rating": 4.9,
       "reviewCount": 112,
       "priceRange": "₹1,50,000 - ₹5,00,000",
-      "image": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+      "image": "/images/placeholder-flowers.svg",
       "featured": true,
       "verified": true,
       "tags": ["Full Planning", "Destination Wedding", "Beach Wedding", "Coordination"]

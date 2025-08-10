@@ -1,0 +1,14 @@
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="photoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#photoGrad)"/>
+  <circle cx="400" cy="250" r="80" fill="white" opacity="0.2"/>
+  <rect x="320" y="200" width="160" height="100" rx="10" fill="white" opacity="0.3"/>
+  <circle cx="400" cy="250" r="30" fill="white" opacity="0.5"/>
+  <text x="400" y="400" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="24" font-weight="bold">📸 Photography</text>
+  <text x="400" y="430" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="16" opacity="0.8">Professional Wedding Photography</text>
+</svg>
