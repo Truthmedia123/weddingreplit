@@ -33,6 +33,35 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
 
   const optimizedSrc = getOptimizedImageUrl(src, optimizationOptions);
 
+  // For local images, try to use optimized versions
+  if (src.startsWith('/images/')) {
+    const baseName = src.replace('/images/', '').replace(/\.[^/.]+$/, '');
+    
+    return (
+      <picture>
+        <source 
+          srcSet={`/images/optimized/${baseName}.avif`} 
+          type="image/avif" 
+        />
+        <source 
+          srcSet={`/images/optimized/${baseName}.webp`} 
+          type="image/webp" 
+        />
+        <img
+          src={src}
+          alt={alt}
+          loading={loading}
+          decoding={decoding}
+          {...props}
+          onError={(e) => {
+            // Fallback to original if optimized versions fail
+            e.currentTarget.src = src;
+          }}
+        />
+      </picture>
+    );
+  }
+
   return (
     <img
       src={optimizedSrc}

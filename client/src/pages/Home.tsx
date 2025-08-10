@@ -1,13 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
+import { lazy, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
+import Hero from "@/components/Hero";
 import CategoryGrid from "@/components/CategoryGrid";
 import VendorCard from "@/components/VendorCard";
-import TestimonialSlider from "@/components/TestimonialSlider";
 import OptimizedImage from "@/components/OptimizedImage";
 import type { Vendor, BlogPost } from "@shared/schema";
+
+// Lazy load heavy components
+const TestimonialSlider = lazy(() => import("@/components/TestimonialSlider"));
 
 export default function Home() {
   const { data: featuredVendors } = useQuery<Vendor[]>({
@@ -21,87 +25,7 @@ export default function Home() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="hero-section relative min-h-screen flex items-center overflow-hidden">
-        {/* Background with parallax effect */}
-        <div className="absolute inset-0 z-0">
-          <OptimizedImage 
-            src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" 
-            alt="Beautiful Goan beach wedding ceremony" 
-            preset="hero"
-            className="w-full h-full object-cover scale-110" 
-            loading="eager"
-            onError={(e) => {
-              e.currentTarget.src = "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80";
-            }}
-          />
-          <div className="absolute inset-0 hero-overlay"></div>
-        </div>
-
-        {/* Floating decorative elements */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="floating-element absolute top-20 left-10 w-4 h-4 bg-yellow-400 rounded-full opacity-60 hidden md:block"></div>
-          <div className="floating-element absolute top-40 right-20 w-6 h-6 bg-teal-400 rounded-full opacity-40 hidden md:block"></div>
-          <div className="floating-element absolute bottom-40 left-20 w-3 h-3 bg-red-400 rounded-full opacity-50 hidden lg:block"></div>
-          <div className="floating-element absolute bottom-60 right-40 w-5 h-5 bg-yellow-300 rounded-full opacity-30 hidden lg:block"></div>
-        </div>
-        
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
-          <div className="text-center">
-            <div className="animate-fade-in-up">
-              {/* Elegant subtitle */}
-              <p className="wedding-script text-xl md:text-2xl lg:text-3xl text-yellow-300 mb-3 md:mb-4 opacity-90">
-                Where Dreams Come True
-              </p>
-              
-              {/* Main heading */}
-              <h1 className="text-3xl sm:text-4xl md:text-7xl lg:text-8xl font-bold text-white mb-4 md:mb-6 leading-tight px-2 sm:px-0">
-                <span className="block mb-1 md:mb-2">Celebrate Your</span>
-                <span className="goan-text-gradient wedding-script text-4xl sm:text-5xl md:text-8xl lg:text-9xl">
-                  Perfect Day
-                </span>
-                <span className="block text-2xl sm:text-3xl md:text-5xl lg:text-6xl mt-2 md:mt-4 text-teal-300">
-                  Goan Style
-                </span>
-              </h1>
-              
-              {/* Enhanced description */}
-              <p className="text-lg md:text-xl lg:text-2xl text-gray-200 mb-8 md:mb-12 leading-relaxed max-w-4xl mx-auto px-4 sm:px-0">
-                Discover Goa's most exquisite wedding vendors and create unforgettable memories. 
-                From stunning beach ceremonies to authentic Portuguese-Goan celebrations.
-              </p>
-              
-
-
-              {/* Trust indicators */}
-              <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-3xl mx-auto">
-                <div className="text-center">
-                  <div className="text-3xl md:text-4xl font-bold text-white mb-1">500+</div>
-                  <div className="text-sm text-gray-300">Verified Vendors</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl md:text-4xl font-bold text-white mb-1">1000+</div>
-                  <div className="text-sm text-gray-300">Happy Couples</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl md:text-4xl font-bold text-white mb-1">15+</div>
-                  <div className="text-sm text-gray-300">Categories</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl md:text-4xl font-bold text-white mb-1">5★</div>
-                  <div className="text-sm text-gray-300">Average Rating</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-white rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-white rounded-full mt-2 animate-pulse"></div>
-          </div>
-        </div>
-      </section>
+      <Hero />
 
       {/* Popular Categories */}
       <CategoryGrid />
@@ -147,7 +71,9 @@ export default function Home() {
       </section>
 
       {/* Testimonials */}
-      <TestimonialSlider />
+      <Suspense fallback={<div className="py-20 text-center">Loading testimonials...</div>}>
+        <TestimonialSlider />
+      </Suspense>
 
       {/* Call to Action */}
       <section className="py-20 bg-gradient-to-r from-red-500 to-red-600 text-white">
@@ -194,6 +120,7 @@ export default function Home() {
                     alt={post.title}
                     preset="card"
                     className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
+                    loading="lazy"
                   />
                   <CardContent className="p-6">
                     <h3 className="text-xl font-semibold text-slate-800 mb-3 group-hover:text-red-500 transition-colors">
