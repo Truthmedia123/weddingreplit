@@ -13,7 +13,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: 'dist/public', // Output to client/dist/public for deployment platforms
+    outDir: 'dist', // Output to client/dist for deployment platforms
     emptyOutDir: true,
     sourcemap: false,
     minify: 'terser',

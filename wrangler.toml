@@ -9,7 +9,7 @@ watch_dir = "client/src"
 
 [build.upload]
 format = "directory"
-dir = "client/dist/public"
+dir = "client/dist"
 
 [[redirects]]
 from = "/api/*"
