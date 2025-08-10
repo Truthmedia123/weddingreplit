@@ -12,9 +12,18 @@ interface CategoryGridProps {
 // Using the imported getCategoryIcon function from CategoryIcons.tsx
 
 export default function CategoryGrid({ showAll = false, maxCategories = 8, searchFilter = "" }: CategoryGridProps) {
-  const { data: allCategories = [], isLoading } = useQuery<Category[]>({
-    queryKey: ['/api/categories'],
+  const { data: categoryData, isLoading } = useQuery<{categories: Category[]}>({
+    queryKey: ['/data/categories.json'],
+    queryFn: async () => {
+      const response = await fetch('/data/categories.json');
+      if (!response.ok) {
+        throw new Error('Failed to fetch categories');
+      }
+      return response.json();
+    }
   });
+  
+  const allCategories = categoryData?.categories || [];
 
   // Debug logging
   if (allCategories.length > 0) {

@@ -14,13 +14,31 @@ import type { Vendor, BlogPost } from "@shared/schema";
 const TestimonialSlider = lazy(() => import("@/components/TestimonialSlider"));
 
 export default function Home() {
-  const { data: featuredVendors } = useQuery<Vendor[]>({
-    queryKey: ["/api/vendors/featured"],
+  const { data: vendorData } = useQuery<{vendors: Vendor[]}>({
+    queryKey: ["/data/featured-vendors.json"],
+    queryFn: async () => {
+      const response = await fetch('/data/featured-vendors.json');
+      if (!response.ok) {
+        throw new Error('Failed to fetch featured vendors');
+      }
+      return response.json();
+    }
   });
+  
+  const featuredVendors = vendorData?.vendors || [];
 
-  const { data: blogPosts } = useQuery<BlogPost[]>({
-    queryKey: ["/api/blog"],
+  const { data: blogData } = useQuery<{posts: BlogPost[]}>({
+    queryKey: ["/data/blog-posts.json"],
+    queryFn: async () => {
+      const response = await fetch('/data/blog-posts.json');
+      if (!response.ok) {
+        throw new Error('Failed to fetch blog posts');
+      }
+      return response.json();
+    }
   });
+  
+  const blogPosts = blogData?.posts || [];
 
   return (
     <div>

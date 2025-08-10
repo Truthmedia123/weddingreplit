@@ -1,0 +1,43 @@
+{
+  "posts": [
+    {
+      "id": 1,
+      "title": "Planning Your Perfect Goan Beach Wedding",
+      "slug": "planning-perfect-goan-beach-wedding",
+      "excerpt": "Discover the essential tips and tricks for organizing an unforgettable beach wedding in Goa, from choosing the perfect venue to managing logistics.",
+      "content": "Planning a beach wedding in Goa requires careful consideration of many factors...",
+      "featuredImage": "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400",
+      "author": "Priya Sharma",
+      "createdAt": "2024-12-15T10:00:00Z",
+      "updatedAt": "2024-12-15T10:00:00Z",
+      "published": true,
+      "tags": ["Beach Wedding", "Planning", "Goa", "Destination Wedding"]
+    },
+    {
+      "id": 2,
+      "title": "Traditional Goan Wedding Customs and Rituals",
+      "slug": "traditional-goan-wedding-customs-rituals",
+      "excerpt": "Explore the rich cultural heritage of Goan weddings, from ancient Portuguese influences to local traditions that make each celebration unique.",
+      "content": "Goan weddings are a beautiful blend of Portuguese and Indian traditions...",
+      "featuredImage": "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400",
+      "author": "Carlos D'Souza",
+      "createdAt": "2024-12-10T14:30:00Z",
+      "updatedAt": "2024-12-10T14:30:00Z",
+      "published": true,
+      "tags": ["Traditional", "Culture", "Customs", "Heritage"]
+    },
+    {
+      "id": 3,
+      "title": "Best Wedding Venues in Goa: From Beaches to Heritage Properties",
+      "slug": "best-wedding-venues-goa-beaches-heritage",
+      "excerpt": "A comprehensive guide to Goa's most stunning wedding venues, featuring beachfront locations, luxury resorts, and historic properties.",
+      "content": "Goa offers an incredible variety of wedding venues to suit every style and budget...",
+      "featuredImage": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400",
+      "author": "Maria Fernandes",
+      "createdAt": "2024-12-05T16:45:00Z",
+      "updatedAt": "2024-12-05T16:45:00Z",
+      "published": true,
+      "tags": ["Venues", "Beach", "Heritage", "Luxury"]
+    }
+  ]
+}

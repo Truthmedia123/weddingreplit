@@ -46,6 +46,7 @@
     "optimize:production": "node scripts/optimize-production.js",
     "optimize-images": "node scripts/optimize-images.js",
     "audit:performance": "node scripts/performance-audit.js",
+    "verify:deployment": "node scripts/verify-deployment.js",
     "test:production": "node scripts/production-tests.js",
     "test:e2e": "echo 'End-to-end tests - implement with Playwright or Cypress'",
     "backup:database": "echo 'Database backup - implement based on your DB'",

@@ -1,0 +1,184 @@
+{
+  "categories": [
+    {
+      "id": 1,
+      "name": "Bachelor/Bachelorette Party Planners",
+      "slug": "bachelor-bachelorette-party-planners",
+      "description": "Fun pre-wedding celebration organizers",
+      "icon": "PartyPopper",
+      "color": "from-purple-500 to-pink-500",
+      "vendorCount": 25
+    },
+    {
+      "id": 2,
+      "name": "Bands, DJs & Sound Systems",
+      "slug": "bands-djs-sound-systems",
+      "description": "Music and entertainment for your wedding",
+      "icon": "Music",
+      "color": "from-red-500 to-orange-500",
+      "vendorCount": 45
+    },
+    {
+      "id": 3,
+      "name": "Beverage Services & Bartending",
+      "slug": "beverage-services-bartending",
+      "description": "Professional bartending and drink services",
+      "icon": "Wine",
+      "color": "from-green-500 to-teal-500",
+      "vendorCount": 32
+    },
+    {
+      "id": 4,
+      "name": "Makeup & Beauty Artists",
+      "slug": "makeup-beauty-artists",
+      "description": "Professional makeup and beauty services",
+      "icon": "Sparkles",
+      "color": "from-pink-500 to-rose-500",
+      "vendorCount": 67
+    },
+    {
+      "id": 5,
+      "name": "Cakes & Traditional Bakers",
+      "slug": "cakes-traditional-bakers",
+      "description": "Custom wedding cakes and traditional sweets",
+      "icon": "Cake",
+      "color": "from-yellow-500 to-orange-500",
+      "vendorCount": 38
+    },
+    {
+      "id": 6,
+      "name": "Transportation & Luxury Cars",
+      "slug": "transportation-luxury-cars",
+      "description": "Wedding transportation and luxury vehicle rentals",
+      "icon": "Car",
+      "color": "from-blue-500 to-indigo-500",
+      "vendorCount": 28
+    },
+    {
+      "id": 7,
+      "name": "Catering & Food Services",
+      "slug": "catering-food-services",
+      "description": "Professional catering and food services",
+      "icon": "ChefHat",
+      "color": "from-orange-500 to-red-500",
+      "vendorCount": 89
+    },
+    {
+      "id": 8,
+      "name": "Kids Entertainment & Nannies",
+      "slug": "kids-entertainment-nannies",
+      "description": "Child care and entertainment services",
+      "icon": "Baby",
+      "color": "from-cyan-500 to-blue-500",
+      "vendorCount": 15
+    },
+    {
+      "id": 9,
+      "name": "Bridal Jewelry & Accessories",
+      "slug": "bridal-jewelry-accessories",
+      "description": "Wedding jewelry and bridal accessories",
+      "icon": "Gem",
+      "color": "from-purple-500 to-indigo-500",
+      "vendorCount": 42
+    },
+    {
+      "id": 10,
+      "name": "Floral Design & Decorations",
+      "slug": "floral-design-decorations",
+      "description": "Wedding flowers and decorative arrangements",
+      "icon": "Flower2",
+      "color": "from-green-500 to-emerald-500",
+      "vendorCount": 56
+    },
+    {
+      "id": 11,
+      "name": "Lighting & Technical Services",
+      "slug": "lighting-technical-services",
+      "description": "Professional lighting and technical equipment",
+      "icon": "Zap",
+      "color": "from-yellow-500 to-amber-500",
+      "vendorCount": 23
+    },
+    {
+      "id": 12,
+      "name": "Eco-Friendly & Sustainable Services",
+      "slug": "eco-friendly-sustainable-services",
+      "description": "Environmentally conscious wedding services",
+      "icon": "Leaf",
+      "color": "from-green-600 to-lime-500",
+      "vendorCount": 19
+    },
+    {
+      "id": 13,
+      "name": "Live Entertainment & DJs",
+      "slug": "live-entertainment-djs",
+      "description": "Professional DJs and live entertainment",
+      "icon": "Mic",
+      "color": "from-red-500 to-pink-500",
+      "vendorCount": 34
+    },
+    {
+      "id": 14,
+      "name": "Security & Crowd Management",
+      "slug": "security-crowd-management",
+      "description": "Professional security and event management",
+      "icon": "Shield",
+      "color": "from-gray-600 to-slate-500",
+      "vendorCount": 12
+    },
+    {
+      "id": 15,
+      "name": "Wedding Favors & Gifts",
+      "slug": "wedding-favors-gifts",
+      "description": "Custom wedding favors and gift services",
+      "icon": "Gift",
+      "color": "from-teal-500 to-cyan-500",
+      "vendorCount": 31
+    },
+    {
+      "id": 16,
+      "name": "Traditional & Cultural Music",
+      "slug": "traditional-cultural-music",
+      "description": "Traditional Goan and cultural music services",
+      "icon": "Music2",
+      "color": "from-amber-500 to-yellow-500",
+      "vendorCount": 27
+    },
+    {
+      "id": 17,
+      "name": "Photography & Videography",
+      "slug": "photography-videography",
+      "description": "Professional wedding photography and videography",
+      "icon": "Camera",
+      "color": "from-indigo-500 to-purple-500",
+      "vendorCount": 78
+    },
+    {
+      "id": 18,
+      "name": "Rental & Equipment Services",
+      "slug": "rental-equipment-services",
+      "description": "Wedding equipment and furniture rentals",
+      "icon": "Recycle",
+      "color": "from-slate-500 to-gray-500",
+      "vendorCount": 41
+    },
+    {
+      "id": 19,
+      "name": "Guest Management & Invitations",
+      "slug": "guest-management-invitations",
+      "description": "Invitation design and guest management services",
+      "icon": "Users",
+      "color": "from-blue-500 to-cyan-500",
+      "vendorCount": 29
+    },
+    {
+      "id": 20,
+      "name": "Wedding Planners & Coordinators",
+      "slug": "wedding-planners-coordinators",
+      "description": "Professional wedding planning and coordination",
+      "icon": "Calendar",
+      "color": "from-rose-500 to-pink-500",
+      "vendorCount": 52
+    }
+  ]
+}
