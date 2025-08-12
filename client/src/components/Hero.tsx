@@ -3,18 +3,27 @@ import { Link } from "wouter";
 export default function Hero() {
   return (
     <section className="hero-section relative min-h-screen flex items-center overflow-hidden">
-      {/* Background with beautiful gradient */}
+      {/* Background with stunning beach wedding image */}
       <div className="absolute inset-0 z-0">
-        <div className="w-full h-full bg-gradient-to-br from-teal-400 via-blue-500 to-purple-600 opacity-90"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/30"></div>
-        
-        {/* Beach pattern overlay */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="w-full h-full" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.3'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-            backgroundSize: '60px 60px'
-          }}></div>
-        </div>
+        <img
+          src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
+          alt="Beautiful Goan beach wedding ceremony"
+          className="w-full h-full object-cover scale-110"
+          loading="eager"
+          onError={(e) => {
+            // Fallback to another beach wedding image
+            e.currentTarget.src = "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80";
+            e.currentTarget.onerror = () => {
+              // Ultimate fallback to gradient
+              e.currentTarget.style.display = 'none';
+              const parent = e.currentTarget.parentElement;
+              if (parent) {
+                parent.innerHTML = '<div class="w-full h-full bg-gradient-to-br from-sky-400 via-blue-500 to-teal-600"></div>';
+              }
+            };
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/40"></div>
       </div>
 
       {/* Floating decorative elements */}

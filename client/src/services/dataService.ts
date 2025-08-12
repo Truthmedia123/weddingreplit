@@ -73,6 +73,24 @@ const fallbackCategories: Category[] = [
     icon: "Recycle",
     color: "from-slate-500 to-gray-500",
     vendorCount: 41
+  },
+  {
+    id: 9,
+    name: "Bridal Fashion & Attire",
+    slug: "bridal-fashion-attire",
+    description: "Wedding dresses, suits, and bridal fashion",
+    icon: "Shirt",
+    color: "from-pink-500 to-rose-500",
+    vendorCount: 67
+  },
+  {
+    id: 10,
+    name: "Wedding Venues & Locations",
+    slug: "wedding-venues-locations",
+    description: "Beautiful venues for your special day",
+    icon: "Home",
+    color: "from-green-500 to-emerald-500",
+    vendorCount: 89
   }
 ];
 
@@ -87,7 +105,7 @@ const fallbackVendors: Vendor[] = [
     rating: 4.9,
     reviewCount: 127,
     priceRange: "₹50,000 - ₹2,00,000",
-    images: ["/images/placeholder-photography.svg"],
+    images: ["https://images.unsplash.com/photo-1606216794074-735e91aa2c92?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=80"],
     featured: true,
     verified: true,
     contactInfo: {
@@ -106,7 +124,7 @@ const fallbackVendors: Vendor[] = [
     rating: 4.8,
     reviewCount: 89,
     priceRange: "₹800 - ₹2,500 per person",
-    images: ["/images/placeholder-catering.svg"],
+    images: ["https://images.unsplash.com/photo-1555244162-803834f70033?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=80"],
     featured: true,
     verified: true,
     contactInfo: {
@@ -125,7 +143,7 @@ const fallbackVendors: Vendor[] = [
     rating: 4.7,
     reviewCount: 156,
     priceRange: "₹25,000 - ₹1,50,000",
-    images: ["/images/placeholder-flowers.svg"],
+    images: ["https://images.unsplash.com/photo-1478146896981-b80fe463b330?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=80"],
     featured: true,
     verified: true,
     contactInfo: {
@@ -143,7 +161,7 @@ const fallbackBlogPosts: BlogPost[] = [
     slug: "planning-perfect-goan-beach-wedding",
     excerpt: "Everything you need to know about organizing a stunning beach wedding in Goa",
     content: "Planning a beach wedding in Goa...",
-    featuredImage: "/images/placeholder-blog1.svg",
+    featuredImage: "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400&q=80",
     published: true,
     createdAt: new Date().toISOString()
   },
@@ -153,7 +171,7 @@ const fallbackBlogPosts: BlogPost[] = [
     slug: "traditional-goan-wedding-customs",
     excerpt: "Discover the rich traditions and customs of Goan weddings",
     content: "Goan weddings are known for...",
-    featuredImage: "/images/placeholder-blog2.svg",
+    featuredImage: "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400&q=80",
     published: true,
     createdAt: new Date().toISOString()
   }

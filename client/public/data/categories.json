@@ -179,6 +179,213 @@
       "icon": "Calendar",
       "color": "from-rose-500 to-pink-500",
       "vendorCount": 52
+    },
+    {
+      "id": 21,
+      "name": "Bridal Fashion & Attire",
+      "slug": "bridal-fashion-attire",
+      "description": "Wedding dresses, suits, and bridal fashion",
+      "icon": "Shirt",
+      "color": "from-pink-500 to-rose-500",
+      "vendorCount": 67
+    },
+    {
+      "id": 22,
+      "name": "Groom's Attire & Styling",
+      "slug": "grooms-attire-styling",
+      "description": "Men's wedding suits and styling services",
+      "icon": "Users",
+      "color": "from-blue-500 to-indigo-500",
+      "vendorCount": 43
+    },
+    {
+      "id": 23,
+      "name": "Wedding Venues & Locations",
+      "slug": "wedding-venues-locations",
+      "description": "Beautiful venues for your special day",
+      "icon": "Home",
+      "color": "from-green-500 to-emerald-500",
+      "vendorCount": 89
+    },
+    {
+      "id": 24,
+      "name": "Honeymoon & Travel Planning",
+      "slug": "honeymoon-travel-planning",
+      "description": "Romantic honeymoon and travel arrangements",
+      "icon": "Plane",
+      "color": "from-sky-500 to-blue-500",
+      "vendorCount": 34
+    },
+    {
+      "id": 25,
+      "name": "Wedding Stationery & Invitations",
+      "slug": "wedding-stationery-invitations",
+      "description": "Custom invitations and wedding stationery",
+      "icon": "FileText",
+      "color": "from-purple-500 to-violet-500",
+      "vendorCount": 56
+    },
+    {
+      "id": 26,
+      "name": "Hair Styling & Salon Services",
+      "slug": "hair-styling-salon-services",
+      "description": "Professional bridal hair styling",
+      "icon": "Sparkles",
+      "color": "from-amber-500 to-orange-500",
+      "vendorCount": 78
+    },
+    {
+      "id": 27,
+      "name": "Wedding Cakes & Desserts",
+      "slug": "wedding-cakes-desserts",
+      "description": "Custom wedding cakes and sweet treats",
+      "icon": "Cake",
+      "color": "from-pink-500 to-red-500",
+      "vendorCount": 45
+    },
+    {
+      "id": 28,
+      "name": "Mehendi & Henna Artists",
+      "slug": "mehendi-henna-artists",
+      "description": "Traditional henna and mehendi designs",
+      "icon": "Paintbrush",
+      "color": "from-orange-500 to-red-500",
+      "vendorCount": 67
+    },
+    {
+      "id": 29,
+      "name": "Wedding Choreography & Dance",
+      "slug": "wedding-choreography-dance",
+      "description": "Dance choreography for wedding celebrations",
+      "icon": "Music",
+      "color": "from-violet-500 to-purple-500",
+      "vendorCount": 39
+    },
+    {
+      "id": 30,
+      "name": "Bridal Spa & Wellness",
+      "slug": "bridal-spa-wellness",
+      "description": "Pre-wedding spa and wellness treatments",
+      "icon": "Heart",
+      "color": "from-teal-500 to-cyan-500",
+      "vendorCount": 52
+    },
+    {
+      "id": 31,
+      "name": "Wedding Insurance & Legal",
+      "slug": "wedding-insurance-legal",
+      "description": "Wedding insurance and legal documentation",
+      "icon": "Shield",
+      "color": "from-gray-500 to-slate-500",
+      "vendorCount": 18
+    },
+    {
+      "id": 32,
+      "name": "Destination Wedding Specialists",
+      "slug": "destination-wedding-specialists",
+      "description": "Specialists in destination wedding planning",
+      "icon": "Globe",
+      "color": "from-blue-500 to-teal-500",
+      "vendorCount": 29
+    },
+    {
+      "id": 33,
+      "name": "Wedding Technology & Apps",
+      "slug": "wedding-technology-apps",
+      "description": "Digital solutions for modern weddings",
+      "icon": "Smartphone",
+      "color": "from-indigo-500 to-blue-500",
+      "vendorCount": 21
+    },
+    {
+      "id": 34,
+      "name": "Vintage & Antique Rentals",
+      "slug": "vintage-antique-rentals",
+      "description": "Vintage furniture and antique decorations",
+      "icon": "Star",
+      "color": "from-amber-500 to-yellow-500",
+      "vendorCount": 33
+    },
+    {
+      "id": 35,
+      "name": "Wedding Coordination Services",
+      "slug": "wedding-coordination-services",
+      "description": "Day-of wedding coordination and management",
+      "icon": "Calendar",
+      "color": "from-emerald-500 to-green-500",
+      "vendorCount": 47
+    },
+    {
+      "id": 36,
+      "name": "Bridal Party Services",
+      "slug": "bridal-party-services",
+      "description": "Services for bridesmaids and groomsmen",
+      "icon": "Users",
+      "color": "from-pink-500 to-purple-500",
+      "vendorCount": 38
+    },
+    {
+      "id": 37,
+      "name": "Wedding Cleaning Services",
+      "slug": "wedding-cleaning-services",
+      "description": "Pre and post-wedding cleaning services",
+      "icon": "Sparkles",
+      "color": "from-cyan-500 to-blue-500",
+      "vendorCount": 24
+    },
+    {
+      "id": 38,
+      "name": "Pet Services for Weddings",
+      "slug": "pet-services-weddings",
+      "description": "Including your pets in your special day",
+      "icon": "Dog",
+      "color": "from-green-500 to-teal-500",
+      "vendorCount": 16
+    },
+    {
+      "id": 39,
+      "name": "Wedding Catering Equipment",
+      "slug": "wedding-catering-equipment",
+      "description": "Professional catering equipment rental",
+      "icon": "ChefHat",
+      "color": "from-orange-500 to-amber-500",
+      "vendorCount": 31
+    },
+    {
+      "id": 40,
+      "name": "Brunch & After-Party Services",
+      "slug": "brunch-after-party-services",
+      "description": "Post-wedding celebration services",
+      "icon": "Coffee",
+      "color": "from-yellow-500 to-orange-500",
+      "vendorCount": 28
+    },
+    {
+      "id": 41,
+      "name": "Wedding Wellness & Fitness",
+      "slug": "wedding-wellness-fitness",
+      "description": "Pre-wedding fitness and wellness programs",
+      "icon": "Heart",
+      "color": "from-red-500 to-pink-500",
+      "vendorCount": 22
+    },
+    {
+      "id": 42,
+      "name": "Cultural & Religious Services",
+      "slug": "cultural-religious-services",
+      "description": "Traditional and religious wedding ceremonies",
+      "icon": "Star",
+      "color": "from-purple-500 to-indigo-500",
+      "vendorCount": 35
+    },
+    {
+      "id": 43,
+      "name": "Wedding Emergency Services",
+      "slug": "wedding-emergency-services",
+      "description": "Emergency support and backup services",
+      "icon": "ShieldCheck",
+      "color": "from-red-500 to-orange-500",
+      "vendorCount": 14
     }
   ]
 }
