@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import Hero from "@/components/Hero";
 import CategoryGrid from "@/components/CategoryGrid";
 import VendorCard from "@/components/VendorCard";
-import SimpleImage from "@/components/SimpleImage";
+import InlineSVGImage from "@/components/InlineSVGImage";
 import { fetchFeaturedVendors, fetchBlogPosts } from "@/services/dataService";
 import type { Vendor, BlogPost } from "@shared/schema";
 
@@ -126,12 +126,10 @@ export default function Home() {
             {blogPosts?.slice(0, 3).map((post) => (
               <Link key={post.id} href={`/blog/${post.slug}`}>
                 <Card className="group cursor-pointer hover:shadow-2xl transition-all transform hover:-translate-y-2 overflow-hidden">
-                  <SimpleImage 
-                    src={post.featuredImage || "/images/placeholder-blog1.svg"} 
+                  <InlineSVGImage
+                    type="blog"
+                    className="w-full h-48 group-hover:scale-110 transition-transform duration-500"
                     alt={post.title}
-                    className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
-                    fallbackGradient="from-orange-400 via-pink-500 to-purple-600"
-                    fallbackIcon="📝"
                   />
                   <CardContent className="p-6">
                     <h3 className="text-xl font-semibold text-slate-800 mb-3 group-hover:text-red-500 transition-colors">
