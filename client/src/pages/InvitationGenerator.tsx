@@ -4,9 +4,96 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Download, Heart, Sparkles, Upload, QrCode } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Download, Heart, Sparkles, Upload, QrCode, ArrowLeft, Star, Crown, Palette } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 import OptimizedImage from '@/components/OptimizedImage';
+
+interface InvitationTemplate {
+  id: string;
+  name: string;
+  category: string;
+  style: string;
+  description: string;
+  previewImage: string;
+  features: string[];
+  price: string;
+  popular?: boolean;
+  premium?: boolean;
+  colors: string[];
+}
+
+const invitationTemplates: InvitationTemplate[] = [
+  {
+    id: 'goan-beach-classic',
+    name: 'Goan Beach Classic',
+    category: 'Beach Wedding',
+    style: 'Traditional',
+    description: 'Elegant beach wedding invitation with palm trees and ocean waves',
+    previewImage: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
+    features: ['Customizable Colors', 'Multiple Fonts', 'QR Code Support', 'High Resolution'],
+    price: 'Free',
+    popular: true,
+    colors: ['Teal', 'Gold', 'Coral']
+  },
+  {
+    id: 'portuguese-heritage',
+    name: 'Portuguese Heritage',
+    category: 'Traditional',
+    style: 'Cultural',
+    description: 'Beautiful Portuguese-inspired design with traditional Goan elements',
+    previewImage: 'https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
+    features: ['Cultural Motifs', 'Bilingual Support', 'Premium Paper', 'Gold Foiling'],
+    price: '₹299',
+    premium: true,
+    colors: ['Burgundy', 'Gold', 'Cream']
+  },
+  {
+    id: 'tropical-paradise',
+    name: 'Tropical Paradise',
+    category: 'Beach Wedding',
+    style: 'Modern',
+    description: 'Vibrant tropical design with hibiscus flowers and palm leaves',
+    previewImage: 'https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
+    features: ['Floral Borders', 'Watercolor Effects', 'Custom Illustrations', 'Digital Download'],
+    price: '₹199',
+    colors: ['Pink', 'Green', 'Orange']
+  },
+  {
+    id: 'elegant-minimalist',
+    name: 'Elegant Minimalist',
+    category: 'Modern',
+    style: 'Contemporary',
+    description: 'Clean, sophisticated design perfect for modern couples',
+    previewImage: 'https://images.unsplash.com/photo-1606216794074-735e91aa2c92?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
+    features: ['Clean Typography', 'Minimalist Layout', 'Multiple Formats', 'Easy Editing'],
+    price: '₹149',
+    colors: ['Black', 'White', 'Rose Gold']
+  },
+  {
+    id: 'royal-goan',
+    name: 'Royal Goan',
+    category: 'Luxury',
+    style: 'Premium',
+    description: 'Luxurious design with intricate patterns and royal elements',
+    previewImage: 'https://images.unsplash.com/photo-1478146896981-b80fe463b330?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
+    features: ['Intricate Patterns', 'Metallic Accents', 'Premium Design', 'Luxury Feel'],
+    price: '₹499',
+    premium: true,
+    colors: ['Purple', 'Gold', 'Silver']
+  },
+  {
+    id: 'vintage-charm',
+    name: 'Vintage Charm',
+    category: 'Vintage',
+    style: 'Retro',
+    description: 'Charming vintage-inspired design with classic typography',
+    previewImage: 'https://images.unsplash.com/photo-1555244162-803834f70033?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
+    features: ['Vintage Fonts', 'Aged Effects', 'Classic Borders', 'Timeless Appeal'],
+    price: '₹249',
+    colors: ['Sepia', 'Cream', 'Brown']
+  }
+];
 
 interface InvitationFormData {
   bibleVerse: string;
@@ -40,6 +127,8 @@ interface GenerationResult {
 }
 
 export default function InvitationGenerator() {
+  const [currentView, setCurrentView] = useState<'templates' | 'customize'>('templates');
+  const [selectedTemplate, setSelectedTemplate] = useState<InvitationTemplate | null>(null);
   const [formData, setFormData] = useState<InvitationFormData>({
     bibleVerse: "I have found the one whom my soul loves",
     bibleReference: "Song of Solomon 3:4",
@@ -190,15 +279,179 @@ export default function InvitationGenerator() {
     }
   };
 
+  const handleTemplateSelect = (template: InvitationTemplate) => {
+    setSelectedTemplate(template);
+    setCurrentView('customize');
+  };
+
+  const handleBackToTemplates = () => {
+    setCurrentView('templates');
+    setSelectedTemplate(null);
+  };
+
+  // Template Gallery View
+  if (currentView === 'templates') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-pink-50 py-8">
+        <div className="container mx-auto px-4 max-w-7xl">
+          <div className="text-center mb-12">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <Heart className="h-8 w-8 text-pink-500" />
+              <h1 className="text-4xl font-bold text-gray-800">Choose Your Wedding Invitation</h1>
+              <Sparkles className="h-8 w-8 text-blue-500" />
+            </div>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Select from our beautiful collection of Goan wedding invitation templates. 
+              Each design can be fully customized with your details.
+            </p>
+          </div>
+
+          {/* Template Categories */}
+          <div className="flex flex-wrap justify-center gap-4 mb-8">
+            {['All', 'Beach Wedding', 'Traditional', 'Modern', 'Luxury', 'Vintage'].map((category) => (
+              <Button
+                key={category}
+                variant="outline"
+                className="rounded-full px-6 py-2 hover:bg-pink-100 hover:border-pink-300"
+              >
+                {category}
+              </Button>
+            ))}
+          </div>
+
+          {/* Template Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            {invitationTemplates.map((template) => (
+              <Card 
+                key={template.id} 
+                className="group cursor-pointer hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden"
+                onClick={() => handleTemplateSelect(template)}
+              >
+                <div className="relative">
+                  <img
+                    src={template.previewImage}
+                    alt={template.name}
+                    className="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
+                  
+                  {/* Badges */}
+                  <div className="absolute top-4 left-4 flex flex-col gap-2">
+                    {template.popular && (
+                      <Badge className="bg-red-500 text-white">
+                        <Star className="w-3 h-3 mr-1" />
+                        Popular
+                      </Badge>
+                    )}
+                    {template.premium && (
+                      <Badge className="bg-purple-500 text-white">
+                        <Crown className="w-3 h-3 mr-1" />
+                        Premium
+                      </Badge>
+                    )}
+                  </div>
+
+                  {/* Price */}
+                  <div className="absolute top-4 right-4">
+                    <Badge className="bg-white text-gray-800 font-bold">
+                      {template.price}
+                    </Badge>
+                  </div>
+
+                  {/* Hover overlay */}
+                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
+                    <Button className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white text-gray-800 hover:bg-gray-100">
+                      Customize This Design
+                    </Button>
+                  </div>
+                </div>
+
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-xl font-bold text-gray-800">{template.name}</h3>
+                    <Badge variant="outline">{template.category}</Badge>
+                  </div>
+                  
+                  <p className="text-gray-600 mb-4 text-sm">{template.description}</p>
+                  
+                  {/* Features */}
+                  <div className="flex flex-wrap gap-1 mb-4">
+                    {template.features.slice(0, 3).map((feature) => (
+                      <Badge key={feature} variant="secondary" className="text-xs">
+                        {feature}
+                      </Badge>
+                    ))}
+                  </div>
+
+                  {/* Colors */}
+                  <div className="flex items-center gap-2">
+                    <Palette className="w-4 h-4 text-gray-500" />
+                    <div className="flex gap-1">
+                      {template.colors.map((color) => (
+                        <div
+                          key={color}
+                          className="w-4 h-4 rounded-full border border-gray-300"
+                          style={{ backgroundColor: color.toLowerCase() }}
+                          title={color}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Call to Action */}
+          <div className="text-center">
+            <p className="text-gray-600 mb-4">
+              Need a custom design? Our designers can create something unique for you.
+            </p>
+            <Button variant="outline" className="rounded-full px-8 py-3">
+              Request Custom Design
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Existing Form View (Customize)
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-pink-50 py-8">
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Heart className="h-8 w-8 text-pink-500" />
-            <h1 className="text-4xl font-bold text-gray-800">Wedding Invitation Generator</h1>
-            <Sparkles className="h-8 w-8 text-blue-500" />
+          <div className="flex items-center justify-between mb-4">
+            <Button
+              variant="ghost"
+              onClick={handleBackToTemplates}
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-800"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Templates
+            </Button>
+            
+            <div className="flex items-center gap-2">
+              <Heart className="h-8 w-8 text-pink-500" />
+              <h1 className="text-4xl font-bold text-gray-800">Customize Your Invitation</h1>
+              <Sparkles className="h-8 w-8 text-blue-500" />
+            </div>
+            
+            <div className="w-32"></div> {/* Spacer for centering */}
           </div>
+          
+          {selectedTemplate && (
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <img
+                src={selectedTemplate.previewImage}
+                alt={selectedTemplate.name}
+                className="w-16 h-20 object-cover rounded border"
+              />
+              <div className="text-left">
+                <h2 className="text-xl font-semibold text-gray-800">{selectedTemplate.name}</h2>
+                <p className="text-gray-600">{selectedTemplate.category} • {selectedTemplate.price}</p>
+              </div>
+            </div>
+          )}
           <p className="text-gray-600 text-lg">Create beautiful Christian wedding invitations with blue floral design</p>
         </div>
 

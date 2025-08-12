@@ -8,7 +8,7 @@
 import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
 
-const buildDir = 'client/dist/public';
+const buildDir = 'client/dist';
 
 console.log('🔍 Verifying deployment build...\n');
 
