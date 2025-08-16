@@ -5,9 +5,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Download, Heart, Sparkles, Upload, QrCode, ArrowLeft, Star, Crown, Palette } from 'lucide-react';
+import { Download, Heart, Sparkles, Upload, QrCode, ArrowLeft, Star, Crown, Palette, Edit } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 import OptimizedImage from '@/components/OptimizedImage';
+import LiveInvitationEditor from '@/components/LiveInvitationEditor';
+import InvitationPreview from '@/components/InvitationPreview';
 
 interface InvitationTemplate {
   id: string;
@@ -25,73 +27,175 @@ interface InvitationTemplate {
 
 const invitationTemplates: InvitationTemplate[] = [
   {
-    id: 'goan-beach-classic',
-    name: 'Goan Beach Classic',
+    id: 'goan-beach-bliss',
+    name: 'Goan Beach Bliss',
     category: 'Beach Wedding',
-    style: 'Traditional',
-    description: 'Elegant beach wedding invitation with palm trees and ocean waves',
-    previewImage: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
-    features: ['Customizable Colors', 'Multiple Fonts', 'QR Code Support', 'High Resolution'],
+    style: 'Tropical Paradise',
+    description: 'Stunning beach wedding invitation with golden sunset, palm trees, and ocean waves perfect for Goan ceremonies',
+    previewImage: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
+    features: ['Beach Sunset Theme', 'Palm Tree Silhouettes', 'Ocean Wave Borders', 'Tropical Typography'],
     price: 'Free',
     popular: true,
-    colors: ['Teal', 'Gold', 'Coral']
+    colors: ['Coral', 'Turquoise', 'Gold']
   },
   {
     id: 'portuguese-heritage',
     name: 'Portuguese Heritage',
     category: 'Traditional',
-    style: 'Cultural',
-    description: 'Beautiful Portuguese-inspired design with traditional Goan elements',
+    style: 'Colonial Elegance',
+    description: 'Elegant design inspired by Portuguese colonial architecture with azulejo tile patterns and traditional motifs',
+    previewImage: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
+    features: ['Azulejo Tile Patterns', 'Colonial Architecture', 'Bilingual Support', 'Heritage Colors'],
+    price: '₹399',
+    premium: true,
+    colors: ['Royal Blue', 'White', 'Gold']
+  },
+  {
+    id: 'tropical-floral-paradise',
+    name: 'Tropical Floral Paradise',
+    category: 'Floral',
+    style: 'Botanical Beauty',
+    description: 'Vibrant tropical flowers with hibiscus, frangipani, and lush Goan greenery in watercolor style',
     previewImage: 'https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
-    features: ['Cultural Motifs', 'Bilingual Support', 'Premium Paper', 'Gold Foiling'],
+    features: ['Hand-painted Florals', 'Watercolor Effects', 'Tropical Botanicals', 'Vibrant Colors'],
     price: '₹299',
-    premium: true,
-    colors: ['Burgundy', 'Gold', 'Cream']
+    colors: ['Magenta', 'Emerald', 'Sunshine Yellow']
   },
   {
-    id: 'tropical-paradise',
-    name: 'Tropical Paradise',
-    category: 'Beach Wedding',
-    style: 'Modern',
-    description: 'Vibrant tropical design with hibiscus flowers and palm leaves',
-    previewImage: 'https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
-    features: ['Floral Borders', 'Watercolor Effects', 'Custom Illustrations', 'Digital Download'],
-    price: '₹199',
-    colors: ['Pink', 'Green', 'Orange']
-  },
-  {
-    id: 'elegant-minimalist',
-    name: 'Elegant Minimalist',
+    id: 'modern-goan-chic',
+    name: 'Modern Goan Chic',
     category: 'Modern',
-    style: 'Contemporary',
-    description: 'Clean, sophisticated design perfect for modern couples',
-    previewImage: 'https://images.unsplash.com/photo-1606216794074-735e91aa2c92?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
-    features: ['Clean Typography', 'Minimalist Layout', 'Multiple Formats', 'Easy Editing'],
-    price: '₹149',
-    colors: ['Black', 'White', 'Rose Gold']
-  },
-  {
-    id: 'royal-goan',
-    name: 'Royal Goan',
-    category: 'Luxury',
-    style: 'Premium',
-    description: 'Luxurious design with intricate patterns and royal elements',
-    previewImage: 'https://images.unsplash.com/photo-1478146896981-b80fe463b330?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
-    features: ['Intricate Patterns', 'Metallic Accents', 'Premium Design', 'Luxury Feel'],
-    price: '₹499',
-    premium: true,
-    colors: ['Purple', 'Gold', 'Silver']
-  },
-  {
-    id: 'vintage-charm',
-    name: 'Vintage Charm',
-    category: 'Vintage',
-    style: 'Retro',
-    description: 'Charming vintage-inspired design with classic typography',
-    previewImage: 'https://images.unsplash.com/photo-1555244162-803834f70033?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
-    features: ['Vintage Fonts', 'Aged Effects', 'Classic Borders', 'Timeless Appeal'],
+    style: 'Contemporary Coastal',
+    description: 'Clean, sophisticated design blending modern typography with subtle Goan coastal elements',
+    previewImage: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
+    features: ['Minimalist Layout', 'Coastal Elements', 'Modern Typography', 'Clean Design'],
     price: '₹249',
-    colors: ['Sepia', 'Cream', 'Brown']
+    colors: ['Navy', 'Rose Gold', 'Cream']
+  },
+  {
+    id: 'royal-goan-mandala',
+    name: 'Royal Goan Mandala',
+    category: 'Luxury',
+    style: 'Regal Splendor',
+    description: 'Opulent design with intricate mandala patterns, royal motifs, and gold embossing fit for a palace wedding',
+    previewImage: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
+    features: ['Intricate Mandalas', 'Gold Embossing', 'Royal Motifs', 'Luxury Finish'],
+    price: '₹699',
+    premium: true,
+    colors: ['Deep Purple', 'Gold', 'Crimson']
+  },
+  {
+    id: 'vintage-goan-charm',
+    name: 'Vintage Goan Charm',
+    category: 'Vintage',
+    style: 'Old World Romance',
+    description: 'Nostalgic design capturing old Goa charm with vintage illustrations and classic Portuguese elements',
+    previewImage: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
+    features: ['Vintage Illustrations', 'Portuguese Elements', 'Sepia Tones', 'Classic Borders'],
+    price: '₹199',
+    colors: ['Sepia', 'Antique Gold', 'Cream']
+  },
+  {
+    id: 'bohemian-beach-dreams',
+    name: 'Bohemian Beach Dreams',
+    category: 'Boho',
+    style: 'Free-spirited Coastal',
+    description: 'Dreamy bohemian design with feathers, dreamcatchers, and coastal elements perfect for beach ceremonies',
+    previewImage: 'https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
+    features: ['Boho Elements', 'Feather Details', 'Coastal Vibes', 'Dreamy Typography'],
+    price: '₹349',
+    colors: ['Dusty Rose', 'Sage Green', 'Sand']
+  },
+  {
+    id: 'elegant-rose-gold-goa',
+    name: 'Elegant Rose Gold Goa',
+    category: 'Elegant',
+    style: 'Sophisticated Glamour',
+    description: 'Sophisticated rose gold design with delicate florals, marble textures, and Goan architectural elements',
+    previewImage: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
+    features: ['Rose Gold Foiling', 'Marble Textures', 'Delicate Florals', 'Architectural Elements'],
+    price: '₹449',
+    premium: true,
+    colors: ['Rose Gold', 'Blush Pink', 'White']
+  },
+  {
+    id: 'rustic-goan-countryside',
+    name: 'Rustic Goan Countryside',
+    category: 'Rustic',
+    style: 'Natural Charm',
+    description: 'Charming rustic design with natural textures, countryside elements, and earthy Goan tones',
+    previewImage: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
+    features: ['Natural Textures', 'Countryside Elements', 'Earthy Tones', 'Rustic Typography'],
+    price: '₹149',
+    colors: ['Terracotta', 'Forest Green', 'Cream']
+  },
+  {
+    id: 'art-deco-goan-glamour',
+    name: 'Art Deco Goan Glamour',
+    category: 'Glamour',
+    style: 'Vintage Luxury',
+    description: 'Glamorous 1920s Art Deco design with geometric patterns, gold accents, and colonial influences',
+    previewImage: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
+    features: ['Art Deco Patterns', 'Geometric Designs', 'Gold Accents', 'Colonial Influence'],
+    price: '₹399',
+    colors: ['Black', 'Gold', 'Champagne']
+  },
+  {
+    id: 'destination-goa-passport',
+    name: 'Destination Goa Passport',
+    category: 'Destination',
+    style: 'Travel Adventure',
+    description: 'Unique passport-style invitation perfect for destination weddings in Goa with travel stamps and maps',
+    previewImage: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
+    features: ['Passport Design', 'Travel Stamps', 'Goa Map Elements', 'Adventure Theme'],
+    price: '₹449',
+    popular: true,
+    colors: ['Navy Blue', 'Red', 'Gold']
+  },
+  {
+    id: 'watercolor-goan-sunset',
+    name: 'Watercolor Goan Sunset',
+    category: 'Artistic',
+    style: 'Dreamy Watercolor',
+    description: 'Dreamy watercolor design capturing beautiful Goan sunsets with soft washes and artistic brush strokes',
+    previewImage: 'https://images.unsplash.com/photo-1469371670807-013ccf25f16a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
+    features: ['Watercolor Sunset', 'Soft Gradients', 'Artistic Brushstrokes', 'Dreamy Colors'],
+    price: '₹299',
+    colors: ['Orange', 'Pink', 'Purple']
+  },
+  {
+    id: 'goan-catholic-traditional',
+    name: 'Goan Catholic Traditional',
+    category: 'Religious',
+    style: 'Sacred Tradition',
+    description: 'Traditional Catholic wedding invitation with religious symbols, church elements, and Goan heritage',
+    previewImage: 'https://images.unsplash.com/photo-1556075798-4825dfaaf498?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
+    features: ['Religious Symbols', 'Church Elements', 'Traditional Layout', 'Sacred Typography'],
+    price: '₹249',
+    colors: ['Ivory', 'Gold', 'Deep Blue']
+  },
+  {
+    id: 'romantic-goan-script',
+    name: 'Romantic Goan Script',
+    category: 'Romantic',
+    style: 'Love Story',
+    description: 'Romantic calligraphy with flowing script fonts, heart motifs, and coastal romantic elements',
+    previewImage: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
+    features: ['Script Calligraphy', 'Heart Motifs', 'Romantic Elements', 'Coastal Romance'],
+    price: '₹249',
+    colors: ['Blush Pink', 'Gold', 'White']
+  },
+  {
+    id: 'luxury-laser-cut-goa',
+    name: 'Luxury Laser Cut Goa',
+    category: 'Luxury',
+    style: 'Premium Craftsmanship',
+    description: 'Exquisite laser-cut invitation with intricate Goan patterns, premium materials, and 3D effects',
+    previewImage: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
+    features: ['Laser Cut Details', 'Intricate Patterns', 'Premium Materials', '3D Effects'],
+    price: '₹899',
+    premium: true,
+    colors: ['White', 'Gold', 'Blush']
   }
 ];
 
@@ -127,7 +231,7 @@ interface GenerationResult {
 }
 
 export default function InvitationGenerator() {
-  const [currentView, setCurrentView] = useState<'templates' | 'customize'>('templates');
+  const [currentView, setCurrentView] = useState<'templates' | 'customize' | 'live-editor'>('templates');
   const [selectedTemplate, setSelectedTemplate] = useState<InvitationTemplate | null>(null);
   const [formData, setFormData] = useState<InvitationFormData>({
     bibleVerse: "I have found the one whom my soul loves",
@@ -284,6 +388,11 @@ export default function InvitationGenerator() {
     setCurrentView('customize');
   };
 
+  const handleLiveEdit = (template: InvitationTemplate) => {
+    setSelectedTemplate(template);
+    setCurrentView('live-editor');
+  };
+
   const handleBackToTemplates = () => {
     setCurrentView('templates');
     setSelectedTemplate(null);
@@ -307,12 +416,12 @@ export default function InvitationGenerator() {
           </div>
 
           {/* Template Categories */}
-          <div className="flex flex-wrap justify-center gap-4 mb-8">
-            {['All', 'Beach Wedding', 'Traditional', 'Modern', 'Luxury', 'Vintage'].map((category) => (
+          <div className="flex flex-wrap justify-center gap-3 mb-8">
+            {['All', 'Floral', 'Traditional', 'Modern', 'Vintage', 'Artistic', 'Luxury', 'Beach', 'Rustic', 'Boho', 'Glamour', 'Destination', 'Romantic'].map((category) => (
               <Button
                 key={category}
                 variant="outline"
-                className="rounded-full px-6 py-2 hover:bg-pink-100 hover:border-pink-300"
+                className="rounded-full px-4 py-2 text-sm hover:bg-pink-100 hover:border-pink-300 transition-all duration-200"
               >
                 {category}
               </Button>
@@ -320,81 +429,129 @@ export default function InvitationGenerator() {
           </div>
 
           {/* Template Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
             {invitationTemplates.map((template) => (
               <Card 
                 key={template.id} 
-                className="group cursor-pointer hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden"
+                className="group cursor-pointer hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 overflow-hidden bg-white border-0 rounded-2xl"
                 onClick={() => handleTemplateSelect(template)}
               >
                 <div className="relative">
-                  <img
-                    src={template.previewImage}
-                    alt={template.name}
-                    className="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
+                  <div className="w-full h-72 flex items-center justify-center bg-gray-50">
+                    <InvitationPreview 
+                      template={template} 
+                      width={200} 
+                      height={280} 
+                    />
+                  </div>
+                  
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   
                   {/* Badges */}
-                  <div className="absolute top-4 left-4 flex flex-col gap-2">
+                  <div className="absolute top-3 left-3 flex flex-col gap-2">
                     {template.popular && (
-                      <Badge className="bg-red-500 text-white">
-                        <Star className="w-3 h-3 mr-1" />
+                      <Badge className="bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-lg">
+                        <Star className="w-3 h-3 mr-1 fill-current" />
                         Popular
                       </Badge>
                     )}
                     {template.premium && (
-                      <Badge className="bg-purple-500 text-white">
-                        <Crown className="w-3 h-3 mr-1" />
+                      <Badge className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white shadow-lg">
+                        <Crown className="w-3 h-3 mr-1 fill-current" />
                         Premium
                       </Badge>
                     )}
                   </div>
 
                   {/* Price */}
-                  <div className="absolute top-4 right-4">
-                    <Badge className="bg-white text-gray-800 font-bold">
+                  <div className="absolute top-3 right-3">
+                    <Badge className="bg-white/90 backdrop-blur-sm text-gray-800 font-bold shadow-lg">
                       {template.price}
                     </Badge>
                   </div>
 
-                  {/* Hover overlay */}
-                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
-                    <Button className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white text-gray-800 hover:bg-gray-100">
-                      Customize This Design
-                    </Button>
+                  {/* Hover Actions */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
+                    <div className="flex gap-2">
+                      <Button 
+                        size="sm"
+                        className="bg-white/90 backdrop-blur-sm text-gray-800 hover:bg-white shadow-lg"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleLiveEdit(template);
+                        }}
+                      >
+                        <Edit className="w-4 h-4 mr-1" />
+                        Live Edit
+                      </Button>
+                      <Button 
+                        size="sm"
+                        variant="outline" 
+                        className="bg-white/90 backdrop-blur-sm text-gray-800 hover:bg-white border-white/50 shadow-lg"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleTemplateSelect(template);
+                        }}
+                      >
+                        Customize
+                      </Button>
+                    </div>
                   </div>
                 </div>
 
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-xl font-bold text-gray-800">{template.name}</h3>
-                    <Badge variant="outline">{template.category}</Badge>
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between mb-2">
+                    <h3 className="text-lg font-bold text-gray-800 leading-tight">{template.name}</h3>
+                    <Badge variant="outline" className="text-xs ml-2 shrink-0">{template.category}</Badge>
                   </div>
                   
-                  <p className="text-gray-600 mb-4 text-sm">{template.description}</p>
+                  <p className="text-gray-600 mb-3 text-sm leading-relaxed">{template.description}</p>
                   
                   {/* Features */}
-                  <div className="flex flex-wrap gap-1 mb-4">
-                    {template.features.slice(0, 3).map((feature) => (
-                      <Badge key={feature} variant="secondary" className="text-xs">
+                  <div className="flex flex-wrap gap-1 mb-3">
+                    {template.features.slice(0, 2).map((feature) => (
+                      <Badge key={feature} variant="secondary" className="text-xs bg-gray-100 text-gray-600">
                         {feature}
                       </Badge>
                     ))}
+                    {template.features.length > 2 && (
+                      <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-600">
+                        +{template.features.length - 2} more
+                      </Badge>
+                    )}
                   </div>
 
                   {/* Colors */}
-                  <div className="flex items-center gap-2">
-                    <Palette className="w-4 h-4 text-gray-500" />
-                    <div className="flex gap-1">
-                      {template.colors.map((color) => (
-                        <div
-                          key={color}
-                          className="w-4 h-4 rounded-full border border-gray-300"
-                          style={{ backgroundColor: color.toLowerCase() }}
-                          title={color}
-                        />
-                      ))}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="flex gap-1">
+                        {template.colors.slice(0, 3).map((color) => (
+                          <div
+                            key={color}
+                            className="w-4 h-4 rounded-full border-2 border-white shadow-sm"
+                            style={{ 
+                              backgroundColor: color.toLowerCase().includes('gold') ? '#FFD700' :
+                                             color.toLowerCase().includes('rose') ? '#F43F5E' :
+                                             color.toLowerCase().includes('coral') ? '#FF7F7F' :
+                                             color.toLowerCase().includes('turquoise') ? '#40E0D0' :
+                                             color.toLowerCase().includes('emerald') ? '#50C878' :
+                                             color.toLowerCase().includes('royal') ? '#4169E1' :
+                                             color.toLowerCase().includes('purple') ? '#8A2BE2' :
+                                             color.toLowerCase().includes('crimson') ? '#DC143C' :
+                                             color.toLowerCase().includes('sage') ? '#9CAF88' :
+                                             color.toLowerCase().includes('blush') ? '#FFC0CB' :
+                                             color.toLowerCase().includes('navy') ? '#000080' :
+                                             color.toLowerCase().includes('champagne') ? '#F7E7CE' :
+                                             color.toLowerCase().includes('saffron') ? '#F4C430' :
+                                             color.toLowerCase()
+                            }}
+                            title={color}
+                          />
+                        ))}
+                      </div>
                     </div>
+                    <div className="text-xs text-gray-500">{template.style}</div>
                   </div>
                 </CardContent>
               </Card>
@@ -412,6 +569,25 @@ export default function InvitationGenerator() {
           </div>
         </div>
       </div>
+    );
+  }
+
+  // Live Editor View
+  if (currentView === 'live-editor' && selectedTemplate) {
+    return (
+      <LiveInvitationEditor
+        template={{
+          id: selectedTemplate.id,
+          name: selectedTemplate.name,
+          previewImage: selectedTemplate.previewImage,
+          baseElements: []
+        }}
+        onSave={(data) => {
+          console.log('Saving invitation data:', data);
+          // Handle save logic here
+        }}
+        onBack={handleBackToTemplates}
+      />
     );
   }
 

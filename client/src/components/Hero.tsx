@@ -5,24 +5,27 @@ export default function Hero() {
     <section className="hero-section relative min-h-screen flex items-center overflow-hidden">
       {/* Background with stunning beach wedding image */}
       <div className="absolute inset-0 z-0">
-        <img
-          src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
-          alt="Beautiful Goan beach wedding ceremony"
-          className="w-full h-full object-cover scale-110"
-          loading="eager"
-          onError={(e) => {
-            // Fallback to another beach wedding image
-            e.currentTarget.src = "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80";
-            e.currentTarget.onerror = () => {
-              // Ultimate fallback to gradient
-              e.currentTarget.style.display = 'none';
-              const parent = e.currentTarget.parentElement;
-              if (parent) {
-                parent.innerHTML = '<div class="w-full h-full bg-gradient-to-br from-sky-400 via-blue-500 to-teal-600"></div>';
-              }
-            };
-          }}
-        />
+        <picture>
+          <source srcSet="/images/optimized/hero.webp" type="image/webp" />
+          <img
+            src="/images/optimized/hero.jpg"
+            alt="Beautiful Goan beach wedding ceremony"
+            className="w-full h-full object-cover scale-110"
+            loading="eager"
+            onError={(e) => {
+              // Fallback to non-optimized version
+              e.currentTarget.src = "/images/hero.jpg";
+              e.currentTarget.onerror = () => {
+                // Ultimate fallback to gradient
+                e.currentTarget.style.display = 'none';
+                const parent = e.currentTarget.parentElement;
+                if (parent) {
+                  parent.innerHTML = '<div class="w-full h-full bg-gradient-to-br from-sky-400 via-blue-500 to-teal-600"></div>';
+                }
+              };
+            }}
+          />
+        </picture>
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/40"></div>
       </div>
 

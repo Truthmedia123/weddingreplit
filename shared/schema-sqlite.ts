@@ -36,6 +36,7 @@ export const categories = sqliteTable("categories", {
   description: text("description"),
   icon: text("icon").notNull(),
   color: text("color").notNull(),
+  image: text("image"),
   vendorCount: integer("vendor_count").default(0),
 });
 
