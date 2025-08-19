@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, decimal, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, decimal, jsonb, uuid } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -129,6 +129,48 @@ export const rsvps = pgTable("rsvps", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Enhanced Wedding Invitation Generator Tables
+export const invitationTemplates = pgTable('invitation_templates', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  name: text('name').notNull(),
+  category: text('category').notNull(), // 'goan-beach', 'christian', 'hindu', 'muslim', 'modern', 'vintage'
+  style: text('style').notNull(),
+  description: text('description').notNull(),
+  previewUrl: text('preview_url'),
+  templateData: jsonb('template_data'), // Canvas positioning, fonts, colors
+  features: text('features').array(),
+  colors: text('colors').array(),
+  price: text('price').default('Free'),
+  popular: boolean('popular').default(false),
+  premium: boolean('premium').default(false),
+  isActive: boolean('is_active').default(true),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+export const generatedInvitations = pgTable('generated_invitations', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  templateId: text('template_id'),
+  formData: jsonb('form_data'),
+  customizationData: jsonb('customization_data'), // Fonts, colors, QR settings
+  downloadToken: text('download_token').notNull(),
+  formats: jsonb('formats'), // Store multiple format URLs
+  downloadCount: integer('download_count').default(0),
+  createdAt: timestamp('created_at').defaultNow(),
+  expiresAt: timestamp('expires_at').notNull(),
+  lastAccessedAt: timestamp('last_accessed_at').defaultNow(),
+});
+
+export const invitationAnalytics = pgTable('invitation_analytics', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  invitationId: text('invitation_id').notNull(),
+  templateId: text('template_id'),
+  action: text('action').notNull(), // 'created', 'downloaded', 'shared', 'previewed'
+  format: text('format'), // 'png', 'jpg', 'pdf', 'social', 'whatsapp'
+  userAgent: text('user_agent'),
+  ipAddress: text('ip_address'),
+  createdAt: timestamp('created_at').defaultNow(),
+});
 
 
 // Relations
@@ -151,6 +193,30 @@ export const rsvpsRelations = relations(rsvps, ({ one }) => ({
   wedding: one(weddings, {
     fields: [rsvps.weddingId],
     references: [weddings.id],
+  }),
+}));
+
+// Enhanced Wedding Invitation Generator Relations
+export const invitationTemplatesRelations = relations(invitationTemplates, ({ many }) => ({
+  generatedInvitations: many(generatedInvitations),
+  analytics: many(invitationAnalytics),
+}));
+
+export const generatedInvitationsRelations = relations(generatedInvitations, ({ one }) => ({
+  template: one(invitationTemplates, {
+    fields: [generatedInvitations.templateId],
+    references: [invitationTemplates.id],
+  }),
+}));
+
+export const invitationAnalyticsRelations = relations(invitationAnalytics, ({ one }) => ({
+  invitation: one(generatedInvitations, {
+    fields: [invitationAnalytics.invitationId],
+    references: [generatedInvitations.id],
+  }),
+  template: one(invitationTemplates, {
+    fields: [invitationAnalytics.templateId],
+    references: [invitationTemplates.id],
   }),
 }));
 
@@ -199,6 +265,23 @@ export const insertRsvpSchema = createInsertSchema(rsvps).omit({
   createdAt: true,
 });
 
+// Enhanced Wedding Invitation Generator Insert Schemas
+export const insertInvitationTemplateSchema = createInsertSchema(invitationTemplates).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertGeneratedInvitationSchema = createInsertSchema(generatedInvitations).omit({
+  id: true,
+  createdAt: true,
+  completedAt: true,
+});
+
+export const insertTemplateAnalyticsSchema = createInsertSchema(invitationAnalytics).omit({
+  id: true,
+  createdAt: true,
+});
 
 
 // Types
@@ -218,3 +301,11 @@ export type Wedding = typeof weddings.$inferSelect;
 export type InsertWedding = z.infer<typeof insertWeddingSchema>;
 export type Rsvp = typeof rsvps.$inferSelect;
 export type InsertRsvp = z.infer<typeof insertRsvpSchema>;
+
+// Enhanced Wedding Invitation Generator Types
+export type InvitationTemplate = typeof invitationTemplates.$inferSelect;
+export type InsertInvitationTemplate = z.infer<typeof insertInvitationTemplateSchema>;
+export type GeneratedInvitation = typeof generatedInvitations.$inferSelect;
+export type InsertGeneratedInvitation = z.infer<typeof insertGeneratedInvitationSchema>;
+export type InvitationAnalytics = typeof invitationAnalytics.$inferSelect;
+export type InsertInvitationAnalytics = z.infer<typeof insertTemplateAnalyticsSchema>;

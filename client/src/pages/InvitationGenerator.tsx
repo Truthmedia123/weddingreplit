@@ -5,197 +5,113 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Download, Heart, Sparkles, Upload, QrCode, ArrowLeft, Star, Crown, Palette, Edit } from 'lucide-react';
+import { Download, Heart, Sparkles, Upload, QrCode, ArrowLeft, Star, Crown, Palette, Edit, Wand2 } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 import OptimizedImage from '@/components/OptimizedImage';
 import LiveInvitationEditor from '@/components/LiveInvitationEditor';
 import InvitationPreview from '@/components/InvitationPreview';
+import EnhancedFormWizard from '@/components/InvitationGenerator/EnhancedFormWizard';
+import InteractiveCardEditor from '@/components/InvitationGenerator/InteractiveCardEditor';
+import EnhancedTemplateGallery from '@/components/InvitationGenerator/EnhancedTemplateGallery';
+import TemplateSelector from '@/components/InvitationGenerator/TemplateGallery/TemplateSelector';
+import type { EnhancedTemplate } from '@/components/InvitationGenerator/TemplateGallery/TemplateManager';
 
-interface InvitationTemplate {
-  id: string;
-  name: string;
-  category: string;
-  style: string;
-  description: string;
-  previewImage: string;
-  features: string[];
-  price: string;
-  popular?: boolean;
-  premium?: boolean;
-  colors: string[];
-}
-
-const invitationTemplates: InvitationTemplate[] = [
+const invitationTemplates: EnhancedTemplate[] = [
   {
     id: 'goan-beach-bliss',
     name: 'Goan Beach Bliss',
-    category: 'Beach Wedding',
+    category: 'goan-beach',
     style: 'Tropical Paradise',
     description: 'Stunning beach wedding invitation with golden sunset, palm trees, and ocean waves perfect for Goan ceremonies',
-    previewImage: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
+    previewUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
+    templateData: {
+      layout: 'portrait',
+      elements: {
+        coupleNames: { x: 200, y: 150, fontSize: 24, fontFamily: 'serif' },
+        ceremonyDetails: { x: 200, y: 250, fontSize: 16, fontFamily: 'sans-serif' },
+        receptionDetails: { x: 200, y: 300, fontSize: 16, fontFamily: 'sans-serif' },
+        contactInfo: { x: 200, y: 350, fontSize: 14, fontFamily: 'sans-serif' },
+        qrCode: { x: 200, y: 450, size: 60 }
+      },
+      colorSchemes: [
+        { name: 'Sunset', primary: '#FF6B6B', secondary: '#4ECDC4', accent: '#FFD700', background: '#FFFFFF' }
+      ],
+      typography: {
+        fonts: [
+          { name: 'Serif', family: 'serif', weights: [400, 600, 700], category: 'serif' }
+        ]
+      }
+    },
     features: ['Beach Sunset Theme', 'Palm Tree Silhouettes', 'Ocean Wave Borders', 'Tropical Typography'],
+    colors: ['Coral', 'Turquoise', 'Gold'],
     price: 'Free',
     popular: true,
-    colors: ['Coral', 'Turquoise', 'Gold']
+    premium: false,
+    isActive: true
   },
   {
     id: 'portuguese-heritage',
     name: 'Portuguese Heritage',
-    category: 'Traditional',
+    category: 'christian',
     style: 'Colonial Elegance',
     description: 'Elegant design inspired by Portuguese colonial architecture with azulejo tile patterns and traditional motifs',
-    previewImage: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
+    previewUrl: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
+    templateData: {
+      layout: 'portrait',
+      elements: {
+        coupleNames: { x: 200, y: 150, fontSize: 24, fontFamily: 'serif' },
+        ceremonyDetails: { x: 200, y: 250, fontSize: 16, fontFamily: 'sans-serif' },
+        receptionDetails: { x: 200, y: 300, fontSize: 16, fontFamily: 'sans-serif' },
+        contactInfo: { x: 200, y: 350, fontSize: 14, fontFamily: 'sans-serif' },
+        qrCode: { x: 200, y: 450, size: 60 }
+      },
+      colorSchemes: [
+        { name: 'Heritage', primary: '#4169E1', secondary: '#FFFFFF', accent: '#FFD700', background: '#F5F5DC' }
+      ],
+      typography: {
+        fonts: [
+          { name: 'Serif', family: 'serif', weights: [400, 600, 700], category: 'serif' }
+        ]
+      }
+    },
     features: ['Azulejo Tile Patterns', 'Colonial Architecture', 'Bilingual Support', 'Heritage Colors'],
+    colors: ['Royal Blue', 'White', 'Gold'],
     price: '₹399',
+    popular: false,
     premium: true,
-    colors: ['Royal Blue', 'White', 'Gold']
+    isActive: true
   },
   {
-    id: 'tropical-floral-paradise',
-    name: 'Tropical Floral Paradise',
-    category: 'Floral',
-    style: 'Botanical Beauty',
-    description: 'Vibrant tropical flowers with hibiscus, frangipani, and lush Goan greenery in watercolor style',
-    previewImage: 'https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
-    features: ['Hand-painted Florals', 'Watercolor Effects', 'Tropical Botanicals', 'Vibrant Colors'],
+    id: 'hindu-elegant-mandala',
+    name: 'Hindu Elegant Mandala',
+    category: 'hindu',
+    style: 'Sacred Geometry',
+    description: 'Beautiful mandala design with traditional Hindu motifs and sacred geometry patterns',
+    previewUrl: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
+    templateData: {
+      layout: 'portrait',
+      elements: {
+        coupleNames: { x: 200, y: 150, fontSize: 24, fontFamily: 'serif' },
+        ceremonyDetails: { x: 200, y: 250, fontSize: 16, fontFamily: 'sans-serif' },
+        receptionDetails: { x: 200, y: 300, fontSize: 16, fontFamily: 'sans-serif' },
+        contactInfo: { x: 200, y: 350, fontSize: 14, fontFamily: 'sans-serif' },
+        qrCode: { x: 200, y: 450, size: 60 }
+      },
+      colorSchemes: [
+        { name: 'Sacred', primary: '#DC143C', secondary: '#FFD700', accent: '#483D8B', background: '#FFFFFF' }
+      ],
+      typography: {
+        fonts: [
+          { name: 'Serif', family: 'serif', weights: [400, 600, 700], category: 'serif' }
+        ]
+      }
+    },
+    features: ['Sacred Geometry', 'Traditional Motifs', 'Mandala Patterns', 'Cultural Elements'],
+    colors: ['Crimson', 'Gold', 'Deep Purple'],
     price: '₹299',
-    colors: ['Magenta', 'Emerald', 'Sunshine Yellow']
-  },
-  {
-    id: 'modern-goan-chic',
-    name: 'Modern Goan Chic',
-    category: 'Modern',
-    style: 'Contemporary Coastal',
-    description: 'Clean, sophisticated design blending modern typography with subtle Goan coastal elements',
-    previewImage: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
-    features: ['Minimalist Layout', 'Coastal Elements', 'Modern Typography', 'Clean Design'],
-    price: '₹249',
-    colors: ['Navy', 'Rose Gold', 'Cream']
-  },
-  {
-    id: 'royal-goan-mandala',
-    name: 'Royal Goan Mandala',
-    category: 'Luxury',
-    style: 'Regal Splendor',
-    description: 'Opulent design with intricate mandala patterns, royal motifs, and gold embossing fit for a palace wedding',
-    previewImage: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
-    features: ['Intricate Mandalas', 'Gold Embossing', 'Royal Motifs', 'Luxury Finish'],
-    price: '₹699',
-    premium: true,
-    colors: ['Deep Purple', 'Gold', 'Crimson']
-  },
-  {
-    id: 'vintage-goan-charm',
-    name: 'Vintage Goan Charm',
-    category: 'Vintage',
-    style: 'Old World Romance',
-    description: 'Nostalgic design capturing old Goa charm with vintage illustrations and classic Portuguese elements',
-    previewImage: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
-    features: ['Vintage Illustrations', 'Portuguese Elements', 'Sepia Tones', 'Classic Borders'],
-    price: '₹199',
-    colors: ['Sepia', 'Antique Gold', 'Cream']
-  },
-  {
-    id: 'bohemian-beach-dreams',
-    name: 'Bohemian Beach Dreams',
-    category: 'Boho',
-    style: 'Free-spirited Coastal',
-    description: 'Dreamy bohemian design with feathers, dreamcatchers, and coastal elements perfect for beach ceremonies',
-    previewImage: 'https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
-    features: ['Boho Elements', 'Feather Details', 'Coastal Vibes', 'Dreamy Typography'],
-    price: '₹349',
-    colors: ['Dusty Rose', 'Sage Green', 'Sand']
-  },
-  {
-    id: 'elegant-rose-gold-goa',
-    name: 'Elegant Rose Gold Goa',
-    category: 'Elegant',
-    style: 'Sophisticated Glamour',
-    description: 'Sophisticated rose gold design with delicate florals, marble textures, and Goan architectural elements',
-    previewImage: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
-    features: ['Rose Gold Foiling', 'Marble Textures', 'Delicate Florals', 'Architectural Elements'],
-    price: '₹449',
-    premium: true,
-    colors: ['Rose Gold', 'Blush Pink', 'White']
-  },
-  {
-    id: 'rustic-goan-countryside',
-    name: 'Rustic Goan Countryside',
-    category: 'Rustic',
-    style: 'Natural Charm',
-    description: 'Charming rustic design with natural textures, countryside elements, and earthy Goan tones',
-    previewImage: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
-    features: ['Natural Textures', 'Countryside Elements', 'Earthy Tones', 'Rustic Typography'],
-    price: '₹149',
-    colors: ['Terracotta', 'Forest Green', 'Cream']
-  },
-  {
-    id: 'art-deco-goan-glamour',
-    name: 'Art Deco Goan Glamour',
-    category: 'Glamour',
-    style: 'Vintage Luxury',
-    description: 'Glamorous 1920s Art Deco design with geometric patterns, gold accents, and colonial influences',
-    previewImage: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
-    features: ['Art Deco Patterns', 'Geometric Designs', 'Gold Accents', 'Colonial Influence'],
-    price: '₹399',
-    colors: ['Black', 'Gold', 'Champagne']
-  },
-  {
-    id: 'destination-goa-passport',
-    name: 'Destination Goa Passport',
-    category: 'Destination',
-    style: 'Travel Adventure',
-    description: 'Unique passport-style invitation perfect for destination weddings in Goa with travel stamps and maps',
-    previewImage: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
-    features: ['Passport Design', 'Travel Stamps', 'Goa Map Elements', 'Adventure Theme'],
-    price: '₹449',
     popular: true,
-    colors: ['Navy Blue', 'Red', 'Gold']
-  },
-  {
-    id: 'watercolor-goan-sunset',
-    name: 'Watercolor Goan Sunset',
-    category: 'Artistic',
-    style: 'Dreamy Watercolor',
-    description: 'Dreamy watercolor design capturing beautiful Goan sunsets with soft washes and artistic brush strokes',
-    previewImage: 'https://images.unsplash.com/photo-1469371670807-013ccf25f16a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
-    features: ['Watercolor Sunset', 'Soft Gradients', 'Artistic Brushstrokes', 'Dreamy Colors'],
-    price: '₹299',
-    colors: ['Orange', 'Pink', 'Purple']
-  },
-  {
-    id: 'goan-catholic-traditional',
-    name: 'Goan Catholic Traditional',
-    category: 'Religious',
-    style: 'Sacred Tradition',
-    description: 'Traditional Catholic wedding invitation with religious symbols, church elements, and Goan heritage',
-    previewImage: 'https://images.unsplash.com/photo-1556075798-4825dfaaf498?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
-    features: ['Religious Symbols', 'Church Elements', 'Traditional Layout', 'Sacred Typography'],
-    price: '₹249',
-    colors: ['Ivory', 'Gold', 'Deep Blue']
-  },
-  {
-    id: 'romantic-goan-script',
-    name: 'Romantic Goan Script',
-    category: 'Romantic',
-    style: 'Love Story',
-    description: 'Romantic calligraphy with flowing script fonts, heart motifs, and coastal romantic elements',
-    previewImage: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
-    features: ['Script Calligraphy', 'Heart Motifs', 'Romantic Elements', 'Coastal Romance'],
-    price: '₹249',
-    colors: ['Blush Pink', 'Gold', 'White']
-  },
-  {
-    id: 'luxury-laser-cut-goa',
-    name: 'Luxury Laser Cut Goa',
-    category: 'Luxury',
-    style: 'Premium Craftsmanship',
-    description: 'Exquisite laser-cut invitation with intricate Goan patterns, premium materials, and 3D effects',
-    previewImage: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
-    features: ['Laser Cut Details', 'Intricate Patterns', 'Premium Materials', '3D Effects'],
-    price: '₹899',
-    premium: true,
-    colors: ['White', 'Gold', 'Blush']
+    premium: false,
+    isActive: true
   }
 ];
 
@@ -231,8 +147,8 @@ interface GenerationResult {
 }
 
 export default function InvitationGenerator() {
-  const [currentView, setCurrentView] = useState<'templates' | 'customize' | 'live-editor'>('templates');
-  const [selectedTemplate, setSelectedTemplate] = useState<InvitationTemplate | null>(null);
+  const [currentView, setCurrentView] = useState<'templates' | 'customize' | 'live-editor' | 'interactive-editor' | 'enhanced-gallery'>('enhanced-gallery');
+  const [selectedTemplate, setSelectedTemplate] = useState<EnhancedTemplate | null>(null);
   const [formData, setFormData] = useState<InvitationFormData>({
     bibleVerse: "I have found the one whom my soul loves",
     bibleReference: "Song of Solomon 3:4",
@@ -258,6 +174,54 @@ export default function InvitationGenerator() {
 
   const [generatedInvitation, setGeneratedInvitation] = useState<GenerationResult | null>(null);
   const [qrCodePreview, setQrCodePreview] = useState<string | null>(null);
+
+  // Cultural themes data
+  const culturalThemes = [
+    {
+      id: 'christian',
+      name: 'christian',
+      displayName: 'Christian',
+      description: 'Traditional Christian wedding themes with Portuguese colonial influences',
+      colors: ['#4169E1', '#FFFFFF', '#FFD700'],
+      symbols: ['Cross', 'Church', 'Rings', 'Dove'],
+      typography: ['Playfair Display', 'Lato', 'Dancing Script'],
+      traditions: ['Church Ceremony', 'Bible Readings', 'Wedding Vows'],
+      languages: ['English', 'Portuguese', 'Konkani']
+    },
+    {
+      id: 'hindu',
+      name: 'hindu',
+      displayName: 'Hindu',
+      description: 'Traditional Hindu wedding themes with sacred symbols and vibrant colors',
+      colors: ['#DC143C', '#FFD700', '#F4C430'],
+      symbols: ['Om', 'Mandala', 'Lotus', 'Kalash'],
+      typography: ['Cinzel', 'Open Sans', 'Kalam'],
+      traditions: ['Mandap Ceremony', 'Saptapadi', 'Mangalsutra'],
+      languages: ['English', 'Hindi', 'Sanskrit', 'Konkani']
+    },
+    {
+      id: 'muslim',
+      name: 'muslim',
+      displayName: 'Muslim',
+      description: 'Islamic wedding themes with geometric patterns and elegant calligraphy',
+      colors: ['#50C878', '#FFD700', '#FFFFFF'],
+      symbols: ['Crescent', 'Star', 'Geometric Patterns', 'Calligraphy'],
+      typography: ['Amiri', 'Noto Sans', 'Scheherazade'],
+      traditions: ['Nikah Ceremony', 'Mehndi', 'Walima'],
+      languages: ['English', 'Arabic', 'Urdu']
+    },
+    {
+      id: 'secular',
+      name: 'secular',
+      displayName: 'Secular',
+      description: 'Modern non-religious themes suitable for civil ceremonies and beach weddings',
+      colors: ['#2F4F4F', '#F5F5DC', '#FF69B4'],
+      symbols: ['Hearts', 'Rings', 'Flowers', 'Beach Elements'],
+      typography: ['Montserrat', 'Source Sans Pro', 'Pacifico'],
+      traditions: ['Civil Ceremony', 'Beach Wedding', 'Garden Party'],
+      languages: ['English', 'Portuguese']
+    }
+  ];
 
   const generateMutation = useMutation({
     mutationFn: async (data: InvitationFormData): Promise<GenerationResult> => {
@@ -329,7 +293,7 @@ export default function InvitationGenerator() {
   };
 
   const removeQrCode = () => {
-    setFormData(prev => ({ ...prev, qrCodeImage: undefined }));
+    setFormData(prev => ({ ...prev, qrCodeImage: '' }));
     setQrCodePreview(null);
   };
 
@@ -383,14 +347,24 @@ export default function InvitationGenerator() {
     }
   };
 
-  const handleTemplateSelect = (template: InvitationTemplate) => {
+  const handleTemplateSelect = (template: EnhancedTemplate) => {
     setSelectedTemplate(template);
     setCurrentView('customize');
   };
 
-  const handleLiveEdit = (template: InvitationTemplate) => {
+  const handleLiveEdit = (template: EnhancedTemplate) => {
     setSelectedTemplate(template);
     setCurrentView('live-editor');
+  };
+
+  const handleInteractiveEdit = (template: EnhancedTemplate) => {
+    setSelectedTemplate(template);
+    setCurrentView('interactive-editor');
+  };
+
+  const handleTemplatePreview = (template: EnhancedTemplate) => {
+    // TODO: Implement template preview modal
+    console.log('Preview template:', template.name);
   };
 
   const handleBackToTemplates = () => {
@@ -398,193 +372,54 @@ export default function InvitationGenerator() {
     setSelectedTemplate(null);
   };
 
-  // Template Gallery View
-  if (currentView === 'templates') {
+  // Enhanced Template Gallery View
+  if (currentView === 'enhanced-gallery') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-pink-50 py-8">
-        <div className="container mx-auto px-4 max-w-7xl">
-          <div className="text-center mb-12">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <Heart className="h-8 w-8 text-pink-500" />
-              <h1 className="text-4xl font-bold text-gray-800">Choose Your Wedding Invitation</h1>
-              <Sparkles className="h-8 w-8 text-blue-500" />
-            </div>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Select from our beautiful collection of Goan wedding invitation templates. 
-              Each design can be fully customized with your details.
-            </p>
-          </div>
-
-          {/* Template Categories */}
-          <div className="flex flex-wrap justify-center gap-3 mb-8">
-            {['All', 'Floral', 'Traditional', 'Modern', 'Vintage', 'Artistic', 'Luxury', 'Beach', 'Rustic', 'Boho', 'Glamour', 'Destination', 'Romantic'].map((category) => (
-              <Button
-                key={category}
-                variant="outline"
-                className="rounded-full px-4 py-2 text-sm hover:bg-pink-100 hover:border-pink-300 transition-all duration-200"
-              >
-                {category}
-              </Button>
-            ))}
-          </div>
-
-          {/* Template Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
-            {invitationTemplates.map((template) => (
-              <Card 
-                key={template.id} 
-                className="group cursor-pointer hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 overflow-hidden bg-white border-0 rounded-2xl"
-                onClick={() => handleTemplateSelect(template)}
-              >
-                <div className="relative">
-                  <div className="w-full h-72 flex items-center justify-center bg-gray-50">
-                    <InvitationPreview 
-                      template={template} 
-                      width={200} 
-                      height={280} 
-                    />
-                  </div>
-                  
-                  {/* Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  
-                  {/* Badges */}
-                  <div className="absolute top-3 left-3 flex flex-col gap-2">
-                    {template.popular && (
-                      <Badge className="bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-lg">
-                        <Star className="w-3 h-3 mr-1 fill-current" />
-                        Popular
-                      </Badge>
-                    )}
-                    {template.premium && (
-                      <Badge className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white shadow-lg">
-                        <Crown className="w-3 h-3 mr-1 fill-current" />
-                        Premium
-                      </Badge>
-                    )}
-                  </div>
-
-                  {/* Price */}
-                  <div className="absolute top-3 right-3">
-                    <Badge className="bg-white/90 backdrop-blur-sm text-gray-800 font-bold shadow-lg">
-                      {template.price}
-                    </Badge>
-                  </div>
-
-                  {/* Hover Actions */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-                    <div className="flex gap-2">
-                      <Button 
-                        size="sm"
-                        className="bg-white/90 backdrop-blur-sm text-gray-800 hover:bg-white shadow-lg"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleLiveEdit(template);
-                        }}
-                      >
-                        <Edit className="w-4 h-4 mr-1" />
-                        Live Edit
-                      </Button>
-                      <Button 
-                        size="sm"
-                        variant="outline" 
-                        className="bg-white/90 backdrop-blur-sm text-gray-800 hover:bg-white border-white/50 shadow-lg"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleTemplateSelect(template);
-                        }}
-                      >
-                        Customize
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-
-                <CardContent className="p-4">
-                  <div className="flex items-start justify-between mb-2">
-                    <h3 className="text-lg font-bold text-gray-800 leading-tight">{template.name}</h3>
-                    <Badge variant="outline" className="text-xs ml-2 shrink-0">{template.category}</Badge>
-                  </div>
-                  
-                  <p className="text-gray-600 mb-3 text-sm leading-relaxed">{template.description}</p>
-                  
-                  {/* Features */}
-                  <div className="flex flex-wrap gap-1 mb-3">
-                    {template.features.slice(0, 2).map((feature) => (
-                      <Badge key={feature} variant="secondary" className="text-xs bg-gray-100 text-gray-600">
-                        {feature}
-                      </Badge>
-                    ))}
-                    {template.features.length > 2 && (
-                      <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-600">
-                        +{template.features.length - 2} more
-                      </Badge>
-                    )}
-                  </div>
-
-                  {/* Colors */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="flex gap-1">
-                        {template.colors.slice(0, 3).map((color) => (
-                          <div
-                            key={color}
-                            className="w-4 h-4 rounded-full border-2 border-white shadow-sm"
-                            style={{ 
-                              backgroundColor: color.toLowerCase().includes('gold') ? '#FFD700' :
-                                             color.toLowerCase().includes('rose') ? '#F43F5E' :
-                                             color.toLowerCase().includes('coral') ? '#FF7F7F' :
-                                             color.toLowerCase().includes('turquoise') ? '#40E0D0' :
-                                             color.toLowerCase().includes('emerald') ? '#50C878' :
-                                             color.toLowerCase().includes('royal') ? '#4169E1' :
-                                             color.toLowerCase().includes('purple') ? '#8A2BE2' :
-                                             color.toLowerCase().includes('crimson') ? '#DC143C' :
-                                             color.toLowerCase().includes('sage') ? '#9CAF88' :
-                                             color.toLowerCase().includes('blush') ? '#FFC0CB' :
-                                             color.toLowerCase().includes('navy') ? '#000080' :
-                                             color.toLowerCase().includes('champagne') ? '#F7E7CE' :
-                                             color.toLowerCase().includes('saffron') ? '#F4C430' :
-                                             color.toLowerCase()
-                            }}
-                            title={color}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                    <div className="text-xs text-gray-500">{template.style}</div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          {/* Call to Action */}
-          <div className="text-center">
-            <p className="text-gray-600 mb-4">
-              Need a custom design? Our designers can create something unique for you.
-            </p>
-            <Button variant="outline" className="rounded-full px-8 py-3">
-              Request Custom Design
-            </Button>
-          </div>
-        </div>
-      </div>
+      <EnhancedTemplateGallery
+        onTemplateSelect={handleInteractiveEdit}
+        onPreview={handleTemplatePreview}
+      />
     );
   }
 
-  // Live Editor View
+  // Legacy Template Gallery View
+  if (currentView === 'templates') {
+    return (
+      <TemplateSelector
+        onTemplateSelect={handleLiveEdit}
+        onAnalyticsEvent={(eventType, templateId, metadata) => {
+          console.log('Analytics:', eventType, templateId, metadata);
+          // TODO: Send analytics to server
+        }}
+      />
+    );
+  }
+
+  // Interactive Card Editor View
+  if (currentView === 'interactive-editor' && selectedTemplate) {
+    return (
+      <InteractiveCardEditor
+        selectedTemplate={selectedTemplate}
+        onComplete={(formData) => {
+          console.log('Interactive editor completed with data:', formData);
+          // TODO: Generate invitation with form data
+          setCurrentView('enhanced-gallery');
+        }}
+        onBack={handleBackToTemplates}
+      />
+    );
+  }
+
+  // Live Editor View - Now using EnhancedFormWizard
   if (currentView === 'live-editor' && selectedTemplate) {
     return (
-      <LiveInvitationEditor
-        template={{
-          id: selectedTemplate.id,
-          name: selectedTemplate.name,
-          previewImage: selectedTemplate.previewImage,
-          baseElements: []
-        }}
-        onSave={(data) => {
-          console.log('Saving invitation data:', data);
-          // Handle save logic here
+      <EnhancedFormWizard
+        selectedTemplate={selectedTemplate}
+        culturalThemes={culturalThemes}
+        onComplete={(formData) => {
+          console.log('Form completed with data:', formData);
+          // TODO: Generate invitation with form data
+          setCurrentView('templates');
         }}
         onBack={handleBackToTemplates}
       />
@@ -616,16 +451,12 @@ export default function InvitationGenerator() {
           </div>
           
           {selectedTemplate && (
-            <div className="flex items-center justify-center gap-4 mb-4">
+            <div className="flex items-center justify-center mb-4">
               <img
-                src={selectedTemplate.previewImage}
+                src={selectedTemplate.previewUrl}
                 alt={selectedTemplate.name}
-                className="w-16 h-20 object-cover rounded border"
+                className="w-24 h-32 object-cover rounded-lg border shadow-md"
               />
-              <div className="text-left">
-                <h2 className="text-xl font-semibold text-gray-800">{selectedTemplate.name}</h2>
-                <p className="text-gray-600">{selectedTemplate.category} • {selectedTemplate.price}</p>
-              </div>
             </div>
           )}
           <p className="text-gray-600 text-lg">Create beautiful Christian wedding invitations with blue floral design</p>

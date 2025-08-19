@@ -322,6 +322,89 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Enhanced Wedding Invitation Generator - Template API
+  app.get("/api/v2/templates", async (req, res) => {
+    try {
+      const { category, culturalTheme, search, limit = 20, offset = 0 } = req.query;
+      
+      const templates = await storage.getInvitationTemplates({
+        category: category as string,
+        culturalTheme: culturalTheme as string,
+        search: search as string,
+        limit: parseInt(limit as string),
+        offset: parseInt(offset as string)
+      });
+      
+      const categories = await storage.getTemplateCategories();
+      const culturalThemes = await storage.getCulturalThemes();
+      
+      res.json({
+        templates,
+        categories,
+        culturalThemes,
+        pagination: {
+          page: Math.floor(parseInt(offset as string) / parseInt(limit as string)) + 1,
+          limit: parseInt(limit as string),
+          total: templates.length, // TODO: Get actual total count
+          totalPages: Math.ceil(templates.length / parseInt(limit as string))
+        },
+        filters: {
+          categories: categories.map(c => c.id),
+          culturalThemes: culturalThemes.map(t => t.id),
+          features: [] // TODO: Extract unique features from templates
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching templates:", error);
+      res.status(500).json({ message: "Failed to fetch templates" });
+    }
+  });
+
+  app.get("/api/v2/templates/:id", async (req, res) => {
+    try {
+      const template = await storage.getInvitationTemplate(req.params.id);
+      if (!template) {
+        return res.status(404).json({ message: "Template not found" });
+      }
+      res.json(template);
+    } catch (error) {
+      console.error("Error fetching template:", error);
+      res.status(500).json({ message: "Failed to fetch template" });
+    }
+  });
+
+  app.get("/api/v2/templates/categories", async (req, res) => {
+    try {
+      const categories = await storage.getTemplateCategories();
+      res.json(categories);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      res.status(500).json({ message: "Failed to fetch categories" });
+    }
+  });
+
+  app.get("/api/v2/templates/cultural-themes", async (req, res) => {
+    try {
+      const themes = await storage.getCulturalThemes();
+      res.json(themes);
+    } catch (error) {
+      console.error("Error fetching cultural themes:", error);
+      res.status(500).json({ message: "Failed to fetch cultural themes" });
+    }
+  });
+
+  // Template analytics tracking
+  app.post("/api/v2/analytics/events", async (req, res) => {
+    try {
+      const eventData = req.body;
+      await storage.trackTemplateEvent(eventData);
+      res.status(201).json({ success: true });
+    } catch (error) {
+      console.error("Error tracking analytics event:", error);
+      res.status(500).json({ message: "Failed to track event" });
+    }
+  });
+
   // Wedding Invitation Generator
   app.post("/api/invitation/generate", async (req, res) => {
     try {

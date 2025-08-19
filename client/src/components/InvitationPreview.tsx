@@ -6,7 +6,7 @@ interface InvitationPreviewProps {
     name: string;
     category: string;
     style: string;
-    colors: string[];
+    colors?: string[];
   };
   width?: number;
   height?: number;
@@ -17,7 +17,7 @@ const InvitationPreview: React.FC<InvitationPreviewProps> = ({
   width = 300, 
   height = 400 
 }) => {
-  const getColorScheme = (colors: string[]) => {
+  const getColorScheme = (colors: string[] | undefined) => {
     const colorMap: { [key: string]: string } = {
       'Coral': '#FF6B6B',
       'Turquoise': '#4ECDC4',
@@ -52,7 +52,11 @@ const InvitationPreview: React.FC<InvitationPreviewProps> = ({
       'Blush': '#FFC0CB'
     };
     
-    return colors.map(color => colorMap[color] || '#CCCCCC');
+    // Default colors if colors array is undefined or empty
+    const defaultColors = ['Gold', 'Royal Blue', 'White'];
+    const safeColors = colors && colors.length > 0 ? colors : defaultColors;
+    
+    return safeColors.map(color => colorMap[color] || '#CCCCCC');
   };
 
   const [primary, secondary, accent] = getColorScheme(template.colors);

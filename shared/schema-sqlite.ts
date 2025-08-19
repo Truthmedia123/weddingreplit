@@ -62,7 +62,7 @@ export const weddings = sqliteTable("weddings", {
   weddingDate: text("wedding_date").notNull(),
   venue: text("venue").notNull(),
   venueAddress: text("venue_address").notNull(),
-  nuptialsTime: text("nuptials_time").notNull(),
+  ceremonyTime: text("ceremony_time").notNull(),
   receptionTime: text("reception_time"),
   coverImage: text("cover_image"),
   story: text("story"),
@@ -87,6 +87,49 @@ export const rsvps = sqliteTable("rsvps", {
   numberOfGuests: integer("number_of_guests").default(1),
   dietaryRestrictions: text("dietary_restrictions"),
   message: text("message"),
+  createdAt: text("created_at").default("CURRENT_TIMESTAMP"),
+});
+
+// Enhanced Wedding Invitation Generator Tables
+export const invitationTemplates = sqliteTable("invitation_templates", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  category: text("category").notNull(), // 'goan-beach', 'christian', 'hindu', 'muslim', 'modern', 'floral'
+  culturalTheme: text("cultural_theme").notNull(), // 'christian', 'hindu', 'muslim', 'secular'
+  description: text("description"),
+  previewUrl: text("preview_url").notNull(),
+  thumbnailUrl: text("thumbnail_url"),
+  templateData: text("template_data").notNull(), // JSON string - Layout, elements, zones configuration
+  colorSchemes: text("color_schemes").notNull(), // JSON string - Available color schemes for template
+  typography: text("typography").notNull(), // JSON string - Font configurations
+  features: text("features"), // JSON string - Template features list
+  isActive: integer("is_active", { mode: "boolean" }).default(true),
+  sortOrder: integer("sort_order").default(0),
+  createdAt: text("created_at").default("CURRENT_TIMESTAMP"),
+  updatedAt: text("updated_at").default("CURRENT_TIMESTAMP"),
+});
+
+export const generatedInvitations = sqliteTable("generated_invitations", {
+  id: text("id").primaryKey(),
+  templateId: text("template_id").notNull().references(() => invitationTemplates.id),
+  formData: text("form_data").notNull(), // JSON string - Complete form data from wizard
+  customizations: text("customizations"), // JSON string - Font, color, layout customizations
+  downloadToken: text("download_token").notNull().unique(),
+  formats: text("formats").notNull(), // JSON string - Generated file formats
+  downloadCount: integer("download_count").default(0),
+  createdAt: text("created_at").default("CURRENT_TIMESTAMP"),
+  expiresAt: text("expires_at").notNull(),
+  lastAccessedAt: text("last_accessed_at").default("CURRENT_TIMESTAMP"),
+});
+
+export const invitationAnalytics = sqliteTable("invitation_analytics", {
+  id: text("id").primaryKey(),
+  invitationId: text("invitation_id").notNull(),
+  templateId: text("template_id"),
+  action: text("action").notNull(), // 'created', 'downloaded', 'shared', 'previewed'
+  format: text("format"), // 'png', 'jpg', 'pdf', 'social', 'whatsapp'
+  userAgent: text("user_agent"),
+  ipAddress: text("ip_address"),
   createdAt: text("created_at").default("CURRENT_TIMESTAMP"),
 });
 

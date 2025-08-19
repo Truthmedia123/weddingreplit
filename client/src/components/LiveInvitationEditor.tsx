@@ -41,7 +41,7 @@ interface LiveInvitationEditorProps {
   template: {
     id: string;
     name: string;
-    previewImage: string;
+    previewUrl: string;
     baseElements: Partial<TextElement>[];
   };
   onSave: (data: any) => void;
@@ -354,7 +354,7 @@ export default function LiveInvitationEditor({ template, onSave, onBack }: LiveI
             style={{
               width: editorState.canvasWidth * editorState.zoom,
               height: editorState.canvasHeight * editorState.zoom,
-              backgroundImage: `url(${template.previewImage})`,
+              backgroundImage: `url(${template.previewUrl})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center'
             }}

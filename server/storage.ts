@@ -1,13 +1,17 @@
-import { vendors, categories, blogPosts, weddings, rsvps } from "@shared/schema-sqlite";
+import { vendors, categories, blogPosts, weddings, rsvps, invitationTemplates, generatedInvitations, invitationAnalytics } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, desc, like, or } from "drizzle-orm";
+import { eq, and, desc, like, or, count } from "drizzle-orm";
 import type { 
   Vendor, InsertVendor, 
   Category, InsertCategory,
   BlogPost, InsertBlogPost,
   Wedding, InsertWedding,
-  Rsvp, InsertRsvp
-} from "@shared/schema-sqlite";
+  Rsvp, InsertRsvp,
+  InvitationTemplate, InsertInvitationTemplate,
+  GeneratedInvitation, InsertGeneratedInvitation,
+  InvitationAnalytics, InsertInvitationAnalytics
+} from "@shared/schema";
+import type { CulturalTheme } from "@shared/invitation-types";
 
 export interface IStorage {
   // Vendors
@@ -47,6 +51,22 @@ export interface IStorage {
 
   // Contact (placeholder methods)
   createContact(contactData: any): Promise<any>;
+
+  // Enhanced Wedding Invitation Generator - Templates
+  getInvitationTemplates(filters: { 
+    category?: string; 
+    culturalTheme?: string; 
+    search?: string; 
+    limit?: number; 
+    offset?: number; 
+  }): Promise<InvitationTemplate[]>;
+  getInvitationTemplate(id: string): Promise<InvitationTemplate | undefined>;
+  getTemplateCategories(): Promise<{ id: string; name: string; count: number }[]>;
+  getCulturalThemes(): Promise<CulturalTheme[]>;
+  trackTemplateEvent(eventData: InsertInvitationAnalytics): Promise<void>;
+  createGeneratedInvitation(data: InsertGeneratedInvitation): Promise<GeneratedInvitation>;
+  getGeneratedInvitation(id: string): Promise<GeneratedInvitation | undefined>;
+  getGeneratedInvitationByToken(token: string): Promise<GeneratedInvitation | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -232,6 +252,88 @@ export class DatabaseStorage implements IStorage {
     // Placeholder implementation - return the data with an ID
     console.log('Creating contact:', contactData);
     return { id: Date.now(), ...contactData, createdAt: new Date().toISOString() };
+  }
+
+  // Enhanced Wedding Invitation Generator - Templates
+  async getInvitationTemplates(filters: { 
+    category?: string; 
+    culturalTheme?: string; 
+    search?: string; 
+    limit?: number; 
+    offset?: number; 
+  }): Promise<InvitationTemplate[]> {
+    // Use mock database for now - replace with real DB when PostgreSQL is set up
+    const { mockDb, initializeMockData } = await import('./mock-db');
+    await initializeMockData();
+    
+    const whereClause: any = {};
+    if (filters.category) whereClause.category = filters.category;
+    if (filters.culturalTheme) whereClause.culturalTheme = filters.culturalTheme;
+    if (filters.search) whereClause.name = { like: `%${filters.search}%` };
+    
+    return await mockDb.invitationTemplates.findMany({ where: whereClause });
+  }
+
+  async getInvitationTemplate(id: string): Promise<InvitationTemplate | undefined> {
+    const { mockDb } = await import('./mock-db');
+    return await mockDb.invitationTemplates.findUnique(id);
+  }
+
+  async getTemplateCategories(): Promise<{ id: string; name: string; count: number }[]> {
+    const { mockDb, initializeMockData } = await import('./mock-db');
+    await initializeMockData();
+    
+    const templates = await mockDb.invitationTemplates.findMany();
+    const categoryMap = new Map<string, number>();
+    
+    templates.forEach(template => {
+      const count = categoryMap.get(template.category) || 0;
+      categoryMap.set(template.category, count + 1);
+    });
+    
+    return Array.from(categoryMap.entries()).map(([id, count]) => ({
+      id,
+      name: this.formatCategoryName(id),
+      count
+    }));
+  }
+
+  async getCulturalThemes(): Promise<CulturalTheme[]> {
+    const { culturalThemes } = await import('./mock-db');
+    return culturalThemes;
+  }
+
+  async trackTemplateEvent(eventData: InsertInvitationAnalytics): Promise<void> {
+    await db.insert(invitationAnalytics).values(eventData);
+  }
+
+  async createGeneratedInvitation(data: InsertGeneratedInvitation): Promise<GeneratedInvitation> {
+    const result = await db.insert(generatedInvitations).values(data).returning();
+    return result[0];
+  }
+
+  async getGeneratedInvitation(id: string): Promise<GeneratedInvitation | undefined> {
+    const result = await db.select().from(generatedInvitations)
+      .where(eq(generatedInvitations.id, id));
+    return result[0] || undefined;
+  }
+
+  async getGeneratedInvitationByToken(token: string): Promise<GeneratedInvitation | undefined> {
+    const result = await db.select().from(generatedInvitations)
+      .where(eq(generatedInvitations.downloadToken, token));
+    return result[0] || undefined;
+  }
+
+  private formatCategoryName(category: string): string {
+    const categoryNames: Record<string, string> = {
+      'goan-beach': 'Goan Beach',
+      'christian': 'Christian',
+      'hindu': 'Hindu',
+      'muslim': 'Muslim',
+      'modern': 'Modern',
+      'floral': 'Floral'
+    };
+    return categoryNames[category] || category;
   }
 }
 
