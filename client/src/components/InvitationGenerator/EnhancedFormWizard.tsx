@@ -220,9 +220,98 @@ export default function EnhancedFormWizard({ selectedTemplate, culturalThemes, o
   };
 
   const handleDownload = async (format: string, resolution: string) => {
-    console.log('Downloading:', format, resolution);
-    // TODO: Implement actual download functionality
-    alert(`Downloading ${format} in ${resolution} format...`);
+    try {
+      console.log('Downloading:', format, resolution);
+      
+      // Show loading state
+      const downloadButton = document.querySelector('[data-download-button]') as HTMLButtonElement;
+      if (downloadButton) {
+        downloadButton.disabled = true;
+        downloadButton.innerHTML = '<div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div> Generating...';
+      }
+
+      // Create canvas for rendering
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        throw new Error('Could not get canvas context');
+      }
+
+      // Set canvas size based on resolution
+      const sizeMap = {
+        'PNG': { width: 600, height: 800 },
+        'HD': { width: 1200, height: 1600 },
+        'Print': { width: 1800, height: 2400 }
+      };
+      
+      const size = sizeMap[resolution as keyof typeof sizeMap] || sizeMap.PNG;
+      canvas.width = size.width;
+      canvas.height = size.height;
+
+      // Load template background
+      const backgroundImg = new Image();
+      backgroundImg.crossOrigin = 'anonymous';
+      
+      await new Promise((resolve, reject) => {
+        backgroundImg.onload = resolve;
+        backgroundImg.onerror = reject;
+        backgroundImg.src = selectedTemplate.previewUrl;
+      });
+
+      // Draw background
+      ctx.drawImage(backgroundImg, 0, 0, canvas.width, canvas.height);
+
+      // Set up text rendering
+      const fontSize = size.width / 20; // Responsive font size
+      ctx.font = `bold ${fontSize}px serif`;
+      ctx.fillStyle = safeFormData.customization.colorScheme?.primary || '#000000';
+      ctx.textAlign = 'center';
+
+      // Draw couple names
+      const coupleNames = `${safeFormData.coupleDetails.groomName} & ${safeFormData.coupleDetails.brideName}`;
+      ctx.fillText(coupleNames, canvas.width / 2, canvas.height * 0.3);
+
+      // Draw ceremony details
+      ctx.font = `${fontSize * 0.6}px serif`;
+      ctx.fillText(safeFormData.ceremonyDetails.date, canvas.width / 2, canvas.height * 0.45);
+      ctx.fillText(safeFormData.ceremonyDetails.venue, canvas.width / 2, canvas.height * 0.55);
+      ctx.fillText(safeFormData.ceremonyDetails.time, canvas.width / 2, canvas.height * 0.65);
+
+      // Draw parents
+      ctx.font = `${fontSize * 0.5}px serif`;
+      ctx.fillText(safeFormData.contactInfo.primaryContact.name, canvas.width / 2, canvas.height * 0.75);
+
+      // Convert to blob and download
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${selectedTemplate.name}-${coupleNames.replace(/\s+/g, '-')}.${format.toLowerCase()}`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }
+      }, `image/${format.toLowerCase()}`);
+
+      // Reset button state
+      if (downloadButton) {
+        downloadButton.disabled = false;
+        downloadButton.innerHTML = '<Download className="w-4 h-4" /> Download';
+      }
+
+    } catch (error) {
+      console.error('Download failed:', error);
+      alert('Download failed. Please try again.');
+      
+      // Reset button state
+      const downloadButton = document.querySelector('[data-download-button]') as HTMLButtonElement;
+      if (downloadButton) {
+        downloadButton.disabled = false;
+        downloadButton.innerHTML = '<Download className="w-4 h-4" /> Download';
+      }
+    }
   };
 
   const handleShare = () => {

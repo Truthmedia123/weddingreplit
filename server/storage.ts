@@ -1,4 +1,5 @@
-import { vendors, categories, blogPosts, weddings, rsvps, invitationTemplates, generatedInvitations, invitationAnalytics } from "@shared/schema";
+import { vendors, categories, blogPosts, weddings, rsvps } from "@shared/schema-postgres";
+import { invitationTemplates, generatedInvitations, invitationAnalytics } from "@shared/schema-postgres";
 import { db } from "./db";
 import { eq, and, desc, like, or, count } from "drizzle-orm";
 import type { 
@@ -10,7 +11,7 @@ import type {
   InvitationTemplate, InsertInvitationTemplate,
   GeneratedInvitation, InsertGeneratedInvitation,
   InvitationAnalytics, InsertInvitationAnalytics
-} from "@shared/schema";
+} from "@shared/schema-postgres";
 import type { CulturalTheme } from "@shared/invitation-types";
 
 export interface IStorage {

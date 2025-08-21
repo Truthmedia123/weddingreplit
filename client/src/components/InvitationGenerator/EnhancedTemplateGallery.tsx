@@ -239,17 +239,14 @@ const freeTemplates: EnhancedTemplate[] = [
 export default function EnhancedTemplateGallery({ onTemplateSelect, onPreview }: EnhancedTemplateGalleryProps) {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [showPremium, setShowPremium] = useState(false);
 
   const allTemplates = [...freeTemplates, ...premiumTemplates];
   
   const filteredTemplates = allTemplates.filter(template => {
     const matchesCategory = selectedCategory === 'all' || template.category === selectedCategory;
     const matchesSearch = template.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesPremium = !showPremium || template.premium;
     
-    return matchesCategory && matchesSearch && matchesPremium;
+    return matchesCategory && matchesSearch;
   });
 
   return (
@@ -267,43 +264,16 @@ export default function EnhancedTemplateGallery({ onTemplateSelect, onPreview }:
             </p>
           </div>
 
-          {/* Search and Filters */}
-          <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
-            <div className="flex items-center gap-4 flex-1 max-w-md">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <Input
-                  placeholder="Search templates..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-              <Button
-                variant="outline"
-                onClick={() => setShowPremium(!showPremium)}
-                className={`flex items-center gap-2 ${showPremium ? 'bg-yellow-50 border-yellow-200' : ''}`}
-              >
-                <Crown className="w-4 h-4" />
-                Premium
-              </Button>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Button
-                variant={viewMode === 'grid' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setViewMode('grid')}
-              >
-                <Grid className="w-4 h-4" />
-              </Button>
-              <Button
-                variant={viewMode === 'list' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setViewMode('list')}
-              >
-                <List className="w-4 h-4" />
-              </Button>
+          {/* Search */}
+          <div className="flex justify-center">
+            <div className="relative max-w-md w-full">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Input
+                placeholder="Search templates..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
             </div>
           </div>
         </div>
@@ -330,7 +300,7 @@ export default function EnhancedTemplateGallery({ onTemplateSelect, onPreview }:
         </div>
 
         {/* Templates Grid */}
-        <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4' : 'space-y-4'}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {filteredTemplates.map((template) => (
             <Card key={template.id} className="group hover:shadow-lg transition-all duration-300 overflow-hidden">
               <div className="relative">
@@ -339,33 +309,6 @@ export default function EnhancedTemplateGallery({ onTemplateSelect, onPreview }:
                   alt={template.name}
                   className="w-full h-96 object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                
-                {/* Premium Badge */}
-                {template.premium && (
-                  <div className="absolute top-3 left-3">
-                    <Badge className="bg-yellow-500 text-white flex items-center gap-1">
-                      <Crown className="w-3 h-3" />
-                      Premium
-                    </Badge>
-                  </div>
-                )}
-
-                {/* Popular Badge */}
-                {template.popular && (
-                  <div className="absolute top-3 right-3">
-                    <Badge className="bg-red-500 text-white flex items-center gap-1">
-                      <Star className="w-3 h-3" />
-                      Popular
-                    </Badge>
-                  </div>
-                )}
-
-                {/* Price */}
-                <div className="absolute bottom-3 right-3">
-                  <Badge variant="secondary" className="bg-white/90 text-gray-800 font-semibold">
-                    {template.price}
-                  </Badge>
-                </div>
 
                 {/* Hover Actions */}
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2">

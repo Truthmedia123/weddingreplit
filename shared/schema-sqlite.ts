@@ -189,3 +189,11 @@ export type Wedding = typeof weddings.$inferSelect;
 export type InsertWedding = z.infer<typeof insertWeddingSchema>;
 export type Rsvp = typeof rsvps.$inferSelect;
 export type InsertRsvp = z.infer<typeof insertRsvpSchema>;
+
+// Invitation-related types
+export type InvitationTemplate = typeof invitationTemplates.$inferSelect;
+export type InsertInvitationTemplate = typeof invitationTemplates.$inferInsert;
+export type GeneratedInvitation = typeof generatedInvitations.$inferSelect;
+export type InsertGeneratedInvitation = typeof generatedInvitations.$inferInsert;
+export type InvitationAnalytics = typeof invitationAnalytics.$inferSelect;
+export type InsertInvitationAnalytics = typeof invitationAnalytics.$inferInsert;

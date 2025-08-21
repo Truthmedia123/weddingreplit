@@ -1,5 +1,5 @@
-import { db } from "./db";
-import { categories, vendors, blogPosts, weddings, reviews } from "@shared/schema";
+import { db } from "./db-postgres";
+import { categories, vendors, blogPosts, weddings, reviews } from "@shared/schema-postgres";
 
 const categoriesData = [
   { name: "Bachelor/Bachelorette Party Planners", slug: "bachelor-bachelorette-party-planners", description: "Fun pre-wedding celebration organizers", icon: "PartyPopper", color: "from-purple-500 to-pink-500" },

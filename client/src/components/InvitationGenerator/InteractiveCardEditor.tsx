@@ -401,9 +401,89 @@ export default function InteractiveCardEditor({
     setLastSaved(new Date());
   };
 
-  const handleDownload = () => {
-    // TODO: Implement actual download functionality
-    alert('Download functionality coming soon!');
+  const handleDownload = async () => {
+    try {
+      // Show loading state
+      const downloadButton = document.querySelector('[data-download-button]') as HTMLButtonElement;
+      if (downloadButton) {
+        downloadButton.disabled = true;
+        downloadButton.innerHTML = '<div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div> Generating...';
+      }
+
+      // Get current page data
+      const currentPage = invitationPages[currentPageIndex];
+      
+      // Create canvas for rendering
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        throw new Error('Could not get canvas context');
+      }
+
+      // Set canvas size (A4 ratio)
+      canvas.width = 600;
+      canvas.height = 800;
+
+      // Load background image
+      const backgroundImg = new Image();
+      backgroundImg.crossOrigin = 'anonymous';
+      
+      await new Promise((resolve, reject) => {
+        backgroundImg.onload = resolve;
+        backgroundImg.onerror = reject;
+        backgroundImg.src = currentPage.background;
+      });
+
+      // Draw background
+      ctx.drawImage(backgroundImg, 0, 0, canvas.width, canvas.height);
+
+      // Draw text elements
+      currentPage.elements.forEach(element => {
+        if (element.type === 'text') {
+          ctx.font = `${element.fontWeight} ${element.fontSize}px ${element.fontFamily}`;
+          ctx.fillStyle = element.color;
+          ctx.textAlign = element.textAlign;
+          ctx.globalAlpha = element.opacity;
+          
+          // Calculate position
+          const x = (element.x / 100) * canvas.width;
+          const y = (element.y / 100) * canvas.height;
+          
+          ctx.fillText(element.content, x, y);
+        }
+      });
+
+      // Convert to blob and download
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${selectedTemplate.name}-${currentPage.title}.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }
+      }, 'image/png');
+
+      // Reset button state
+      if (downloadButton) {
+        downloadButton.disabled = false;
+        downloadButton.innerHTML = '<Download className="w-4 h-4" /> Download';
+      }
+
+    } catch (error) {
+      console.error('Download failed:', error);
+      alert('Download failed. Please try again.');
+      
+      // Reset button state
+      const downloadButton = document.querySelector('[data-download-button]') as HTMLButtonElement;
+      if (downloadButton) {
+        downloadButton.disabled = false;
+        downloadButton.innerHTML = '<Download className="w-4 h-4" /> Download';
+      }
+    }
   };
 
   const handlePublish = () => {
@@ -461,6 +541,7 @@ export default function InteractiveCardEditor({
               <Button
                 onClick={handleDownload}
                 className="flex items-center gap-2"
+                data-download-button
               >
                 <Download className="w-4 h-4" />
                 Download
