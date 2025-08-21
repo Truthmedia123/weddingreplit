@@ -1,0 +1,33 @@
+# 🔒 SECURE ENVIRONMENT CONFIGURATION TEMPLATE
+# 
+# Copy this file to .env and replace placeholder values with your actual credentials
+# NEVER commit .env files to version control!
+
+# Database Configuration
+DATABASE_URL="postgresql://postgres.[YOUR-PROJECT-REF]:[YOUR-PASSWORD]@aws-1-ap-south-1.pooler.supabase.com:6543/postgres"
+
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL="https://[YOUR-PROJECT-REF].supabase.co"
+NEXT_PUBLIC_SUPABASE_ANON_KEY="[YOUR-ANON-KEY]"
+SUPABASE_SERVICE_ROLE_KEY="[YOUR-SERVICE-ROLE-KEY]"
+
+# Database Security Configuration
+DB_MAX_CONNECTIONS=20
+DB_IDLE_TIMEOUT=20
+DB_CONNECT_TIMEOUT=10
+DB_MAX_LIFETIME=3600
+DB_STATEMENT_TIMEOUT=30000
+DB_QUERY_TIMEOUT=30000
+
+# SSL Configuration (for production)
+DB_SSL_CA=""
+DB_SSL_CERT=""
+DB_SSL_KEY=""
+
+# Application Configuration
+NODE_ENV=development
+
+# Security Configuration
+HCAPTCHA_SECRET_KEY="[YOUR-HCAPTCHA-SECRET]"
+FRONTEND_URL="http://localhost:3000"
+DOMAIN_URL="https://yourdomain.com"

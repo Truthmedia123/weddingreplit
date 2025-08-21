@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { db } from '../db';
+import { getDatabase, dbHealthCheck } from '../db';
 
 /**
  * Health Check Middleware
@@ -44,13 +44,22 @@ interface HealthStatus {
 async function checkDatabase(): Promise<{ status: 'pass' | 'fail'; responseTime: number; message: string }> {
   const start = Date.now();
   try {
-    await db.execute('SELECT 1');
+    const dbHealth = await dbHealthCheck();
     const responseTime = Date.now() - start;
-    return {
-      status: 'pass',
-      responseTime,
-      message: 'Database is healthy'
-    };
+    
+    if (dbHealth.status === 'healthy') {
+      return {
+        status: 'pass',
+        responseTime,
+        message: `Database is healthy (avg response: ${dbHealth.metrics.averageResponseTime.toFixed(2)}ms)`
+      };
+    } else {
+      return {
+        status: 'fail',
+        responseTime,
+        message: `Database health check failed: ${dbHealth.error || 'Unknown error'}`
+      };
+    }
   } catch (error) {
     const responseTime = Date.now() - start;
     return {
@@ -62,10 +71,11 @@ async function checkDatabase(): Promise<{ status: 'pass' | 'fail'; responseTime:
 }
 
 // Storage health check
-function checkStorage(): { status: 'pass' | 'fail'; message: string; details?: any } {
+async function checkStorage(): Promise<{ status: 'pass' | 'fail'; message: string; details?: any }> {
   try {
     // Check if we can access the storage layer
-    if (typeof db !== 'undefined') {
+    const db = await getDatabase();
+    if (db) {
       return {
         status: 'pass',
         message: 'Storage check passed'
@@ -141,7 +151,7 @@ export const healthCheckHandler = async (req: Request, res: Response): Promise<v
   try {
     const [dbCheck, storageCheck, memoryCheck, diskCheck] = await Promise.all([
       checkDatabase(),
-      Promise.resolve(checkStorage()),
+      checkStorage(),
       Promise.resolve(checkMemory()),
       Promise.resolve(checkDisk())
     ]);
