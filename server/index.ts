@@ -1,3 +1,20 @@
+/**
+ * ⚠️  SECURITY WARNING ⚠️
+ * 
+ * This is the main server file with all security middleware ENABLED.
+ * 
+ * Security features enabled:
+ * - Rate limiting (general and API-specific)
+ * - Input sanitization
+ * - CORS restrictions
+ * - Content Security Policy (CSP)
+ * - Helmet security headers
+ * - Health check endpoints
+ * - Proper error handling
+ * 
+ * NEVER disable these security features in production!
+ */
+
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
@@ -9,22 +26,31 @@ import { setupVite, serveStatic, log } from "./vite";
 // ES module compatibility
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Security and middleware imports
 import { 
   securityHeaders, 
-  corsOptions 
+  corsOptions,
+  generalRateLimit,
+  apiRateLimit,
+  sanitizeInput
 } from "./middleware/security";
 import { 
   errorHandler, 
   notFoundHandler 
 } from "./middleware/errorHandler";
-// import { 
-//   healthCheckHandler, 
-//   readinessCheckHandler, 
-//   livenessCheckHandler 
-// } from "./monitoring/healthCheck";
-// import { imageOptimizationMiddleware } from "./middleware/imageOptimization";
-// import { generateSitemap, generateRobotsTxt } from "./seo/sitemap";
-import path from "path";
+import { 
+  healthCheckHandler, 
+  readinessCheckHandler, 
+  livenessCheckHandler 
+} from "./monitoring/healthCheck";
+import { imageOptimizationMiddleware } from "./middleware/imageOptimization";
+import { generateSitemap, generateRobotsTxt } from "./seo/sitemap";
+
+// Async handler wrapper for error handling
+const asyncHandler = (fn: Function) => (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  Promise.resolve(fn(req, res, next)).catch(next);
+};
 
 const app = express();
 
@@ -34,17 +60,17 @@ export { app };
 // Trust proxy for Replit environment
 app.set('trust proxy', true);
 
-// Security middleware
+// Security middleware - ENABLED
 app.use(securityHeaders);
 app.use(cors(corsOptions));
-// app.use(generalRateLimit);
+app.use(generalRateLimit);
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
-// Input sanitization (temporarily disabled for debugging)
-// app.use(sanitizeInput);
+// Input sanitization - ENABLED
+app.use(sanitizeInput);
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -77,20 +103,20 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Health check endpoints (temporarily disabled for debugging)
-  // app.get('/health', asyncHandler(healthCheckHandler));
-  // app.get('/health/ready', readinessCheckHandler);
-  // app.get('/health/live', livenessCheckHandler);
+  // Health check endpoints - ENABLED
+  app.get('/health', asyncHandler(healthCheckHandler));
+  app.get('/health/ready', readinessCheckHandler);
+  app.get('/health/live', livenessCheckHandler);
 
-  // SEO endpoints (temporarily disabled)
-  // app.get('/sitemap.xml', asyncHandler(generateSitemap));
-  // app.get('/robots.txt', generateRobotsTxt);
+  // SEO endpoints - ENABLED
+  app.get('/sitemap.xml', asyncHandler(generateSitemap));
+  app.get('/robots.txt', generateRobotsTxt);
 
-  // Image optimization endpoint (temporarily disabled)
-  // app.get('/api/images/optimize', asyncHandler(imageOptimizationMiddleware));
+  // Image optimization endpoint - ENABLED
+  app.get('/api/images/optimize', asyncHandler(imageOptimizationMiddleware));
 
-  // API routes with stricter rate limiting (temporarily disabled)
-  // app.use('/api', apiRateLimit);
+  // API routes with stricter rate limiting - ENABLED
+  app.use('/api', apiRateLimit);
   const server = await registerRoutes(app);
 
   // Serve static files from attached_assets directory

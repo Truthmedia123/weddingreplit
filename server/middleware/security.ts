@@ -7,24 +7,58 @@ export const securityHeaders = helmet({
   contentSecurityPolicy: process.env.NODE_ENV === 'production' ? {
     directives: {
       defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com"],
-      scriptSrc: ["'self'", "https://cdnjs.cloudflare.com"],
-      fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com"],
-      imgSrc: ["'self'", "data:", "https:", "blob:"],
-      connectSrc: ["'self'", "https://api.hcaptcha.com"],
-      frameSrc: ["https://hcaptcha.com", "https://*.hcaptcha.com"],
+      styleSrc: [
+        "'self'", 
+        "'unsafe-inline'", 
+        "https://fonts.googleapis.com", 
+        "https://cdnjs.cloudflare.com",
+        "https://cdn.jsdelivr.net"
+      ],
+      scriptSrc: [
+        "'self'", 
+        "https://cdnjs.cloudflare.com",
+        "https://cdn.jsdelivr.net",
+        "'unsafe-eval'" // Required for Vite in development
+      ],
+      fontSrc: [
+        "'self'", 
+        "https://fonts.gstatic.com", 
+        "https://cdnjs.cloudflare.com",
+        "https://cdn.jsdelivr.net"
+      ],
+      imgSrc: [
+        "'self'", 
+        "data:", 
+        "https:", 
+        "blob:",
+        "https://*.supabase.co"
+      ],
+      connectSrc: [
+        "'self'", 
+        "https://api.hcaptcha.com",
+        "https://*.supabase.co",
+        "wss://*.supabase.co"
+      ],
+      frameSrc: [
+        "https://hcaptcha.com", 
+        "https://*.hcaptcha.com"
+      ],
       objectSrc: ["'none'"],
       baseUri: ["'self'"],
       formAction: ["'self'"],
-      upgradeInsecureRequests: [],
+      upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : undefined,
     },
   } : false, // Disable CSP in development
   crossOriginEmbedderPolicy: false, // Allow embedding for hCaptcha
-  hsts: {
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  hsts: process.env.NODE_ENV === 'production' ? {
     maxAge: 31536000, // 1 year
     includeSubDomains: true,
     preload: true,
-  },
+  } : false,
+  noSniff: true,
+  referrerPolicy: { policy: "strict-origin-when-cross-origin" },
+  xssFilter: true,
 });
 
 // Rate limiting configurations
@@ -121,10 +155,23 @@ export const sanitizeInput = (req: Request, res: Response, next: NextFunction) =
 // CORS configuration
 export const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
-    ? [process.env.FRONTEND_URL, process.env.DOMAIN_URL].filter(Boolean) as string[]
-    : true,
+    ? [
+        process.env.FRONTEND_URL, 
+        process.env.DOMAIN_URL,
+        'https://yourdomain.com', // Replace with your actual domain
+        'https://www.yourdomain.com' // Replace with your actual domain
+      ].filter(Boolean) as string[]
+    : ['http://localhost:3000', 'http://localhost:5002', 'http://127.0.0.1:5002'],
   credentials: true,
   optionsSuccessStatus: 200,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  allowedHeaders: [
+    'Content-Type', 
+    'Authorization', 
+    'X-Requested-With',
+    'X-API-Key',
+    'X-CSRF-Token'
+  ],
+  exposedHeaders: ['X-Total-Count', 'X-Page-Count'],
+  maxAge: 86400, // 24 hours
 };
