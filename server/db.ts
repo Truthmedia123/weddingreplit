@@ -1,9 +1,22 @@
+/**
+ * ⚠️  SECURITY WARNING ⚠️
+ * 
+ * This file contains database connection logic.
+ * NEVER commit .env files with real credentials to version control!
+ * Always use .env.example for templates and keep real credentials local only.
+ * 
+ * If credentials have been exposed:
+ * 1. Immediately rotate your database passwords
+ * 2. Update your Supabase project settings
+ * 3. Check for unauthorized access
+ */
+
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import * as schema from "@shared/schema-postgres";
 
 if (!process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL environment variable is required");
+  throw new Error("DATABASE_URL environment variable is required. Please check your .env file and ensure it's not committed to version control.");
 }
 
 // Create PostgreSQL connection with proper configuration
