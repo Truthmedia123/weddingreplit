@@ -31,6 +31,7 @@ const TestInvitationGenerator = lazy(() => import("@/pages/TestInvitationGenerat
   console.log('TestInvitationGenerator module loaded:', module);
   return module;
 }));
+const InvitationEditor = lazy(() => import("@/features/invitations/pages/InvitationEditor"));
 const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
 const TermsConditions = lazy(() => import("@/pages/TermsConditions"));
 const CookiePolicy = lazy(() => import("@/pages/CookiePolicy"));
@@ -78,6 +79,7 @@ function Router() {
           console.log('TestInvitationGenerator route matched');
           return <LazyPage component={TestInvitationGenerator} />;
         }} />
+        <Route path="/invitation/:templateId" component={() => <LazyPage component={InvitationEditor} />} />
         <Route path="/create-rsvp" component={() => <LazyPage component={CreateRSVP} />} />
         <Route path="/track/:slug" component={() => <LazyPage component={TrackRSVP} />} />
         <Route path="/privacy-policy" component={() => <LazyPage component={PrivacyPolicy} />} />
