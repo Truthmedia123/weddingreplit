@@ -61,7 +61,7 @@ function Router() {
         <Route path="/couples/:slug" component={() => <LazyPage component={Couples} />} />
         <Route path="/create-rsvp" component={() => <LazyPage component={CreateRSVP} />} />
         <Route path="/track/:slug" component={() => <LazyPage component={TrackRSVP} />} />
-        <Route path="/generate-invitation" component={() => <LazyPage component={InvitationGenerator} />} />
+        <Route path="/generate-invitation/:templateId" component={() => <LazyPage component={InvitationGenerator} />} />
         <Route path="/privacy-policy" component={() => <LazyPage component={PrivacyPolicy} />} />
         <Route path="/terms-conditions" component={() => <LazyPage component={TermsConditions} />} />
         <Route path="/cookie-policy" component={() => <LazyPage component={CookiePolicy} />} />
