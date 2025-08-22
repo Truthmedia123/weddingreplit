@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useRoute } from 'wouter';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,8 +30,9 @@ interface PageData {
 }
 
 export default function InvitationGenerator() {
-  const [, params] = useRoute('/generate-invitation/:templateId');
-  const templateId = params?.templateId;
+  // Get templateId from URL path
+  const path = window.location.pathname;
+  const templateId = path.split('/generate-invitation/')[1];
   const navigate = (path: string) => window.location.href = path;
   const canvasRef = useRef<HTMLDivElement>(null);
   const [template, setTemplate] = useState<TemplateConfig | null>(null);
@@ -42,13 +43,20 @@ export default function InvitationGenerator() {
 
   // Initialize template and pages
   useEffect(() => {
+    console.log('InvitationGenerator mounted, templateId:', templateId);
+    console.log('Available templates:', invitationTemplates.map(t => t.id));
+    
     if (!templateId) {
+      console.log('No templateId found, navigating to home');
       navigate('/');
       return;
     }
 
     const foundTemplate = invitationTemplates.find(t => t.id === templateId);
+    console.log('Found template:', foundTemplate);
+    
     if (!foundTemplate) {
+      console.log('Template not found, navigating to home');
       navigate('/');
       return;
     }
