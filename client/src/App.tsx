@@ -23,7 +23,10 @@ const Wishlist = lazy(() => import("@/pages/Wishlist"));
 const Couples = lazy(() => import("@/pages/Couples"));
 const CreateRSVP = lazy(() => import("@/pages/CreateRSVP"));
 const TrackRSVP = lazy(() => import("@/pages/TrackRSVP"));
-const InvitationGenerator = lazy(() => import("@/pages/InvitationGenerator"));
+const InvitationGenerator = lazy(() => import("@/pages/InvitationGenerator").then(module => {
+  console.log('InvitationGenerator module loaded:', module);
+  return module;
+}));
 const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
 const TermsConditions = lazy(() => import("@/pages/TermsConditions"));
 const CookiePolicy = lazy(() => import("@/pages/CookiePolicy"));
@@ -61,7 +64,10 @@ function Router() {
         <Route path="/couples/:slug" component={() => <LazyPage component={Couples} />} />
         <Route path="/create-rsvp" component={() => <LazyPage component={CreateRSVP} />} />
         <Route path="/track/:slug" component={() => <LazyPage component={TrackRSVP} />} />
-        <Route path="/generate-invitation/:templateId" component={() => <LazyPage component={InvitationGenerator} />} />
+        <Route path="/generate-invitation/:templateId" component={() => {
+          console.log('InvitationGenerator route matched');
+          return <LazyPage component={InvitationGenerator} />;
+        }} />
         <Route path="/privacy-policy" component={() => <LazyPage component={PrivacyPolicy} />} />
         <Route path="/terms-conditions" component={() => <LazyPage component={TermsConditions} />} />
         <Route path="/cookie-policy" component={() => <LazyPage component={CookiePolicy} />} />
