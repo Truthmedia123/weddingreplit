@@ -72,7 +72,7 @@ export interface ValidationRule {
 export const goanRomanceTemplate = {
   id: 'goan-romance',
   name: 'Goan Romance',
-  background: '/templates/goan-romance-bg.png',
+  background: '/templates/template-goan-romance.jpg',
   width: 768,  // Set to PNG dimensions
   height: 1152,
   layers: [
