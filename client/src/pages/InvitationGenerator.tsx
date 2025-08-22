@@ -18,7 +18,7 @@ import {
   ZoomOut,
   RotateCcw
 } from 'lucide-react';
-import { invitationTemplates, TemplateConfig } from '../../../content-templates';
+import { invitationTemplates, TemplateConfig } from '../../../content-templates/index';
 
 interface TemplateData {
   [key: string]: string;
@@ -44,6 +44,14 @@ export default function InvitationGenerator() {
   // Initialize template and pages
   useEffect(() => {
     console.log('InvitationGenerator mounted, templateId:', templateId);
+    
+    // Check if invitationTemplates is available
+    if (!invitationTemplates || !Array.isArray(invitationTemplates)) {
+      console.error('invitationTemplates not available:', invitationTemplates);
+      navigate('/');
+      return;
+    }
+    
     console.log('Available templates:', invitationTemplates.map(t => t.id));
     
     if (!templateId) {
