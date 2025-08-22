@@ -29,207 +29,48 @@ interface EnhancedTemplateGalleryProps {
 }
 
 const invitationCategories = [
-  { id: 'all', name: 'All Templates', icon: Grid, count: 24 },
-  { id: 'main', name: 'Main Invitation', icon: Calendar, count: 8 },
-  { id: 'rsvp', name: 'RSVP Cards', icon: Users, count: 6 },
-  { id: 'reception', name: 'Reception', icon: MapPin, count: 4 },
-  { id: 'mehendi', name: 'Mehendi', icon: Palette, count: 3 },
-  { id: 'sangeet', name: 'Sangeet', icon: Sparkles, count: 2 },
-  { id: 'haldi', name: 'Haldi', icon: Heart, count: 1 }
+  { id: 'all', name: 'All Templates', icon: Grid, count: 1 },
+  { id: 'christian', name: 'Christian', icon: Calendar, count: 1 },
+  { id: 'main', name: 'Main Invitation', icon: Calendar, count: 1 },
+  { id: 'rsvp', name: 'RSVP Cards', icon: Users, count: 0 },
+  { id: 'reception', name: 'Reception', icon: MapPin, count: 0 },
+  { id: 'mehendi', name: 'Mehendi', icon: Palette, count: 0 },
+  { id: 'sangeet', name: 'Sangeet', icon: Sparkles, count: 0 },
+  { id: 'haldi', name: 'Haldi', icon: Heart, count: 0 }
 ];
 
-const premiumTemplates: EnhancedTemplate[] = [
-  {
-    id: 'goan-beach-luxury',
-    name: 'Goan Beach Luxury',
-    category: 'goan-beach',
-    style: 'Premium Beach Elegance',
-    description: 'Luxurious beach wedding invitation with golden accents and tropical motifs',
-    previewUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
-    templateData: {
-      layout: 'portrait',
-      elements: {
-        coupleNames: { x: 200, y: 150, fontSize: 28, fontFamily: 'Playfair Display' },
-        ceremonyDetails: { x: 200, y: 250, fontSize: 16, fontFamily: 'Lato' },
-        receptionDetails: { x: 200, y: 300, fontSize: 16, fontFamily: 'Lato' },
-        contactInfo: { x: 200, y: 350, fontSize: 14, fontFamily: 'Lato' },
-        qrCode: { x: 200, y: 450, size: 60 }
-      },
-      colorSchemes: [
-        { name: 'Luxury Gold', primary: '#D4AF37', secondary: '#FFFFFF', accent: '#000000', background: '#F8F8F8' }
-      ],
-      typography: {
-        fonts: [
-          { name: 'Playfair Display', family: 'Playfair Display', weights: [400, 600, 700], category: 'serif' }
-        ]
-      }
-    },
-    features: ['Premium Design', 'Gold Foiling', 'Beach Motifs', 'Luxury Paper'],
-    colors: ['Gold', 'White', 'Black'],
-    price: '₹1,299',
-    popular: true,
-    premium: true,
-    isActive: true
-  },
-  {
-    id: 'portuguese-heritage-premium',
-    name: 'Portuguese Heritage Premium',
-    category: 'christian',
-    style: 'Colonial Luxury',
-    description: 'Premium Portuguese colonial design with azulejo patterns and heritage elements',
-    previewUrl: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
-    templateData: {
-      layout: 'portrait',
-      elements: {
-        coupleNames: { x: 200, y: 150, fontSize: 28, fontFamily: 'Playfair Display' },
-        ceremonyDetails: { x: 200, y: 250, fontSize: 16, fontFamily: 'Lato' },
-        receptionDetails: { x: 200, y: 300, fontSize: 16, fontFamily: 'Lato' },
-        contactInfo: { x: 200, y: 350, fontSize: 14, fontFamily: 'Lato' },
-        qrCode: { x: 200, y: 450, size: 60 }
-      },
-      colorSchemes: [
-        { name: 'Heritage Blue', primary: '#1E3A8A', secondary: '#FFFFFF', accent: '#D4AF37', background: '#F5F5DC' }
-      ],
-      typography: {
-        fonts: [
-          { name: 'Playfair Display', family: 'Playfair Display', weights: [400, 600, 700], category: 'serif' }
-        ]
-      }
-    },
-    features: ['Azulejo Patterns', 'Heritage Design', 'Premium Paper', 'Bilingual'],
-    colors: ['Navy Blue', 'White', 'Gold'],
-    price: '₹999',
-    popular: false,
-    premium: true,
-    isActive: true
-  },
-  {
-    id: 'hindu-mandala-premium',
-    name: 'Hindu Mandala Premium',
-    category: 'hindu',
-    style: 'Sacred Luxury',
-    description: 'Premium mandala design with traditional Hindu motifs and sacred geometry',
-    previewUrl: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
-    templateData: {
-      layout: 'portrait',
-      elements: {
-        coupleNames: { x: 200, y: 150, fontSize: 28, fontFamily: 'Playfair Display' },
-        ceremonyDetails: { x: 200, y: 250, fontSize: 16, fontFamily: 'Lato' },
-        receptionDetails: { x: 200, y: 300, fontSize: 16, fontFamily: 'Lato' },
-        contactInfo: { x: 200, y: 350, fontSize: 14, fontFamily: 'Lato' },
-        qrCode: { x: 200, y: 450, size: 60 }
-      },
-      colorSchemes: [
-        { name: 'Sacred Red', primary: '#DC2626', secondary: '#FFD700', accent: '#7C3AED', background: '#FFFFFF' }
-      ],
-      typography: {
-        fonts: [
-          { name: 'Playfair Display', family: 'Playfair Display', weights: [400, 600, 700], category: 'serif' }
-        ]
-      }
-    },
-    features: ['Sacred Geometry', 'Traditional Motifs', 'Premium Paper', 'Cultural Elements'],
-    colors: ['Crimson', 'Gold', 'Purple'],
-    price: '₹899',
-    popular: true,
-    premium: true,
-    isActive: true
-  }
-];
+const premiumTemplates: EnhancedTemplate[] = [];
 
 const freeTemplates: EnhancedTemplate[] = [
   {
-    id: 'goan-beach-bliss',
-    name: 'Goan Beach Bliss',
-    category: 'goan-beach',
-    style: 'Tropical Paradise',
-    description: 'Stunning beach wedding invitation with golden sunset, palm trees, and ocean waves',
-    previewUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
-    templateData: {
-      layout: 'portrait',
-      elements: {
-        coupleNames: { x: 200, y: 150, fontSize: 24, fontFamily: 'serif' },
-        ceremonyDetails: { x: 200, y: 250, fontSize: 16, fontFamily: 'sans-serif' },
-        receptionDetails: { x: 200, y: 300, fontSize: 16, fontFamily: 'sans-serif' },
-        contactInfo: { x: 200, y: 350, fontSize: 14, fontFamily: 'sans-serif' },
-        qrCode: { x: 200, y: 450, size: 60 }
-      },
-      colorSchemes: [
-        { name: 'Sunset', primary: '#FF6B6B', secondary: '#4ECDC4', accent: '#FFD700', background: '#FFFFFF' }
-      ],
-      typography: {
-        fonts: [
-          { name: 'Serif', family: 'serif', weights: [400, 600, 700], category: 'serif' }
-        ]
-      }
-    },
-    features: ['Beach Sunset Theme', 'Palm Tree Silhouettes', 'Ocean Wave Borders', 'Tropical Typography'],
-    colors: ['Coral', 'Turquoise', 'Gold'],
-    price: 'Free',
-    popular: true,
-    premium: false,
-    isActive: true
-  },
-  {
-    id: 'portuguese-heritage',
-    name: 'Portuguese Heritage',
+    id: 'goan-romance',
+    name: 'Goan Romance',
     category: 'christian',
-    style: 'Colonial Elegance',
-    description: 'Elegant design inspired by Portuguese colonial architecture with azulejo tile patterns',
-    previewUrl: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
+    style: 'Traditional Elegance',
+    description: 'Classic Goan wedding invitation with vibrant floral borders and traditional typography perfect for romantic ceremonies',
+    previewUrl: '/templates/template-goan-romance.jpg',
     templateData: {
       layout: 'portrait',
       elements: {
-        coupleNames: { x: 200, y: 150, fontSize: 24, fontFamily: 'serif' },
-        ceremonyDetails: { x: 200, y: 250, fontSize: 16, fontFamily: 'sans-serif' },
-        receptionDetails: { x: 200, y: 300, fontSize: 16, fontFamily: 'sans-serif' },
-        contactInfo: { x: 200, y: 350, fontSize: 14, fontFamily: 'sans-serif' },
+        coupleNames: { x: 200, y: 150, fontSize: 28, fontFamily: 'Dancing Script' },
+        ceremonyDetails: { x: 200, y: 250, fontSize: 16, fontFamily: 'Playfair Display' },
+        receptionDetails: { x: 200, y: 300, fontSize: 16, fontFamily: 'Playfair Display' },
+        contactInfo: { x: 200, y: 350, fontSize: 14, fontFamily: 'Playfair Display' },
         qrCode: { x: 200, y: 450, size: 60 }
       },
       colorSchemes: [
-        { name: 'Heritage', primary: '#4169E1', secondary: '#FFFFFF', accent: '#FFD700', background: '#F5F5DC' }
+        { name: 'Romance', primary: '#DC143C', secondary: '#228B22', accent: '#FFD700', background: '#F5F5DC' }
       ],
       typography: {
         fonts: [
-          { name: 'Serif', family: 'serif', weights: [400, 600, 700], category: 'serif' }
+          { name: 'Script', family: 'Dancing Script', weights: [400, 600, 700], category: 'script' },
+          { name: 'Serif', family: 'Playfair Display', weights: [400, 600, 700], category: 'serif' }
         ]
       }
     },
-    features: ['Azulejo Tile Patterns', 'Colonial Architecture', 'Bilingual Support', 'Heritage Colors'],
-    colors: ['Royal Blue', 'White', 'Gold'],
-    price: '₹399',
-    popular: false,
-    premium: false,
-    isActive: true
-  },
-  {
-    id: 'hindu-elegant-mandala',
-    name: 'Hindu Elegant Mandala',
-    category: 'hindu',
-    style: 'Sacred Geometry',
-    description: 'Beautiful mandala design with traditional Hindu motifs and sacred geometry patterns',
-    previewUrl: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
-    templateData: {
-      layout: 'portrait',
-      elements: {
-        coupleNames: { x: 200, y: 150, fontSize: 24, fontFamily: 'serif' },
-        ceremonyDetails: { x: 200, y: 250, fontSize: 16, fontFamily: 'sans-serif' },
-        receptionDetails: { x: 200, y: 300, fontSize: 16, fontFamily: 'sans-serif' },
-        contactInfo: { x: 200, y: 350, fontSize: 14, fontFamily: 'sans-serif' },
-        qrCode: { x: 200, y: 450, size: 60 }
-      },
-      colorSchemes: [
-        { name: 'Sacred', primary: '#DC143C', secondary: '#FFD700', accent: '#483D8B', background: '#FFFFFF' }
-      ],
-      typography: {
-        fonts: [
-          { name: 'Serif', family: 'serif', weights: [400, 600, 700], category: 'serif' }
-        ]
-      }
-    },
-    features: ['Sacred Geometry', 'Traditional Motifs', 'Mandala Patterns', 'Cultural Elements'],
-    colors: ['Crimson', 'Gold', 'Deep Purple'],
-    price: '₹299',
+    features: ['Floral Border Design', 'Traditional Typography', 'Script Fonts', 'Cultural Elements', 'Romantic Theme'],
+    colors: ['Crimson Red', 'Forest Green', 'Gold', 'Cream'],
+    price: 'Free',
     popular: true,
     premium: false,
     isActive: true

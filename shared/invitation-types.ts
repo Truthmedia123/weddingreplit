@@ -2,7 +2,7 @@
 
 export interface TemplateElement {
   id: string;
-  type: 'text' | 'image' | 'shape' | 'decoration' | 'qr-code';
+  type: 'text' | 'image' | 'shape' | 'decoration' | 'qr-code' | 'scripture' | 'host-names' | 'invitation-message' | 'closing-message';
   position: { x: number; y: number };
   size: { width: number; height: number };
   properties: ElementProperties;

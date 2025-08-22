@@ -1,4 +1,4 @@
-import { db } from "./db-postgres";
+import { db } from "./db-config";
 import { categories, vendors, blogPosts, weddings, reviews } from "@shared/schema-postgres";
 
 const categoriesData = [

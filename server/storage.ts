@@ -129,7 +129,7 @@ export class DatabaseStorage implements IStorage {
     return result[0] || undefined;
   }
 
-  // Reviews - Not implemented in SQLite schema yet
+  // Reviews - Implemented in PostgreSQL schema
 
   // Categories
   async getCategories(): Promise<Category[]> {
@@ -167,8 +167,8 @@ export class DatabaseStorage implements IStorage {
     return result[0]!;
   }
 
-  // Business Submissions - Not implemented in SQLite schema yet
-  // Contacts - Not implemented in SQLite schema yet
+  // Business Submissions - Implemented in PostgreSQL schema
+  // Contacts - Implemented in PostgreSQL schema
 
   // Weddings
   async getWeddings(): Promise<Wedding[]> {

@@ -9,12 +9,14 @@ import { Download, Heart, Sparkles, Upload, QrCode, ArrowLeft, Star, Crown, Pale
 import { useMutation } from '@tanstack/react-query';
 import OptimizedImage from '@/components/OptimizedImage';
 import LiveInvitationEditor from '@/components/LiveInvitationEditor';
+import WedMeGoodStyleEditor from '@/components/WedMeGoodStyleEditor';
 import InvitationPreview from '@/components/InvitationPreview';
 import EnhancedFormWizard from '@/components/InvitationGenerator/EnhancedFormWizard';
 import InteractiveCardEditor from '@/components/InvitationGenerator/InteractiveCardEditor';
 import EnhancedTemplateGallery from '@/components/InvitationGenerator/EnhancedTemplateGallery';
 import TemplateSelector from '@/components/InvitationGenerator/TemplateGallery/TemplateSelector';
 import type { EnhancedTemplate } from '@/components/InvitationGenerator/TemplateGallery/TemplateManager';
+import { invitationTemplates as contentTemplates, TemplateConfig } from '../../../content-templates';
 
 // Lazy load heavy components for better performance
 const LazyInvitationPreview = lazy(() => import('@/components/InvitationPreview'));
@@ -31,97 +33,34 @@ const LoadingSpinner = () => (
 
 const invitationTemplates: EnhancedTemplate[] = [
   {
-    id: 'goan-beach-bliss',
-    name: 'Goan Beach Bliss',
-    category: 'goan-beach',
-    style: 'Tropical Paradise',
-    description: 'Stunning beach wedding invitation with golden sunset, palm trees, and ocean waves perfect for Goan ceremonies',
-    previewUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
-    templateData: {
-      layout: 'portrait',
-      elements: {
-        coupleNames: { x: 200, y: 150, fontSize: 24, fontFamily: 'serif' },
-        ceremonyDetails: { x: 200, y: 250, fontSize: 16, fontFamily: 'sans-serif' },
-        receptionDetails: { x: 200, y: 300, fontSize: 16, fontFamily: 'sans-serif' },
-        contactInfo: { x: 200, y: 350, fontSize: 14, fontFamily: 'sans-serif' },
-        qrCode: { x: 200, y: 450, size: 60 }
-      },
-      colorSchemes: [
-        { name: 'Sunset', primary: '#FF6B6B', secondary: '#4ECDC4', accent: '#FFD700', background: '#FFFFFF' }
-      ],
-      typography: {
-        fonts: [
-          { name: 'Serif', family: 'serif', weights: [400, 600, 700], category: 'serif' }
-        ]
-      }
-    },
-    features: ['Beach Sunset Theme', 'Palm Tree Silhouettes', 'Ocean Wave Borders', 'Tropical Typography'],
-    colors: ['Coral', 'Turquoise', 'Gold'],
-    price: 'Free',
-    popular: true,
-    premium: false,
-    isActive: true
-  },
-  {
-    id: 'portuguese-heritage',
-    name: 'Portuguese Heritage',
+    id: 'goan-romance',
+    name: 'Goan Romance',
     category: 'christian',
-    style: 'Colonial Elegance',
-    description: 'Elegant design inspired by Portuguese colonial architecture with azulejo tile patterns and traditional motifs',
-    previewUrl: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
+    style: 'Traditional Elegance',
+    description: 'Classic Goan wedding invitation with vibrant floral borders and traditional typography perfect for romantic ceremonies',
+    previewUrl: '/templates/template-goan-romance.jpg',
     templateData: {
       layout: 'portrait',
       elements: {
-        coupleNames: { x: 200, y: 150, fontSize: 24, fontFamily: 'serif' },
-        ceremonyDetails: { x: 200, y: 250, fontSize: 16, fontFamily: 'sans-serif' },
-        receptionDetails: { x: 200, y: 300, fontSize: 16, fontFamily: 'sans-serif' },
-        contactInfo: { x: 200, y: 350, fontSize: 14, fontFamily: 'sans-serif' },
+        coupleNames: { x: 200, y: 150, fontSize: 28, fontFamily: 'Dancing Script' },
+        ceremonyDetails: { x: 200, y: 250, fontSize: 16, fontFamily: 'Playfair Display' },
+        receptionDetails: { x: 200, y: 300, fontSize: 16, fontFamily: 'Playfair Display' },
+        contactInfo: { x: 200, y: 350, fontSize: 14, fontFamily: 'Playfair Display' },
         qrCode: { x: 200, y: 450, size: 60 }
       },
       colorSchemes: [
-        { name: 'Heritage', primary: '#4169E1', secondary: '#FFFFFF', accent: '#FFD700', background: '#F5F5DC' }
+        { name: 'Romance', primary: '#DC143C', secondary: '#228B22', accent: '#FFD700', background: '#F5F5DC' }
       ],
       typography: {
         fonts: [
-          { name: 'Serif', family: 'serif', weights: [400, 600, 700], category: 'serif' }
+          { name: 'Script', family: 'Dancing Script', weights: [400, 600, 700], category: 'script' },
+          { name: 'Serif', family: 'Playfair Display', weights: [400, 600, 700], category: 'serif' }
         ]
       }
     },
-    features: ['Azulejo Tile Patterns', 'Colonial Architecture', 'Bilingual Support', 'Heritage Colors'],
-    colors: ['Royal Blue', 'White', 'Gold'],
-    price: '₹399',
-    popular: false,
-    premium: true,
-    isActive: true
-  },
-  {
-    id: 'hindu-elegant-mandala',
-    name: 'Hindu Elegant Mandala',
-    category: 'hindu',
-    style: 'Sacred Geometry',
-    description: 'Beautiful mandala design with traditional Hindu motifs and sacred geometry patterns',
-    previewUrl: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
-    templateData: {
-      layout: 'portrait',
-      elements: {
-        coupleNames: { x: 200, y: 150, fontSize: 24, fontFamily: 'serif' },
-        ceremonyDetails: { x: 200, y: 250, fontSize: 16, fontFamily: 'sans-serif' },
-        receptionDetails: { x: 200, y: 300, fontSize: 16, fontFamily: 'sans-serif' },
-        contactInfo: { x: 200, y: 350, fontSize: 14, fontFamily: 'sans-serif' },
-        qrCode: { x: 200, y: 450, size: 60 }
-      },
-      colorSchemes: [
-        { name: 'Sacred', primary: '#DC143C', secondary: '#FFD700', accent: '#483D8B', background: '#FFFFFF' }
-      ],
-      typography: {
-        fonts: [
-          { name: 'Serif', family: 'serif', weights: [400, 600, 700], category: 'serif' }
-        ]
-      }
-    },
-    features: ['Sacred Geometry', 'Traditional Motifs', 'Mandala Patterns', 'Cultural Elements'],
-    colors: ['Crimson', 'Gold', 'Deep Purple'],
-    price: '₹299',
+    features: ['Floral Border Design', 'Traditional Typography', 'Script Fonts', 'Cultural Elements', 'Romantic Theme'],
+    colors: ['Crimson Red', 'Forest Green', 'Gold', 'Cream'],
+    price: 'Free',
     popular: true,
     premium: false,
     isActive: true
@@ -150,6 +89,11 @@ interface InvitationFormData {
   location2: string;
   contact2: string;
   qrCodeImage?: string;
+  // Goan Romance specific fields
+  scriptureText?: string;
+  hostNames?: string;
+  invitationMessage?: string;
+  closingMessage?: string;
 }
 
 interface GenerationResult {
@@ -183,6 +127,11 @@ export default function InvitationGenerator() {
     address2: "",
     location2: "",
     contact2: "",
+    // Goan Romance specific fields
+    scriptureText: "Two hearts become one",
+    hostNames: "",
+    invitationMessage: "Request the honour of your presence to celebrate and share the happiness blessings of the Holy union of our children",
+    closingMessage: "Your Blessing is the only Precious Gift our heart desires",
   });
 
   const [generatedInvitation, setGeneratedInvitation] = useState<GenerationResult | null>(null);
@@ -427,8 +376,27 @@ export default function InvitationGenerator() {
     );
   }
 
-  // Live Editor View - Now using EnhancedFormWizard
+  // Live Editor View - Using WedMeGoodStyleEditor for Goan Romance, EnhancedFormWizard for others
   if (currentView === 'live-editor' && selectedTemplate) {
+    // Check if this is the Goan Romance template and use the new WedMeGoodStyleEditor
+    if (selectedTemplate.id === 'goan-romance') {
+      const goanTemplate = contentTemplates.find(t => t.id === 'goan-romance');
+      if (goanTemplate) {
+        return (
+          <WedMeGoodStyleEditor
+            selectedTemplate={goanTemplate}
+            onComplete={(formData) => {
+              console.log('WedMeGood editor completed with data:', formData);
+              // TODO: Generate invitation with form data
+              setCurrentView('enhanced-gallery');
+            }}
+            onBack={handleBackToTemplates}
+          />
+        );
+      }
+    }
+    
+    // For other templates, use the existing EnhancedFormWizard
     return (
       <Suspense fallback={<LoadingSpinner />}>
         <EnhancedFormWizard
@@ -763,6 +731,63 @@ export default function InvitationGenerator() {
                   </div>
                 </div>
               </div>
+
+              {/* Goan Romance Template Specific Fields */}
+              {selectedTemplate?.id === 'goan-romance' && (
+                <div className="space-y-4 p-4 bg-red-50 rounded-lg">
+                  <h3 className="font-semibold text-red-800 text-lg flex items-center gap-2">
+                    <Heart className="h-5 w-5" />
+                    Goan Romance Template Fields
+                  </h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="scriptureText" className="text-red-700">Scripture Text</Label>
+                      <Input
+                        id="scriptureText"
+                        value={formData.scriptureText || ''}
+                        onChange={(e) => handleInputChange('scriptureText', e.target.value)}
+                        placeholder="e.g., Two hearts become one"
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="hostNames" className="text-red-700">Host Names</Label>
+                      <Textarea
+                        id="hostNames"
+                        value={formData.hostNames || ''}
+                        onChange={(e) => handleInputChange('hostNames', e.target.value)}
+                        placeholder="Enter the names of the hosts (parents/family)"
+                        className="mt-1"
+                        rows={3}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="invitationMessage" className="text-red-700">Invitation Message</Label>
+                    <Textarea
+                      id="invitationMessage"
+                      value={formData.invitationMessage || ''}
+                      onChange={(e) => handleInputChange('invitationMessage', e.target.value)}
+                      placeholder="Enter the main invitation message"
+                      className="mt-1"
+                      rows={3}
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="closingMessage" className="text-red-700">Closing Message</Label>
+                    <Input
+                      id="closingMessage"
+                      value={formData.closingMessage || ''}
+                      onChange={(e) => handleInputChange('closingMessage', e.target.value)}
+                      placeholder="e.g., Your Blessing is the only Precious Gift our heart desires"
+                      className="mt-1"
+                    />
+                  </div>
+                </div>
+              )}
 
               {/* QR Code Upload Section */}
               <div className="space-y-4 p-4 bg-indigo-50 rounded-lg">

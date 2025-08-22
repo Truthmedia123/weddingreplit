@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+
 
 export default function Hero() {
   return (

@@ -22,6 +22,11 @@ export interface EnhancedTemplate {
       receptionDetails: { x: number; y: number; fontSize: number; fontFamily: string };
       contactInfo: { x: number; y: number; fontSize: number; fontFamily: string };
       qrCode: { x: number; y: number; size: number };
+      scriptureText?: { x: number; y: number; fontSize: number; fontFamily: string };
+      bibleReference?: { x: number; y: number; fontSize: number; fontFamily: string };
+      hostNames?: { x: number; y: number; fontSize: number; fontFamily: string };
+      invitationMessage?: { x: number; y: number; fontSize: number; fontFamily: string };
+      closingMessage?: { x: number; y: number; fontSize: number; fontFamily: string };
     };
     colorSchemes: Array<{
       name: string;

@@ -50,7 +50,7 @@ class SecureDatabaseConnection {
    */
   private validateEnvironment(): void {
     if (!process.env.DATABASE_URL) {
-      throw new Error("DATABASE_URL environment variable is required");
+      throw new Error("DATABASE_URL environment variable is required for PostgreSQL connection");
     }
 
     // Validate DATABASE_URL format

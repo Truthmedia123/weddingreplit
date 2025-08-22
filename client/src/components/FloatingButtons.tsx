@@ -1,6 +1,9 @@
 export default function FloatingButtons() {
   const handleEmail = () => {
-    window.location.href = "mailto:info@thegoanwedding.com";
+    if (typeof window !== 'undefined') {
+      // eslint-disable-next-line no-undef
+      window.location.href = "mailto:info@thegoanwedding.com";
+    }
   };
 
   return (

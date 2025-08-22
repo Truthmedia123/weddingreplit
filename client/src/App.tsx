@@ -1,3 +1,4 @@
+import React, { Suspense, lazy } from "react";
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -7,7 +8,6 @@ import PerformanceOptimizations from "@/components/PerformanceOptimizations";
 import { MobileOptimizations } from "@/components/MobileOptimizations";
 
 import Layout from "@/components/Layout";
-import { Suspense, lazy } from "react";
 
 // Lazy load all page components for code splitting
 const Home = lazy(() => import("@/pages/Home"));

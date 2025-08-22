@@ -92,26 +92,121 @@ export default function InteractiveCardEditor({
       type: 'main',
       background: selectedTemplate.previewUrl,
       sampleData: {
-        coupleNames: 'Priya & Rahul',
-        date: 'Saturday, 15th March 2025',
-        venue: 'Taj Exotica Resort & Spa, Goa',
-        time: '6:00 PM onwards',
-        parents: 'Mr. & Mrs. Sharma\nMr. & Mrs. Patel',
+        coupleNames: 'Gabriella & Armando',
+        date: 'Saturday, 25th October 2025',
+        venue: 'Se Cathedral, Old Goa',
+        time: '3:30 PM',
+        parents: 'Mr. Antonio Fernandes & Mrs. Conceico Maria Feira\nMr. Francisco Almeida Santos & Mrs. Rosario Isabel Rodrigues',
         specialMessage: 'Together with their families, we joyfully invite you to celebrate our special day.'
       },
       elements: [
         {
+          id: 'scripture-text',
+          type: 'text',
+          content: 'Two hearts become one',
+          x: 50,
+          y: 14,
+          width: 70,
+          height: 6,
+          fontSize: 14,
+          fontFamily: 'Dancing Script',
+          fontWeight: 'normal',
+          color: '#8B4513',
+          textAlign: 'center',
+          rotation: 0,
+          opacity: 1,
+          zIndex: 15,
+          isEditable: true,
+          isSelected: false
+        },
+        {
           id: 'couple-names',
           type: 'text',
-          content: 'Priya & Rahul',
+          content: 'Gabriella & Armando',
           x: 50,
-          y: 30,
-          width: 80,
-          height: 15,
-          fontSize: 32,
+          y: 22,
+          width: 70,
+          height: 8,
+          fontSize: 26,
+          fontFamily: 'Dancing Script',
+          fontWeight: 'bold',
+          color: '#8B4513',
+          textAlign: 'center',
+          rotation: 0,
+          opacity: 1,
+          zIndex: 14,
+          isEditable: true,
+          isSelected: false
+        },
+        {
+          id: 'parents-message',
+          type: 'text',
+          content: 'Together with their families, we joyfully invite you',
+          x: 50,
+          y: 32,
+          width: 65,
+          height: 6,
+          fontSize: 13,
+          fontFamily: 'Playfair Display',
+          fontWeight: 'normal',
+          color: '#333333',
+          textAlign: 'center',
+          rotation: 0,
+          opacity: 1,
+          zIndex: 13,
+          isEditable: true,
+          isSelected: false
+        },
+        {
+          id: 'invitation-word',
+          type: 'text',
+          content: 'to celebrate',
+          x: 50,
+          y: 38,
+          width: 40,
+          height: 4,
+          fontSize: 18,
+          fontFamily: 'Dancing Script',
+          fontWeight: 'normal',
+          color: '#8B4513',
+          textAlign: 'center',
+          rotation: 0,
+          opacity: 1,
+          zIndex: 12,
+          isEditable: true,
+          isSelected: false
+        },
+        {
+          id: 'date',
+          type: 'text',
+          content: 'Saturday, 25th October 2025',
+          x: 50,
+          y: 45,
+          width: 65,
+          height: 6,
+          fontSize: 15,
           fontFamily: 'Playfair Display',
           fontWeight: 'bold',
           color: '#8B4513',
+          textAlign: 'center',
+          rotation: 0,
+          opacity: 1,
+          zIndex: 11,
+          isEditable: true,
+          isSelected: false
+        },
+        {
+          id: 'venue-label',
+          type: 'text',
+          content: 'at Se Cathedral, Old Goa',
+          x: 50,
+          y: 52,
+          width: 60,
+          height: 4,
+          fontSize: 13,
+          fontFamily: 'Playfair Display',
+          fontWeight: 'normal',
+          color: '#333333',
           textAlign: 'center',
           rotation: 0,
           opacity: 1,
@@ -120,17 +215,17 @@ export default function InteractiveCardEditor({
           isSelected: false
         },
         {
-          id: 'special-message',
+          id: 'venue-name',
           type: 'text',
-          content: 'Together with their families, we joyfully invite you to celebrate our special day.',
+          content: 'Taj Exotica Resort & Spa, Goa',
           x: 50,
-          y: 45,
-          width: 70,
-          height: 10,
-          fontSize: 16,
-          fontFamily: 'Lato',
+          y: 58,
+          width: 65,
+          height: 6,
+          fontSize: 14,
+          fontFamily: 'Playfair Display',
           fontWeight: 'normal',
-          color: '#666666',
+          color: '#333333',
           textAlign: 'center',
           rotation: 0,
           opacity: 1,
@@ -139,17 +234,17 @@ export default function InteractiveCardEditor({
           isSelected: false
         },
         {
-          id: 'date',
+          id: 'time',
           type: 'text',
-          content: 'Saturday, 15th March 2025',
+          content: '6:00 PM onwards',
           x: 50,
-          y: 60,
-          width: 60,
-          height: 8,
-          fontSize: 18,
-          fontFamily: 'Lato',
-          fontWeight: 'semibold',
-          color: '#8B4513',
+          y: 68,
+          width: 40,
+          height: 4,
+          fontSize: 13,
+          fontFamily: 'Playfair Display',
+          fontWeight: 'normal',
+          color: '#333333',
           textAlign: 'center',
           rotation: 0,
           opacity: 1,
@@ -158,17 +253,17 @@ export default function InteractiveCardEditor({
           isSelected: false
         },
         {
-          id: 'venue',
+          id: 'blessing-message',
           type: 'text',
-          content: 'Taj Exotica Resort & Spa, Goa',
+          content: 'Your Blessing is the only Precious Gift our heart desires',
           x: 50,
-          y: 70,
+          y: 76,
           width: 65,
-          height: 8,
-          fontSize: 16,
-          fontFamily: 'Lato',
+          height: 6,
+          fontSize: 12,
+          fontFamily: 'Dancing Script',
           fontWeight: 'normal',
-          color: '#666666',
+          color: '#8B4513',
           textAlign: 'center',
           rotation: 0,
           opacity: 1,
@@ -177,40 +272,21 @@ export default function InteractiveCardEditor({
           isSelected: false
         },
         {
-          id: 'time',
-          type: 'text',
-          content: '6:00 PM onwards',
-          x: 50,
-          y: 80,
-          width: 50,
-          height: 6,
-          fontSize: 14,
-          fontFamily: 'Lato',
-          fontWeight: 'normal',
-          color: '#666666',
-          textAlign: 'center',
-          rotation: 0,
-          opacity: 1,
-          zIndex: 6,
-          isEditable: true,
-          isSelected: false
-        },
-        {
-          id: 'parents',
+          id: 'parents-names',
           type: 'text',
           content: 'Mr. & Mrs. Sharma\nMr. & Mrs. Patel',
           x: 50,
-          y: 90,
-          width: 60,
+          y: 85,
+          width: 50,
           height: 8,
-          fontSize: 14,
-          fontFamily: 'Lato',
+          fontSize: 13,
+          fontFamily: 'Playfair Display',
           fontWeight: 'normal',
           color: '#8B4513',
           textAlign: 'center',
           rotation: 0,
           opacity: 1,
-          zIndex: 5,
+          zIndex: 6,
           isEditable: true,
           isSelected: false
         }
@@ -657,7 +733,9 @@ export default function InteractiveCardEditor({
                         opacity: element.opacity,
                         zIndex: element.zIndex,
                         whiteSpace: 'pre-wrap',
-                        lineHeight: '1.2'
+                        lineHeight: '1.2',
+                        backgroundColor: 'transparent',
+                        padding: '1px 2px'
                       }}
                       onMouseDown={(e) => handleMouseDown(e, element.id)}
                       onClick={() => handleElementClick(element.id)}
@@ -719,12 +797,39 @@ export default function InteractiveCardEditor({
                         onChange={(e) => handleElementUpdate(selectedElement.id, { fontFamily: e.target.value })}
                         className="w-full mt-1 p-2 border rounded"
                       >
-                        <option value="Playfair Display">Playfair Display</option>
-                        <option value="Lato">Lato</option>
-                        <option value="Dancing Script">Dancing Script</option>
-                        <option value="Montserrat">Montserrat</option>
-                        <option value="serif">Serif</option>
-                        <option value="sans-serif">Sans Serif</option>
+                        <option value="Dancing Script">Dancing Script (Script)</option>
+                        <option value="Playfair Display">Playfair Display (Serif)</option>
+                        <option value="Lato">Lato (Sans Serif)</option>
+                        <option value="Montserrat">Montserrat (Sans Serif)</option>
+                        <option value="Cinzel">Cinzel (Serif)</option>
+                        <option value="Pacifico">Pacifico (Script)</option>
+                        <option value="Great Vibes">Great Vibes (Script)</option>
+                        <option value="Abril Fatface">Abril Fatface (Serif)</option>
+                        <option value="Poppins">Poppins (Sans Serif)</option>
+                        <option value="serif">Serif (System)</option>
+                        <option value="sans-serif">Sans Serif (System)</option>
+                        <option value="cursive">Cursive (System)</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="text-sm font-medium">Font Weight</label>
+                      <select
+                        value={selectedElement.fontWeight}
+                        onChange={(e) => handleElementUpdate(selectedElement.id, { fontWeight: e.target.value })}
+                        className="w-full mt-1 p-2 border rounded"
+                      >
+                        <option value="normal">Normal</option>
+                        <option value="bold">Bold</option>
+                        <option value="100">Thin (100)</option>
+                        <option value="200">Extra Light (200)</option>
+                        <option value="300">Light (300)</option>
+                        <option value="400">Regular (400)</option>
+                        <option value="500">Medium (500)</option>
+                        <option value="600">Semi Bold (600)</option>
+                        <option value="700">Bold (700)</option>
+                        <option value="800">Extra Bold (800)</option>
+                        <option value="900">Black (900)</option>
                       </select>
                     </div>
 

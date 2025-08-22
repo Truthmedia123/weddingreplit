@@ -1,21 +1,27 @@
 /**
- * 🔒 SECURE DATABASE MODULE INDEX
+ * Database exports
  * 
- * This module exports all secure database utilities and services.
- * Use these exports for all database operations in the application.
+ * This file provides a unified interface for database access
+ * across the application.
  */
 
-// Secure connection exports
+// Export the main database instance
+export { db, pool } from '../db-config';
+
+// Export secure connection utilities
 export { 
   getDatabase, 
   getClient, 
-  healthCheck as dbHealthCheck, 
-  getMetrics as getDbMetrics, 
-  disconnect as disconnectDb, 
-  isConnected as isDbConnected 
+  healthCheck, 
+  getMetrics, 
+  disconnect, 
+  isConnected 
 } from './connection';
 
-// Validation exports
+// Legacy export for backward compatibility
+export const getDatabase = () => import('../db-config').then(m => m.db);
+
+// Validation exports (same for both SQLite and PostgreSQL)
 export {
   validateAndSanitize,
   sanitizeInput,
@@ -36,6 +42,3 @@ export {
 
 // Secure storage service
 export { secureStorage, SecureStorageService } from './secureStorage';
-
-// Legacy exports (deprecated)
-export { db, pool } from '../db';

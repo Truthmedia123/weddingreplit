@@ -1,7 +1,8 @@
 // Health check and monitoring endpoints
 import type { Express } from "express";
 import { storage } from "./storage";
-// import Database from 'better-sqlite3'; // Not used
+import { healthCheck as dbHealthCheck } from './db/connection';
+import { getDatabase } from './db/connection';
 
 interface HealthStatus {
   status: 'healthy' | 'unhealthy' | 'degraded';

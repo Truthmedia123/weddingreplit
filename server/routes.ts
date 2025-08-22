@@ -270,7 +270,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log("Wedding creation request body:", req.body);
       
-      // Manual validation and transformation for SQLite compatibility
+      // Manual validation and transformation for PostgreSQL compatibility
       const { weddingDate, rsvpDeadline, ...rest } = req.body;
       const weddingData = {
         ...rest,

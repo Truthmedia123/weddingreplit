@@ -10,6 +10,8 @@
  * - Rate limiting at database level
  * - Input validation and sanitization
  * 
+ * Uses PostgreSQL/Supabase exclusively for all environments.
+ * 
  * NEVER commit .env files with real credentials to version control!
  * Always use .env.example for templates and keep real credentials local only.
  * 
@@ -32,27 +34,12 @@ export {
 // Export validation utilities
 export * from './db/validation';
 
-// Legacy exports for backward compatibility
-// These will be deprecated in favor of the secure connection
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
-import * as schema from "@shared/schema-postgres";
+// Import database configuration
+export { db, pool } from './db-config';
 
+// Validate environment configuration
 if (!process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL environment variable is required. Please check your .env file and ensure it's not committed to version control.");
+  throw new Error("DATABASE_URL environment variable is required for PostgreSQL connection");
 }
 
-// Create legacy connection (will be removed in future versions)
-const client = postgres(process.env.DATABASE_URL, {
-  max: 20,
-  idle_timeout: 20,
-  connect_timeout: 10,
-  ssl: process.env.NODE_ENV === 'production' ? 'require' : false,
-  prepare: true, // Enable prepared statements for security
-});
-
-export const db = drizzle(client, { schema });
-export const pool = client;
-
-// Deprecation warning
-console.warn('⚠️  DEPRECATION WARNING: Direct db/pool exports are deprecated. Use getDatabase() and getClient() from secure connection instead.');
+console.log('🔄 Database configured for PostgreSQL/Supabase');
