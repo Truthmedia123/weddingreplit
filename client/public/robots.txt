@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://thegoanwedding.com/sitemap.xml
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /health/
+Disallow: /metrics/
+
+# Allow important pages
+Allow: /vendors/
+Allow: /categories/
+Allow: /blog/
+Allow: /contact/
+Allow: /about/
+
+# Crawl delay for respectful crawling
+Crawl-delay: 1

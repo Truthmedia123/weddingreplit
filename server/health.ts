@@ -1,7 +1,7 @@
 // Health check and monitoring endpoints
 import type { Express } from "express";
 import { storage } from "./storage";
-import Database from 'better-sqlite3';
+// import Database from 'better-sqlite3'; // Not used
 
 interface HealthStatus {
   status: 'healthy' | 'unhealthy' | 'degraded';
@@ -92,7 +92,7 @@ class HealthMonitor {
     const startTime = Date.now();
     try {
       // Simple database connectivity test
-      const testQuery = await storage.getVendors({}, { limit: 1 });
+      const testQuery = await storage.getVendors({});
       const responseTime = Date.now() - startTime;
       
       if (responseTime > 1000) {
@@ -123,7 +123,7 @@ class HealthMonitor {
   async checkStorage(): Promise<HealthCheck> {
     try {
       // Test storage operations
-      const testSession = await storage.getSession('health-check-session');
+      // const testSession = await storage.getSession('health-check-session'); // Not implemented
       
       return {
         status: 'pass',

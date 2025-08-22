@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense, lazy } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Download, Heart, Sparkles, Upload, QrCode, ArrowLeft, Star, Crown, Palette, Edit, Wand2 } from 'lucide-react';
+import { Download, Heart, Sparkles, Upload, QrCode, ArrowLeft, Star, Crown, Palette, Edit, Wand2, Loader2 } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 import OptimizedImage from '@/components/OptimizedImage';
 import LiveInvitationEditor from '@/components/LiveInvitationEditor';
@@ -15,6 +15,19 @@ import InteractiveCardEditor from '@/components/InvitationGenerator/InteractiveC
 import EnhancedTemplateGallery from '@/components/InvitationGenerator/EnhancedTemplateGallery';
 import TemplateSelector from '@/components/InvitationGenerator/TemplateGallery/TemplateSelector';
 import type { EnhancedTemplate } from '@/components/InvitationGenerator/TemplateGallery/TemplateManager';
+
+// Lazy load heavy components for better performance
+const LazyInvitationPreview = lazy(() => import('@/components/InvitationPreview'));
+const LazyInteractiveCardEditor = lazy(() => import('@/components/InvitationGenerator/InteractiveCardEditor'));
+const LazyEnhancedTemplateGallery = lazy(() => import('@/components/InvitationGenerator/EnhancedTemplateGallery'));
+
+// Loading component for lazy-loaded components
+const LoadingSpinner = () => (
+  <div className="flex items-center justify-center p-8">
+    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+    <span className="ml-2 text-muted-foreground">Loading invitation tools...</span>
+  </div>
+);
 
 const invitationTemplates: EnhancedTemplate[] = [
   {
@@ -375,10 +388,12 @@ export default function InvitationGenerator() {
   // Enhanced Template Gallery View
   if (currentView === 'enhanced-gallery') {
     return (
-      <EnhancedTemplateGallery
-        onTemplateSelect={handleInteractiveEdit}
-        onPreview={handleTemplatePreview}
-      />
+      <Suspense fallback={<LoadingSpinner />}>
+        <LazyEnhancedTemplateGallery
+          onTemplateSelect={handleInteractiveEdit}
+          onPreview={handleTemplatePreview}
+        />
+      </Suspense>
     );
   }
 
@@ -398,31 +413,35 @@ export default function InvitationGenerator() {
   // Interactive Card Editor View
   if (currentView === 'interactive-editor' && selectedTemplate) {
     return (
-      <InteractiveCardEditor
-        selectedTemplate={selectedTemplate}
-        onComplete={(formData) => {
-          console.log('Interactive editor completed with data:', formData);
-          // TODO: Generate invitation with form data
-          setCurrentView('enhanced-gallery');
-        }}
-        onBack={handleBackToTemplates}
-      />
+      <Suspense fallback={<LoadingSpinner />}>
+        <LazyInteractiveCardEditor
+          selectedTemplate={selectedTemplate}
+          onComplete={(formData) => {
+            console.log('Interactive editor completed with data:', formData);
+            // TODO: Generate invitation with form data
+            setCurrentView('enhanced-gallery');
+          }}
+          onBack={handleBackToTemplates}
+        />
+      </Suspense>
     );
   }
 
   // Live Editor View - Now using EnhancedFormWizard
   if (currentView === 'live-editor' && selectedTemplate) {
     return (
-      <EnhancedFormWizard
-        selectedTemplate={selectedTemplate}
-        culturalThemes={culturalThemes}
-        onComplete={(formData) => {
-          console.log('Form completed with data:', formData);
-          // TODO: Generate invitation with form data
-          setCurrentView('templates');
-        }}
-        onBack={handleBackToTemplates}
-      />
+      <Suspense fallback={<LoadingSpinner />}>
+        <EnhancedFormWizard
+          selectedTemplate={selectedTemplate}
+          culturalThemes={culturalThemes}
+          onComplete={(formData) => {
+            console.log('Form completed with data:', formData);
+            // TODO: Generate invitation with form data
+            setCurrentView('templates');
+          }}
+          onBack={handleBackToTemplates}
+        />
+      </Suspense>
     );
   }
 

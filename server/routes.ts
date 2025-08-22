@@ -8,8 +8,8 @@ import type { InvitationData } from "./simpleInvitationGenerator";
 import { registerHealthRoutes, metricsMiddleware } from "./health";
 import { PerformanceMonitor, createPerformanceMiddleware } from "./monitoring/performance";
 import { generateSitemap, generateRobotsTxt } from "./seo/sitemap";
-import { generateVendorJsonLd, generateWebsiteJsonLd } from "./seo/structuredData";
-import { generateVendorMetaTags, generateCategoryMetaTags } from "./seo/metaTags";
+// import { generateVendorJsonLd, generateWebsiteJsonLd } from "./seo/structuredData";
+// import { generateVendorMetaTags, generateCategoryMetaTags } from "./seo/metaTags";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Initialize performance monitoring
@@ -31,11 +31,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/robots.txt", generateRobotsTxt);
   
   // Performance monitoring endpoint
-  app.get("/api/monitoring/performance", (req, res) => {
+  app.get("/api/monitoring/performance", (_req, res) => {
     try {
       const stats = performanceMonitor.getStats();
       res.json(stats);
-    } catch (error) {
+    } catch (_error) {
       res.status(500).json({ error: "Failed to get performance stats" });
     }
   });
@@ -50,7 +50,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         search: search as string,
       });
       res.json(vendors);
-    } catch (error) {
+    } catch (_error) {
       res.status(500).json({ message: "Failed to fetch vendors" });
     }
   });
@@ -59,7 +59,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const vendors = await storage.getFeaturedVendors();
       res.json(vendors);
-    } catch (error) {
+    } catch (_error) {
       res.status(500).json({ message: "Failed to fetch featured vendors" });
     }
   });
@@ -71,9 +71,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!vendor) {
         return res.status(404).json({ message: "Vendor not found" });
       }
-      res.json(vendor);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch vendor" });
+      return res.json(vendor);
+    } catch (_error) {
+      return res.status(500).json({ message: "Failed to fetch vendor" });
     }
   });
 
@@ -100,10 +100,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const newVendor = await storage.createVendor(vendorData);
-      res.status(201).json(newVendor);
-    } catch (error) {
-      console.error('Error creating vendor:', error);
-      res.status(500).json({ error: 'Failed to create vendor' });
+      return res.status(201).json(newVendor);
+    } catch (_error) {
+      console.error('Error creating vendor:', _error);
+      return res.status(500).json({ error: 'Failed to create vendor' });
     }
   });
 
@@ -133,10 +133,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const updatedVendor = await storage.updateVendor(vendorId, updateData);
-      res.json(updatedVendor);
-    } catch (error) {
-      console.error('Error updating vendor:', error);
-      res.status(500).json({ error: 'Failed to update vendor' });
+      return res.json(updatedVendor);
+    } catch (_error) {
+      console.error('Error updating vendor:', _error);
+      return res.status(500).json({ error: 'Failed to update vendor' });
     }
   });
 
@@ -151,10 +151,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       await storage.deleteVendor(vendorId);
-      res.json({ message: 'Vendor deleted successfully' });
-    } catch (error) {
-      console.error('Error deleting vendor:', error);
-      res.status(500).json({ error: 'Failed to delete vendor' });
+      return res.json({ message: 'Vendor deleted successfully' });
+    } catch (_error) {
+      console.error('Error deleting vendor:', _error);
+      return res.status(500).json({ error: 'Failed to delete vendor' });
     }
   });
 
@@ -164,8 +164,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const vendorId = parseInt(req.params.id);
       const reviews = await storage.getVendorReviews(vendorId);
       res.json(reviews);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch reviews" });
+    } catch (_error) {
+      return res.status(500).json({ message: "Failed to fetch reviews" });
     }
   });
 
@@ -175,11 +175,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const reviewData = insertReviewSchema.parse({ ...req.body, vendorId });
       const review = await storage.createReview(reviewData);
       res.status(201).json(review);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid review data", errors: error.errors });
+    } catch (_error) {
+      if (_error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid review data", errors: _error.errors });
       }
-      res.status(500).json({ message: "Failed to create review" });
+      return res.status(500).json({ message: "Failed to create review" });
     }
   });
 
@@ -188,8 +188,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const categories = await storage.getCategories();
       res.json(categories);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch categories" });
+    } catch (_error) {
+      return res.status(500).json({ message: "Failed to fetch categories" });
     }
   });
 
@@ -200,8 +200,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Category not found" });
       }
       res.json(category);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch category" });
+    } catch (_error) {
+      return res.status(500).json({ message: "Failed to fetch category" });
     }
   });
 
@@ -210,9 +210,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const posts = await storage.getBlogPosts(true);
       res.json(posts);
-    } catch (error) {
-      console.error("Blog posts API error:", error);
-      res.status(500).json({ message: "Failed to fetch blog posts", error: (error as Error)?.message || "Unknown error" });
+    } catch (_error) {
+      console.error("Blog posts API error:", _error);
+      return res.status(500).json({ message: "Failed to fetch blog posts", error: (_error as Error)?.message || "Unknown error" });
     }
   });
 
@@ -224,7 +224,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       res.json(post);
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch blog post" });
+      return res.status(500).json({ message: "Failed to fetch blog post" });
     }
   });
 
@@ -238,7 +238,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ message: "Invalid submission data", errors: error.errors });
       }
-      res.status(500).json({ message: "Failed to create business submission" });
+      return res.status(500).json({ message: "Failed to create business submission" });
     }
   });
 
@@ -252,7 +252,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ message: "Invalid contact data", errors: error.errors });
       }
-      res.status(500).json({ message: "Failed to send contact message" });
+      return res.status(500).json({ message: "Failed to send contact message" });
     }
   });
 

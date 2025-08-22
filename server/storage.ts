@@ -1,96 +1,92 @@
 import { vendors, categories, blogPosts, weddings, rsvps } from "@shared/schema-postgres";
-import { invitationTemplates, generatedInvitations, invitationAnalytics } from "@shared/schema-postgres";
 import { db } from "./db";
-import { eq, and, desc, like, or, count } from "drizzle-orm";
+import { eq, and, desc, like, or } from "drizzle-orm";
 import type { 
   Vendor, InsertVendor, 
   Category, InsertCategory,
   BlogPost, InsertBlogPost,
   Wedding, InsertWedding,
-  Rsvp, InsertRsvp,
-  InvitationTemplate, InsertInvitationTemplate,
-  GeneratedInvitation, InsertGeneratedInvitation,
-  InvitationAnalytics, InsertInvitationAnalytics
+  Rsvp, InsertRsvp
 } from "@shared/schema-postgres";
 import type { CulturalTheme } from "@shared/invitation-types";
 
 export interface IStorage {
   // Vendors
-  getVendors(filters: { category?: string; location?: string; search?: string }): Promise<Vendor[]>;
-  getVendor(id: number): Promise<Vendor | undefined>;
+  getVendors(_filters: { category?: string; location?: string; search?: string }): Promise<Vendor[]>;
+  getVendor(_id: number): Promise<Vendor | undefined>;
   getFeaturedVendors(): Promise<Vendor[]>;
-  createVendor(vendor: InsertVendor): Promise<Vendor>;
-  updateVendor(id: number, updateData: Partial<InsertVendor>): Promise<Vendor | undefined>;
-  deleteVendor(id: number): Promise<void>;
-  getVendorByEmail(email: string): Promise<Vendor | undefined>;
+  createVendor(_vendor: InsertVendor): Promise<Vendor>;
+  updateVendor(_id: number, _updateData: Partial<InsertVendor>): Promise<Vendor | undefined>;
+  deleteVendor(_id: number): Promise<void>;
+  getVendorByEmail(_email: string): Promise<Vendor | undefined>;
 
   // Categories
   getCategories(): Promise<Category[]>;
-  getCategory(slug: string): Promise<Category | undefined>;
-  createCategory(category: InsertCategory): Promise<Category>;
+  getCategory(_slug: string): Promise<Category | undefined>;
+  createCategory(_category: InsertCategory): Promise<Category>;
 
   // Blog Posts
-  getBlogPosts(published?: boolean): Promise<BlogPost[]>;
-  getBlogPost(slug: string): Promise<BlogPost | undefined>;
-  createBlogPost(post: InsertBlogPost): Promise<BlogPost>;
+  getBlogPosts(_published?: boolean): Promise<BlogPost[]>;
+  getBlogPost(_slug: string): Promise<BlogPost | undefined>;
+  createBlogPost(_post: InsertBlogPost): Promise<BlogPost>;
 
   // Weddings
   getWeddings(): Promise<Wedding[]>;
-  getWedding(slug: string): Promise<Wedding | undefined>;
-  createWedding(wedding: InsertWedding): Promise<Wedding>;
+  getWedding(_slug: string): Promise<Wedding | undefined>;
+  createWedding(_wedding: InsertWedding): Promise<Wedding>;
 
   // RSVPs
-  getWeddingRsvps(weddingId: number): Promise<Rsvp[]>;
-  createRsvp(rsvp: InsertRsvp): Promise<Rsvp>;
+  getWeddingRsvps(_weddingId: number): Promise<Rsvp[]>;
+  createRsvp(_rsvp: InsertRsvp): Promise<Rsvp>;
 
   // Reviews (placeholder methods)
-  getVendorReviews(vendorId: number): Promise<any[]>;
-  createReview(reviewData: any): Promise<any>;
+  getVendorReviews(_vendorId: number): Promise<any[]>;
+  createReview(_reviewData: any): Promise<any>;
 
   // Business Submissions (placeholder methods)
-  createBusinessSubmission(submissionData: any): Promise<any>;
+  createBusinessSubmission(_submissionData: any): Promise<any>;
 
   // Contact (placeholder methods)
-  createContact(contactData: any): Promise<any>;
+  createContact(_contactData: any): Promise<any>;
 
-  // Enhanced Wedding Invitation Generator - Templates
-  getInvitationTemplates(filters: { 
+  // Enhanced Wedding Invitation Generator - Templates (placeholder methods)
+  getInvitationTemplates(_filters: { 
     category?: string; 
     culturalTheme?: string; 
     search?: string; 
     limit?: number; 
     offset?: number; 
-  }): Promise<InvitationTemplate[]>;
-  getInvitationTemplate(id: string): Promise<InvitationTemplate | undefined>;
+  }): Promise<any[]>;
+  getInvitationTemplate(_id: string): Promise<any | undefined>;
   getTemplateCategories(): Promise<{ id: string; name: string; count: number }[]>;
   getCulturalThemes(): Promise<CulturalTheme[]>;
-  trackTemplateEvent(eventData: InsertInvitationAnalytics): Promise<void>;
-  createGeneratedInvitation(data: InsertGeneratedInvitation): Promise<GeneratedInvitation>;
-  getGeneratedInvitation(id: string): Promise<GeneratedInvitation | undefined>;
-  getGeneratedInvitationByToken(token: string): Promise<GeneratedInvitation | undefined>;
+  trackTemplateEvent(_eventData: any): Promise<void>;
+  createGeneratedInvitation(_data: any): Promise<any>;
+  getGeneratedInvitation(_id: string): Promise<any | undefined>;
+  getGeneratedInvitationByToken(_token: string): Promise<any | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
   // Vendors
-  async getVendors(filters: { category?: string; location?: string; search?: string }): Promise<Vendor[]> {
+  async getVendors(_filters: { category?: string; location?: string; search?: string }): Promise<Vendor[]> {
     let query = db.select().from(vendors);
     
     const conditions: any[] = [];
     
-    if (filters.category) {
-      conditions.push(eq(vendors.category, filters.category));
+    if (_filters.category) {
+      conditions.push(eq(vendors.category, _filters.category));
     }
     
-    if (filters.location) {
-      conditions.push(eq(vendors.location, filters.location));
+    if (_filters.location) {
+      conditions.push(eq(vendors.location, _filters.location));
     }
     
-    if (filters.search) {
+    if (_filters.search) {
       conditions.push(
         or(
-          like(vendors.name, `%${filters.search}%`),
-          like(vendors.description, `%${filters.search}%`),
-          like(vendors.services, `%${filters.search}%`)
+          like(vendors.name, `%${_filters.search}%`),
+          like(vendors.description, `%${_filters.search}%`),
+          like(vendors.services, `%${_filters.search}%`)
         )
       );
     }
@@ -102,8 +98,8 @@ export class DatabaseStorage implements IStorage {
     return await query;
   }
 
-  async getVendor(id: number): Promise<Vendor | undefined> {
-    const result = await db.select().from(vendors).where(eq(vendors.id, id));
+  async getVendor(_id: number): Promise<Vendor | undefined> {
+    const result = await db.select().from(vendors).where(eq(vendors.id, _id));
     return result[0] || undefined;
   }
 
@@ -111,25 +107,25 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(vendors).where(eq(vendors.featured, true));
   }
 
-  async createVendor(vendor: InsertVendor): Promise<Vendor> {
-    const result = await db.insert(vendors).values(vendor).returning();
-    return result[0];
+  async createVendor(_vendor: InsertVendor): Promise<Vendor> {
+    const result = await db.insert(vendors).values(_vendor).returning();
+    return result[0]!;
   }
 
-  async updateVendor(id: number, updateData: Partial<InsertVendor>): Promise<Vendor | undefined> {
+  async updateVendor(_id: number, _updateData: Partial<InsertVendor>): Promise<Vendor | undefined> {
     const result = await db.update(vendors)
-      .set(updateData)
-      .where(eq(vendors.id, id))
+      .set(_updateData)
+      .where(eq(vendors.id, _id))
       .returning();
     return result[0] || undefined;
   }
 
-  async deleteVendor(id: number): Promise<void> {
-    await db.delete(vendors).where(eq(vendors.id, id));
+  async deleteVendor(_id: number): Promise<void> {
+          await db.delete(vendors).where(eq(vendors.id, _id));
   }
 
-  async getVendorByEmail(email: string): Promise<Vendor | undefined> {
-    const result = await db.select().from(vendors).where(eq(vendors.email, email));
+  async getVendorByEmail(_email: string): Promise<Vendor | undefined> {
+          const result = await db.select().from(vendors).where(eq(vendors.email, _email));
     return result[0] || undefined;
   }
 
@@ -140,35 +136,35 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(categories);
   }
 
-  async getCategory(slug: string): Promise<Category | undefined> {
-    const result = await db.select().from(categories).where(eq(categories.slug, slug));
+  async getCategory(_slug: string): Promise<Category | undefined> {
+          const result = await db.select().from(categories).where(eq(categories.slug, _slug));
     return result[0];
   }
 
-  async createCategory(category: InsertCategory): Promise<Category> {
-    const result = await db.insert(categories).values(category).returning();
-    return result[0];
+  async createCategory(_category: InsertCategory): Promise<Category> {
+    const result = await db.insert(categories).values(_category).returning();
+    return result[0]!;
   }
 
   // Blog Posts
-  async getBlogPosts(published?: boolean): Promise<BlogPost[]> {
+  async getBlogPosts(_published?: boolean): Promise<BlogPost[]> {
     let query = db.select().from(blogPosts);
     
-    if (published !== undefined) {
-      query = query.where(eq(blogPosts.published, published)) as any;
+    if (_published !== undefined) {
+      query = query.where(eq(blogPosts.published, _published)) as any;
     }
     
     return await query.orderBy(desc(blogPosts.createdAt));
   }
 
-  async getBlogPost(slug: string): Promise<BlogPost | undefined> {
-    const result = await db.select().from(blogPosts).where(eq(blogPosts.slug, slug));
+  async getBlogPost(_slug: string): Promise<BlogPost | undefined> {
+    const result = await db.select().from(blogPosts).where(eq(blogPosts.slug, _slug));
     return result[0] || undefined;
   }
 
-  async createBlogPost(post: InsertBlogPost): Promise<BlogPost> {
-    const result = await db.insert(blogPosts).values(post).returning();
-    return result[0];
+  async createBlogPost(_post: InsertBlogPost): Promise<BlogPost> {
+    const result = await db.insert(blogPosts).values(_post).returning();
+    return result[0]!;
   }
 
   // Business Submissions - Not implemented in SQLite schema yet
@@ -180,16 +176,18 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getWedding(slug: string): Promise<Wedding | undefined> {
-    const result = await db.select().from(weddings).where(eq(weddings.slug, slug));
+    // Note: weddings table doesn't have a slug field, so we'll use id for now
+    // This should be updated when slug field is added to the schema
+    const result = await db.select().from(weddings).where(eq(weddings.id, parseInt(slug) || 0));
     return result[0] || undefined;
   }
 
-  async createWedding(wedding: InsertWedding): Promise<Wedding> {
+  async createWedding(_wedding: InsertWedding): Promise<Wedding> {
     // Generate a unique slug from the couple names
-    const slug = `${wedding.brideName.toLowerCase()}-${wedding.groomName.toLowerCase()}-${Date.now()}`.replace(/[^a-z0-9-]/g, '-');
-    const weddingWithSlug = { ...wedding, slug };
+    const slug = `${_wedding.coupleName.toLowerCase()}-${Date.now()}`.replace(/[^a-z0-9-]/g, '-');
+    const weddingWithSlug = { ..._wedding, slug };
     const result = await db.insert(weddings).values(weddingWithSlug).returning();
-    return result[0];
+    return result[0]!;
   }
 
   // RSVPs
@@ -197,9 +195,9 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(rsvps).where(eq(rsvps.weddingId, weddingId)).orderBy(desc(rsvps.createdAt));
   }
 
-  async createRsvp(rsvp: InsertRsvp): Promise<Rsvp> {
-    const result = await db.insert(rsvps).values(rsvp).returning();
-    return result[0];
+  async createRsvp(_rsvp: InsertRsvp): Promise<Rsvp> {
+    const result = await db.insert(rsvps).values(_rsvp).returning();
+    return result[0]!;
   }
 
   async getWeddingBySlug(slug: string): Promise<Wedding | undefined> {
@@ -216,7 +214,7 @@ export class DatabaseStorage implements IStorage {
 
   async getRsvpByEmail(weddingId: number, email: string): Promise<Rsvp | undefined> {
     const result = await db.select().from(rsvps)
-      .where(and(eq(rsvps.weddingId, weddingId), eq(rsvps.guestEmail, email)));
+      .where(and(eq(rsvps.weddingId, weddingId), eq(rsvps.email, email)));
     return result[0] || undefined;
   }
 
@@ -229,55 +227,56 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Reviews (placeholder implementations)
-  async getVendorReviews(vendorId: number): Promise<any[]> {
+  async getVendorReviews(_vendorId: number): Promise<any[]> {
     // Placeholder implementation - return empty array for now
-    console.log(`Getting reviews for vendor ${vendorId}`);
+    console.log(`Getting reviews for vendor ${_vendorId}`);
     return [];
   }
 
-  async createReview(reviewData: any): Promise<any> {
+  async createReview(_reviewData: any): Promise<any> {
     // Placeholder implementation - return the data with an ID
-    console.log('Creating review:', reviewData);
-    return { id: Date.now(), ...reviewData, createdAt: new Date().toISOString() };
+    console.log('Creating review:', _reviewData);
+    return { id: Date.now(), ..._reviewData, createdAt: new Date().toISOString() };
   }
 
   // Business Submissions (placeholder implementation)
-  async createBusinessSubmission(submissionData: any): Promise<any> {
+  async createBusinessSubmission(_submissionData: any): Promise<any> {
     // Placeholder implementation - return the data with an ID
-    console.log('Creating business submission:', submissionData);
-    return { id: Date.now(), ...submissionData, createdAt: new Date().toISOString(), status: 'pending' };
+    console.log('Creating business submission:', _submissionData);
+    return { id: Date.now(), ..._submissionData, createdAt: new Date().toISOString(), status: 'pending' };
   }
 
   // Contact (placeholder implementation)
-  async createContact(contactData: any): Promise<any> {
+  async createContact(_contactData: any): Promise<any> {
     // Placeholder implementation - return the data with an ID
-    console.log('Creating contact:', contactData);
-    return { id: Date.now(), ...contactData, createdAt: new Date().toISOString() };
+    console.log('Creating contact:', _contactData);
+    return { id: Date.now(), ..._contactData, createdAt: new Date().toISOString() };
   }
 
   // Enhanced Wedding Invitation Generator - Templates
-  async getInvitationTemplates(filters: { 
+  async getInvitationTemplates(_filters: { 
     category?: string; 
     culturalTheme?: string; 
     search?: string; 
     limit?: number; 
     offset?: number; 
-  }): Promise<InvitationTemplate[]> {
+  }): Promise<any[]> {
     // Use mock database for now - replace with real DB when PostgreSQL is set up
     const { mockDb, initializeMockData } = await import('./mock-db');
     await initializeMockData();
     
     const whereClause: any = {};
-    if (filters.category) whereClause.category = filters.category;
-    if (filters.culturalTheme) whereClause.culturalTheme = filters.culturalTheme;
-    if (filters.search) whereClause.name = { like: `%${filters.search}%` };
+    if (_filters.category) whereClause.category = _filters.category;
+    if (_filters.culturalTheme) whereClause.culturalTheme = _filters.culturalTheme;
+    if (_filters.search) whereClause.name = { like: `%${_filters.search}%` };
     
     return await mockDb.invitationTemplates.findMany({ where: whereClause });
   }
 
-  async getInvitationTemplate(id: string): Promise<InvitationTemplate | undefined> {
+  async getInvitationTemplate(_id: string): Promise<any | undefined> {
     const { mockDb } = await import('./mock-db');
-    return await mockDb.invitationTemplates.findUnique(id);
+    const template = await mockDb.invitationTemplates.findUnique(_id);
+    return template || undefined;
   }
 
   async getTemplateCategories(): Promise<{ id: string; name: string; count: number }[]> {
@@ -304,25 +303,27 @@ export class DatabaseStorage implements IStorage {
     return culturalThemes;
   }
 
-  async trackTemplateEvent(eventData: InsertInvitationAnalytics): Promise<void> {
-    await db.insert(invitationAnalytics).values(eventData);
+  async trackTemplateEvent(_eventData: any): Promise<void> {
+    // Placeholder implementation - use mock database for now
+    console.log('Tracking template event:', _eventData);
   }
 
-  async createGeneratedInvitation(data: InsertGeneratedInvitation): Promise<GeneratedInvitation> {
-    const result = await db.insert(generatedInvitations).values(data).returning();
-    return result[0];
+  async createGeneratedInvitation(_data: any): Promise<any> {
+    // Use mock database for now - replace with real DB when PostgreSQL is set up
+    const { mockDb } = await import('./mock-db');
+    return await mockDb.generatedInvitations.create(_data);
   }
 
-  async getGeneratedInvitation(id: string): Promise<GeneratedInvitation | undefined> {
-    const result = await db.select().from(generatedInvitations)
-      .where(eq(generatedInvitations.id, id));
-    return result[0] || undefined;
+  async getGeneratedInvitation(_id: string): Promise<any | undefined> {
+    // Use mock database for now - replace with real DB when PostgreSQL is set up
+    const { mockDb } = await import('./mock-db');
+    return await mockDb.generatedInvitations.findUnique(_id);
   }
 
-  async getGeneratedInvitationByToken(token: string): Promise<GeneratedInvitation | undefined> {
-    const result = await db.select().from(generatedInvitations)
-      .where(eq(generatedInvitations.downloadToken, token));
-    return result[0] || undefined;
+  async getGeneratedInvitationByToken(_token: string): Promise<any | undefined> {
+    // Use mock database for now - replace with real DB when PostgreSQL is set up
+    const { mockDb } = await import('./mock-db');
+    return await mockDb.generatedInvitations.findByToken(_token);
   }
 
   private formatCategoryName(category: string): string {

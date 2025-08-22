@@ -105,17 +105,21 @@ export const businessSubmissions = pgTable("business_submissions", {
   address: text("address"),
   website: text("website"),
   instagram: text("instagram"),
+  youtube: text("youtube"),
   facebook: text("facebook"),
+  profileImage: text("profile_image"),
+  coverImage: text("cover_image"),
+  gallery: text("gallery").array(),
   services: text("services").array(),
   priceRange: text("price_range"),
-  status: text("status").default("pending"),
+  status: text("status").default("pending"), // 'pending', 'approved', 'rejected'
   reviewedBy: text("reviewed_by"),
   reviewNotes: text("review_notes"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 }, (table) => ({
   statusIdx: index("business_submissions_status_idx").on(table.status),
-  emailIdx: index("business_submissions_email_idx").on(table.email),
+  categoryIdx: index("business_submissions_category_idx").on(table.category),
   createdAtIdx: index("business_submissions_created_at_idx").on(table.createdAt),
 }));
 
@@ -126,80 +130,49 @@ export const contacts = pgTable("contacts", {
   phone: text("phone"),
   subject: text("subject").notNull(),
   message: text("message").notNull(),
-  status: text("status").default("new"),
+  status: text("status").default("unread"), // 'unread', 'read', 'replied'
   respondedAt: timestamp("responded_at"),
   createdAt: timestamp("created_at").defaultNow(),
 }, (table) => ({
   statusIdx: index("contacts_status_idx").on(table.status),
-  emailIdx: index("contacts_email_idx").on(table.email),
   createdAtIdx: index("contacts_created_at_idx").on(table.createdAt),
 }));
 
 export const weddings = pgTable("weddings", {
   id: bigserial("id", { mode: "number" }).primaryKey(),
-  brideName: text("bride_name").notNull(),
-  groomName: text("groom_name").notNull(),
-  weddingDate: timestamp("wedding_date").notNull(),
-  venue: text("venue").notNull(),
-  venueAddress: text("venue_address").notNull(),
-  nuptialsTime: text("nuptials_time").notNull(),
-  receptionTime: text("reception_time"),
-  coverImage: text("cover_image"),
-  story: text("story"),
-  slug: text("slug").notNull().unique(),
-  rsvpDeadline: timestamp("rsvp_deadline"),
-  maxGuests: integer("max_guests").default(100),
-  isPublic: boolean("is_public").default(true),
+  coupleName: text("couple_name").notNull(),
   contactEmail: text("contact_email").notNull(),
   contactPhone: text("contact_phone"),
-  contactPhone2: text("contact_phone2"),
+  weddingDate: timestamp("wedding_date").notNull(),
+  venue: text("venue").notNull(),
+  guestCount: integer("guest_count"),
+  budget: text("budget"),
+  theme: text("theme"),
+  specialRequests: text("special_requests"),
+  status: text("status").default("active"), // 'active', 'completed', 'cancelled'
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 }, (table) => ({
-  slugIdx: uniqueIndex("weddings_slug_idx").on(table.slug),
-  weddingDateIdx: index("weddings_wedding_date_idx").on(table.weddingDate),
-  isPublicIdx: index("weddings_is_public_idx").on(table.isPublic),
+  statusIdx: index("weddings_status_idx").on(table.status),
+  weddingDateIdx: index("weddings_date_idx").on(table.weddingDate),
+  createdAtIdx: index("weddings_created_at_idx").on(table.createdAt),
 }));
 
 export const rsvps = pgTable("rsvps", {
   id: bigserial("id", { mode: "number" }).primaryKey(),
-  weddingId: integer("wedding_id").notNull().references(() => weddings.id, { onDelete: "cascade" }),
-  guestName: text("guest_name").notNull(),
-  guestEmail: text("guest_email").notNull(),
-  guestPhone: text("guest_phone"),
-  attendingCeremony: boolean("attending_ceremony").default(true),
-  attendingReception: boolean("attending_reception").default(true),
-  numberOfGuests: integer("number_of_guests").default(1),
+  weddingId: integer("wedding_id").references(() => weddings.id, { onDelete: "cascade" }).notNull(),
+  name: text("name").notNull(),
+  email: text("email"),
+  phone: text("phone"),
+  response: text("response").notNull(), // 'attending', 'not_attending', 'maybe'
+  guests: integer("guests").default(1),
   dietaryRestrictions: text("dietary_restrictions"),
   message: text("message"),
   createdAt: timestamp("created_at").defaultNow(),
 }, (table) => ({
   weddingIdx: index("rsvps_wedding_idx").on(table.weddingId),
-  emailIdx: index("rsvps_email_idx").on(table.guestEmail),
+  responseIdx: index("rsvps_response_idx").on(table.response),
   createdAtIdx: index("rsvps_created_at_idx").on(table.createdAt),
-}));
-
-// Relations
-export const vendorsRelations = relations(vendors, ({ many }) => ({
-  reviews: many(reviews),
-}));
-
-export const reviewsRelations = relations(reviews, ({ one }) => ({
-  vendor: one(vendors, {
-    fields: [reviews.vendorId],
-    references: [vendors.id],
-  }),
-}));
-
-export const weddingsRelations = relations(weddings, ({ many }) => ({
-  rsvps: many(rsvps),
-}));
-
-export const rsvpsRelations = relations(rsvps, ({ one }) => ({
-  wedding: one(weddings, {
-    fields: [rsvps.weddingId],
-    references: [weddings.id],
-  }),
 }));
 
 // Enhanced Wedding Invitation Generator Tables
@@ -257,30 +230,6 @@ export const invitationAnalytics = pgTable("invitation_analytics", {
   createdAtIdx: index("invitation_analytics_created_idx").on(table.createdAt),
 }));
 
-// Enhanced Wedding Invitation Generator Relations
-export const invitationTemplatesRelations = relations(invitationTemplates, ({ many }) => ({
-  generatedInvitations: many(generatedInvitations),
-  analytics: many(invitationAnalytics),
-}));
-
-export const generatedInvitationsRelations = relations(generatedInvitations, ({ one }) => ({
-  template: one(invitationTemplates, {
-    fields: [generatedInvitations.templateId],
-    references: [invitationTemplates.id],
-  }),
-}));
-
-export const invitationAnalyticsRelations = relations(invitationAnalytics, ({ one }) => ({
-  invitation: one(generatedInvitations, {
-    fields: [invitationAnalytics.invitationId],
-    references: [generatedInvitations.id],
-  }),
-  template: one(invitationTemplates, {
-    fields: [invitationAnalytics.templateId],
-    references: [invitationTemplates.id],
-  }),
-}));
-
 // Insert schemas with enhanced validation
 export const insertVendorSchema = createInsertSchema(vendors, {
   email: z.string().email("Invalid email format"),
@@ -297,8 +246,8 @@ export const insertVendorSchema = createInsertSchema(vendors, {
 });
 
 export const insertReviewSchema = createInsertSchema(reviews, {
-  rating: z.number().min(1).max(5),
-  customerEmail: z.string().email("Invalid email format").optional(),
+  rating: z.coerce.number().min(1).max(5),
+  email: z.string().email("Invalid email format").optional().or(z.literal("")),
 }).omit({
   id: true,
   verified: true,
@@ -399,3 +348,50 @@ export type GeneratedInvitation = typeof generatedInvitations.$inferSelect;
 export type InsertGeneratedInvitation = z.infer<typeof insertGeneratedInvitationSchema>;
 export type InvitationAnalytics = typeof invitationAnalytics.$inferSelect;
 export type InsertInvitationAnalytics = z.infer<typeof insertInvitationAnalyticsSchema>;
+
+// Relations - All defined at the end after tables are initialized
+export const vendorsRelations = relations(vendors, ({ many }) => ({
+  reviews: many(reviews),
+}));
+
+export const reviewsRelations = relations(reviews, ({ one }) => ({
+  vendor: one(vendors, {
+    fields: [reviews.vendorId],
+    references: [vendors.id],
+  }),
+}));
+
+export const weddingsRelations = relations(weddings, ({ many }) => ({
+  rsvps: many(rsvps),
+}));
+
+export const rsvpsRelations = relations(rsvps, ({ one }) => ({
+  wedding: one(weddings, {
+    fields: [rsvps.weddingId],
+    references: [weddings.id],
+  }),
+}));
+
+// Enhanced Wedding Invitation Generator Relations
+export const invitationTemplatesRelations = relations(invitationTemplates, ({ many }) => ({
+  generatedInvitations: many(generatedInvitations),
+  analytics: many(invitationAnalytics),
+}));
+
+export const generatedInvitationsRelations = relations(generatedInvitations, ({ one }) => ({
+  template: one(invitationTemplates, {
+    fields: [generatedInvitations.templateId],
+    references: [invitationTemplates.id],
+  }),
+}));
+
+export const invitationAnalyticsRelations = relations(invitationAnalytics, ({ one }) => ({
+  invitation: one(generatedInvitations, {
+    fields: [invitationAnalytics.invitationId],
+    references: [generatedInvitations.id],
+  }),
+  template: one(invitationTemplates, {
+    fields: [invitationAnalytics.templateId],
+    references: [invitationTemplates.id],
+  }),
+}));

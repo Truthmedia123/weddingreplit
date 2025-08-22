@@ -7,52 +7,66 @@ import PerformanceOptimizations from "@/components/PerformanceOptimizations";
 import { MobileOptimizations } from "@/components/MobileOptimizations";
 
 import Layout from "@/components/Layout";
-import Home from "@/pages/Home";
-import Categories from "@/pages/Categories";
-import VendorCategory from "@/pages/VendorCategory";
-import VendorProfile from "@/pages/VendorProfile";
-import ListBusiness from "@/pages/ListBusiness";
-import Blog from "@/pages/Blog";
-import BlogPost from "@/pages/BlogPost";
-import About from "@/pages/About";
-import Contact from "@/pages/Contact";
-import Wishlist from "@/pages/Wishlist";
-import Couples from "@/pages/Couples";
-import CreateRSVP from "@/pages/CreateRSVP";
-import TrackRSVP from "@/pages/TrackRSVP";
-import InvitationGenerator from "@/pages/InvitationGenerator";
+import { Suspense, lazy } from "react";
 
+// Lazy load all page components for code splitting
+const Home = lazy(() => import("@/pages/Home"));
+const Categories = lazy(() => import("@/pages/Categories"));
+const VendorCategory = lazy(() => import("@/pages/VendorCategory"));
+const VendorProfile = lazy(() => import("@/pages/VendorProfile"));
+const ListBusiness = lazy(() => import("@/pages/ListBusiness"));
+const Blog = lazy(() => import("@/pages/Blog"));
+const BlogPost = lazy(() => import("@/pages/BlogPost"));
+const About = lazy(() => import("@/pages/About"));
+const Contact = lazy(() => import("@/pages/Contact"));
+const Wishlist = lazy(() => import("@/pages/Wishlist"));
+const Couples = lazy(() => import("@/pages/Couples"));
+const CreateRSVP = lazy(() => import("@/pages/CreateRSVP"));
+const TrackRSVP = lazy(() => import("@/pages/TrackRSVP"));
+const InvitationGenerator = lazy(() => import("@/pages/InvitationGenerator"));
+const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
+const TermsConditions = lazy(() => import("@/pages/TermsConditions"));
+const CookiePolicy = lazy(() => import("@/pages/CookiePolicy"));
+const IconsDownload = lazy(() => import("@/pages/IconsDownload"));
+const NotFound = lazy(() => import("@/pages/not-found"));
 
-import PrivacyPolicy from "@/pages/PrivacyPolicy";
-import TermsConditions from "@/pages/TermsConditions";
-import CookiePolicy from "@/pages/CookiePolicy";
-import IconsDownload from "@/pages/IconsDownload";
-import NotFound from "@/pages/not-found";
+// Loading component for Suspense fallback
+const PageLoading = () => (
+  <div className="flex items-center justify-center min-h-[400px]">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  </div>
+);
+
+// Wrapper component for lazy-loaded pages
+const LazyPage = ({ component: Component }: { component: React.ComponentType }) => (
+  <Suspense fallback={<PageLoading />}>
+    <Component />
+  </Suspense>
+);
 
 function Router() {
   return (
     <Layout>
       <Switch>
-        <Route path="/" component={Home} />
-        <Route path="/categories" component={Categories} />
-        <Route path="/vendors/:category" component={VendorCategory} />
-        <Route path="/vendor/:id" component={VendorProfile} />
-        <Route path="/list-business" component={ListBusiness} />
-        <Route path="/blog" component={Blog} />
-        <Route path="/blog/:slug" component={BlogPost} />
-        <Route path="/about" component={About} />
-        <Route path="/contact" component={Contact} />
-        <Route path="/wishlist" component={Wishlist} />
-        <Route path="/couples/:slug" component={Couples} />
-        <Route path="/create-rsvp" component={CreateRSVP} />
-        <Route path="/track/:slug" component={TrackRSVP} />
-        <Route path="/generate-invitation" component={InvitationGenerator} />
-
-        <Route path="/privacy-policy" component={PrivacyPolicy} />
-        <Route path="/terms-conditions" component={TermsConditions} />
-        <Route path="/cookie-policy" component={CookiePolicy} />
-        <Route path="/icons-download" component={IconsDownload} />
-        <Route component={NotFound} />
+        <Route path="/" component={() => <LazyPage component={Home} />} />
+        <Route path="/categories" component={() => <LazyPage component={Categories} />} />
+        <Route path="/vendors/:category" component={() => <LazyPage component={VendorCategory} />} />
+        <Route path="/vendor/:id" component={() => <LazyPage component={VendorProfile} />} />
+        <Route path="/list-business" component={() => <LazyPage component={ListBusiness} />} />
+        <Route path="/blog" component={() => <LazyPage component={Blog} />} />
+        <Route path="/blog/:slug" component={() => <LazyPage component={BlogPost} />} />
+        <Route path="/about" component={() => <LazyPage component={About} />} />
+        <Route path="/contact" component={() => <LazyPage component={Contact} />} />
+        <Route path="/wishlist" component={() => <LazyPage component={Wishlist} />} />
+        <Route path="/couples/:slug" component={() => <LazyPage component={Couples} />} />
+        <Route path="/create-rsvp" component={() => <LazyPage component={CreateRSVP} />} />
+        <Route path="/track/:slug" component={() => <LazyPage component={TrackRSVP} />} />
+        <Route path="/generate-invitation" component={() => <LazyPage component={InvitationGenerator} />} />
+        <Route path="/privacy-policy" component={() => <LazyPage component={PrivacyPolicy} />} />
+        <Route path="/terms-conditions" component={() => <LazyPage component={TermsConditions} />} />
+        <Route path="/cookie-policy" component={() => <LazyPage component={CookiePolicy} />} />
+        <Route path="/icons-download" component={() => <LazyPage component={IconsDownload} />} />
+        <Route component={() => <LazyPage component={NotFound} />} />
       </Switch>
     </Layout>
   );

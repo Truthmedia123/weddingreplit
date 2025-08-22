@@ -118,6 +118,7 @@ export interface InvitationFormData {
     brideFatherName: string;
     brideMotherName: string;
     culturalTradition: string;
+    religion: ReligionType;
     languagePreferences: string[];
   };
   
@@ -303,6 +304,22 @@ export interface TemplateListResponse {
   };
 }
 
+export interface InvitationTemplate {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  style: string;
+  price?: string;
+  isActive?: boolean;
+  previewUrl?: string;
+  templateData?: any;
+  features?: string[];
+  colors?: string[];
+  premium?: boolean;
+  culturalTheme?: string;
+}
+
 export interface TemplateDetailResponse {
   template: InvitationTemplate;
   elements: TemplateElement[];
@@ -327,7 +344,21 @@ export const TEMPLATE_CATEGORIES = ['goan-beach', 'christian', 'hindu', 'muslim'
 export const GENERATION_STATUSES = ['pending', 'processing', 'completed', 'failed'] as const;
 export const EVENT_TYPES = ['template_view', 'template_select', 'form_step', 'generation_start', 'generation_complete', 'download', 'share'] as const;
 
+export const RELIGION_OPTIONS = [
+  'Christianity',
+  'Hinduism', 
+  'Islam',
+  'Sikhism',
+  'Buddhism',
+  'Jainism',
+  'Judaism',
+  'Zoroastrianism',
+  'Secular',
+  'Other'
+] as const;
+
 export type CulturalThemeType = typeof CULTURAL_THEMES[number];
 export type TemplateCategoryType = typeof TEMPLATE_CATEGORIES[number];
 export type GenerationStatusType = typeof GENERATION_STATUSES[number];
 export type EventType = typeof EVENT_TYPES[number];
+export type ReligionType = typeof RELIGION_OPTIONS[number];

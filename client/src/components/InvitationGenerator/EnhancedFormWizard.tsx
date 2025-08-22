@@ -59,6 +59,7 @@ export default function EnhancedFormWizard({ selectedTemplate, culturalThemes, o
         brideFatherName: '',
         brideMotherName: '',
         culturalTradition: selectedTemplate.category,
+        religion: 'Secular',
         languagePreferences: ['English']
       },
       ceremonyDetails: {

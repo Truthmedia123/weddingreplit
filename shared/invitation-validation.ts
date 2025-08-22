@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CULTURAL_THEMES, TEMPLATE_CATEGORIES, GENERATION_STATUSES, EVENT_TYPES } from './invitation-types';
+import { CULTURAL_THEMES, TEMPLATE_CATEGORIES, GENERATION_STATUSES, EVENT_TYPES, RELIGION_OPTIONS } from './invitation-types';
 
 // Element validation schemas
 export const elementPropertiesSchema = z.object({
@@ -180,6 +180,7 @@ export const invitationFormDataSchema = z.object({
     brideFatherName: z.string().min(1).max(100),
     brideMotherName: z.string().min(1).max(100),
     culturalTradition: z.enum(CULTURAL_THEMES),
+    religion: z.enum(RELIGION_OPTIONS),
     languagePreferences: z.array(z.string()).min(1).max(4)
   }),
   ceremonyDetails: z.object({

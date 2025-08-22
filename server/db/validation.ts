@@ -54,7 +54,9 @@ export const baseValidationSchemas = {
   array: z.array(z.any()).max(100), // Limit array size
   
   // JSON validation
-  json: z.record(z.any()).max(10000), // Limit JSON size
+  json: z.record(z.any()).refine((data) => JSON.stringify(data).length <= 10000, {
+    message: "JSON data too large (max 10KB)"
+  }),
 };
 
 // Specific validation schemas for different entities

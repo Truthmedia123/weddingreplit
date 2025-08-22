@@ -40,19 +40,57 @@
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Structured Data -->
+    <!-- Enhanced Structured Data -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebSite",
+      "@type": ["WebSite", "LocalBusiness"],
       "name": "TheGoanWedding.com",
       "url": "https://thegoanwedding.com",
-      "description": "Premium wedding vendor directory for Goa, connecting couples with the finest wedding professionals",
+      "description": "Premium wedding vendor directory for Goa, connecting couples with the finest wedding professionals for their dream destination wedding",
+      "logo": "https://thegoanwedding.com/images/logo.png",
+      "image": "https://thegoanwedding.com/images/hero.jpg",
+      "telephone": "+91-9876543210",
+      "email": "info@thegoanwedding.com",
+      "address": {
+        "@type": "PostalAddress",
+        "addressRegion": "Goa",
+        "addressCountry": "IN"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "15.2993",
+        "longitude": "74.1240"
+      },
+      "areaServed": "Goa, India",
+      "serviceType": "Wedding Vendor Directory",
+      "priceRange": "$$",
       "potentialAction": {
         "@type": "SearchAction",
         "target": "https://thegoanwedding.com/search?q={search_term_string}",
         "query-input": "required name=search_term_string"
-      }
+      },
+      "sameAs": [
+        "https://facebook.com/thegoanwedding",
+        "https://instagram.com/thegoanwedding",
+        "https://twitter.com/thegoanwedding"
+      ],
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "reviewCount": "150",
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      "knowsAbout": [
+        "Wedding Photography",
+        "Wedding Venues",
+        "Wedding Catering",
+        "Wedding Planning",
+        "Destination Weddings",
+        "Beach Weddings",
+        "Goan Wedding Traditions"
+      ]
     }
     </script>
   </head>

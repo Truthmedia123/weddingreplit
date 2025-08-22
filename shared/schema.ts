@@ -275,7 +275,7 @@ export const insertInvitationTemplateSchema = createInsertSchema(invitationTempl
 export const insertGeneratedInvitationSchema = createInsertSchema(generatedInvitations).omit({
   id: true,
   createdAt: true,
-  completedAt: true,
+  completedAt: timestamp("completed_at"),
 });
 
 export const insertTemplateAnalyticsSchema = createInsertSchema(invitationAnalytics).omit({

@@ -58,7 +58,7 @@ export class SecureStorageService {
       const [vendor] = await db
         .update(schema.vendors)
         .set({ ...validatedData, updatedAt: new Date() })
-        .where(eq(schema.vendors.id, validatedId.id))
+        .where(eq(schema.vendors.id, Number(validatedId.id)))
         .returning();
       return vendor || null;
     }, { identifier: 'update-vendor' })();
@@ -72,7 +72,7 @@ export class SecureStorageService {
       const [vendor] = await db
         .select()
         .from(schema.vendors)
-        .where(eq(schema.vendors.id, validatedId.id));
+        .where(eq(schema.vendors.id, Number(validatedId.id)));
       return vendor || null;
     }, { identifier: 'get-vendor' })();
   }
@@ -84,7 +84,7 @@ export class SecureStorageService {
       const db = await getDatabase();
       const [vendor] = await db
         .delete(schema.vendors)
-        .where(eq(schema.vendors.id, validatedId.id))
+        .where(eq(schema.vendors.id, Number(validatedId.id)))
         .returning();
       return !!vendor;
     }, { identifier: 'delete-vendor' })();
@@ -108,7 +108,7 @@ export class SecureStorageService {
         );
       }
       if (validatedQuery.category) {
-        conditions.push(eq(schema.vendors.categoryId, validatedQuery.category));
+        conditions.push(eq(schema.vendors.category, validatedQuery.category));
       }
       if (validatedQuery.location) {
         conditions.push(like(schema.vendors.location, `%${validatedQuery.location}%`));
@@ -157,7 +157,10 @@ export class SecureStorageService {
       const db = await getDatabase();
       const [invitation] = await db
         .insert(schema.generatedInvitations)
-        .values(validatedData)
+        .values({
+          id: crypto.randomUUID(),
+          ...validatedData
+        })
         .returning();
       return invitation;
     }, { identifier: 'create-invitation' })();
@@ -187,7 +190,7 @@ export class SecureStorageService {
           downloadCount: sql`${schema.generatedInvitations.downloadCount} + 1`,
           lastAccessedAt: new Date()
         })
-        .where(eq(schema.generatedInvitations.id, validatedId.id));
+        .where(eq(schema.generatedInvitations.id, String(validatedId.id)));
     }, { identifier: 'update-invitation' })();
   }
   
@@ -200,7 +203,7 @@ export class SecureStorageService {
         .where(eq(schema.invitationTemplates.isActive, true));
       
       if (category) {
-        query.where(eq(schema.invitationTemplates.category, category));
+        return await query.where(eq(schema.invitationTemplates.category, category)).orderBy(desc(schema.invitationTemplates.popular));
       }
       
       return await query.orderBy(desc(schema.invitationTemplates.popular));
@@ -218,7 +221,10 @@ export class SecureStorageService {
       const db = await getDatabase();
       const [rsvp] = await db
         .insert(schema.rsvps)
-        .values(validatedData)
+        .values({
+          ...validatedData,
+          weddingId: Number(validatedData.weddingId)
+        })
         .returning();
       return rsvp;
     }, { identifier: 'create-rsvp' })();
@@ -233,7 +239,7 @@ export class SecureStorageService {
       const [rsvp] = await db
         .update(schema.rsvps)
         .set(validatedData)
-        .where(eq(schema.rsvps.id, validatedId.id))
+        .where(eq(schema.rsvps.id, Number(validatedId.id)))
         .returning();
       return rsvp || null;
     }, { identifier: 'update-rsvp' })();
@@ -247,7 +253,7 @@ export class SecureStorageService {
       return await db
         .select()
         .from(schema.rsvps)
-        .where(eq(schema.rsvps.weddingId, validatedId.id))
+        .where(eq(schema.rsvps.weddingId, Number(validatedId.id)))
         .orderBy(desc(schema.rsvps.createdAt));
     }, { identifier: 'get-rsvps' })();
   }
@@ -274,7 +280,7 @@ export class SecureStorageService {
       const [category] = await db
         .select()
         .from(schema.categories)
-        .where(eq(schema.categories.id, validatedId.id));
+        .where(eq(schema.categories.id, Number(validatedId.id)));
       return category || null;
     }, { identifier: 'get-category' })();
   }
@@ -288,7 +294,10 @@ export class SecureStorageService {
       const db = await getDatabase();
       const [analytics] = await db
         .insert(schema.invitationAnalytics)
-        .values(data)
+        .values({
+          id: crypto.randomUUID(),
+          ...data
+        })
         .returning();
       return analytics;
     }, { identifier: 'track-analytics' })();
@@ -313,10 +322,10 @@ export class SecureStorageService {
       const [rsvpCount] = await db.select({ count: count() }).from(schema.rsvps);
       
       return {
-        vendors: Number(vendorCount.count),
-        categories: Number(categoryCount.count),
-        invitations: Number(invitationCount.count),
-        rsvps: Number(rsvpCount.count)
+        vendors: Number(vendorCount?.count ?? 0),
+        categories: Number(categoryCount?.count ?? 0),
+        invitations: Number(invitationCount?.count ?? 0),
+        rsvps: Number(rsvpCount?.count ?? 0)
       };
     }, { identifier: 'get-stats' })();
   }

@@ -2,7 +2,9 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import type { InvitationFormData } from '@shared/invitation-types';
+import { RELIGION_OPTIONS } from '@shared/invitation-types';
 
 interface CoupleDetailsStepProps {
   data: InvitationFormData;
@@ -160,6 +162,61 @@ const CoupleDetailsStep: React.FC<CoupleDetailsStepProps> = ({
           </div>
         </div>
 
+        {/* Religion and Cultural Details */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-medium text-gray-900 border-b pb-2">
+            Religious & Cultural Details
+          </h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="religion" className="text-sm font-medium">
+                Religion *
+              </Label>
+              <Select 
+                value={data.coupleDetails.religion || ''} 
+                onValueChange={(value) => handleInputChange('religion', value)}
+              >
+                <SelectTrigger className={errors.religion ? 'border-red-500' : ''}>
+                  <SelectValue placeholder="Select religion" />
+                </SelectTrigger>
+                <SelectContent>
+                  {RELIGION_OPTIONS.map((religion) => (
+                    <SelectItem key={religion} value={religion}>
+                      {religion}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {errors.religion && (
+                <p id="religion-error" className="text-sm text-red-600">
+                  {errors.religion}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="culturalTradition" className="text-sm font-medium">
+                Cultural Tradition
+              </Label>
+              <Select 
+                value={data.coupleDetails.culturalTradition || ''} 
+                onValueChange={(value) => handleInputChange('culturalTradition', value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select cultural tradition" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="christian">Christian</SelectItem>
+                  <SelectItem value="hindu">Hindu</SelectItem>
+                  <SelectItem value="muslim">Muslim</SelectItem>
+                  <SelectItem value="secular">Secular</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
+
         {/* Help Text */}
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <h4 className="text-sm font-medium text-blue-900 mb-2">
@@ -170,6 +227,7 @@ const CoupleDetailsStep: React.FC<CoupleDetailsStepProps> = ({
             <li>• Include titles if desired (Mr., Mrs., Dr., etc.)</li>
             <li>• Parent names help guests identify the families</li>
             <li>• Mother's names are optional but commonly included</li>
+            <li>• Religion selection helps customize invitation content and styling</li>
           </ul>
         </div>
       </CardContent>

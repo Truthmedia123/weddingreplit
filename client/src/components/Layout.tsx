@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Heart } from "lucide-react";
 import { useWishlist } from "@/hooks/use-wishlist";
 import FloatingButtons from "./FloatingButtons";
+import CopyrightHeader from "./Protection/CopyrightHeader";
 
 
 interface LayoutProps {
@@ -246,6 +247,7 @@ export default function Layout({ children }: LayoutProps) {
       </footer>
 
       <FloatingButtons />
+      <CopyrightHeader />
     </div>
   );
 }

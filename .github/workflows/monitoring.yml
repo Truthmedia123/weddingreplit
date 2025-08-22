@@ -58,7 +58,7 @@ jobs:
         with:
           status: failure
           channel: '#alerts'
-          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+          webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
           text: '🚨 Health check failed for ${{ matrix.environment }} environment'
 
   performance-monitoring:
@@ -92,7 +92,7 @@ jobs:
         run: npm run analyze:bundle-size
         
       - name: Upload performance metrics
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: performance-metrics
           path: ./performance-metrics/
@@ -132,7 +132,7 @@ jobs:
         run: npm run test:health-report
         
       - name: Upload test metrics
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-health-metrics
           path: ./test-health-metrics/

@@ -33,7 +33,10 @@ import {
   corsOptions,
   generalRateLimit,
   apiRateLimit,
-  sanitizeInput
+  sanitizeInput,
+  validateApiKey,
+  validateOrigin,
+  securityAuditLog
 } from "./middleware/security";
 import { 
   errorHandler, 
@@ -57,13 +60,21 @@ const app = express();
 // Export app for testing
 export { app };
 
-// Trust proxy for Replit environment
-app.set('trust proxy', true);
+// Trust proxy configuration - only trust specific proxies in production
+if (process.env.NODE_ENV === 'production') {
+  // Only trust specific proxy IPs in production
+  app.set('trust proxy', ['127.0.0.1', '::1']);
+} else {
+  // In development, trust proxy but with rate limiting disabled for local testing
+  app.set('trust proxy', true);
+}
 
 // Security middleware - ENABLED
 app.use(securityHeaders);
 app.use(cors(corsOptions));
 app.use(generalRateLimit);
+app.use(securityAuditLog);
+app.use(validateOrigin);
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
@@ -115,8 +126,9 @@ app.use((req, res, next) => {
   // Image optimization endpoint - ENABLED
   app.get('/api/images/optimize', asyncHandler(imageOptimizationMiddleware));
 
-  // API routes with stricter rate limiting - ENABLED
+  // API routes with stricter rate limiting and security - ENABLED
   app.use('/api', apiRateLimit);
+  app.use('/api', validateApiKey); // API key validation for all API routes
   const server = await registerRoutes(app);
 
   // Serve static files from attached_assets directory

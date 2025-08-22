@@ -1,227 +1,205 @@
 import { db } from '../../db';
-import { vendors, rsvps, weddings, blogPosts } from '@shared/schema-sqlite';
+import { vendors, categories, blogPosts, weddings, rsvps } from '@shared/schema-postgres';
+import { eq } from 'drizzle-orm';
 
-// Database test utilities
-export class TestDatabase {
-  static async seed() {
-    // Seed test data for consistent testing
-    await this.seedVendors();
-    await this.seedWeddings();
-    await this.seedBlogPosts();
-    await this.seedBusinessSubmissions();
-  }
+// Test data
+export const testVendors = [
+  {
+    name: 'Elite Photography Studio',
+    email: 'contact@elitephotography.com',
+    phone: '+91-98765-43210',
+    category: 'Photography',
+    location: 'Mumbai, Maharashtra',
+    description: 'Professional wedding photography services with over 10 years of experience.',
+    services: ['Wedding Photography', 'Engagement Shoots', 'Portrait Photography'],
+    website: 'https://elitephotography.com',
+    instagram: '@elitephotography',
+    whatsapp: '+91-98765-43210',
+    featured: true,
+    verified: true,
+    rating: 4.8,
+    reviewCount: 45,
+    priceRange: '$$$',
+    availability: 'Available',
+    portfolioImages: ['portfolio1.jpg', 'portfolio2.jpg'],
+    gallery: ['gallery1.jpg', 'gallery2.jpg'],
+    address: '123 Photography Lane, Mumbai',
+    youtube: '@elitephotography',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    name: 'Royal Catering Services',
+    email: 'info@royalcatering.com',
+    phone: '+91-98765-43211',
+    category: 'Catering',
+    location: 'Goa, India',
+    description: 'Premium catering services for weddings and special events.',
+    services: ['Wedding Catering', 'Corporate Events', 'Private Parties'],
+    website: 'https://royalcatering.com',
+    instagram: '@royalcatering',
+    whatsapp: '+91-98765-43211',
+    featured: false,
+    verified: true,
+    rating: 4.6,
+    reviewCount: 32,
+    priceRange: '$$',
+    availability: 'Available',
+    portfolioImages: ['catering1.jpg', 'catering2.jpg'],
+    gallery: ['food1.jpg', 'food2.jpg'],
+    address: '456 Catering Street, Goa',
+    youtube: '@royalcatering',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+];
 
-  static async cleanup() {
-    // Clean up all test data
-    await db.delete(rsvps);
-    // await db.delete(businessSubmissions); // Not implemented yet
-    await db.delete(blogPosts);
-    await db.delete(vendors);
-    await db.delete(weddings);
-  }
+export const testCategories = [
+  {
+    name: 'Photography',
+    slug: 'photography',
+    description: 'Professional photography services for your special day',
+    imageUrl: 'photography.jpg',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    name: 'Catering',
+    slug: 'catering',
+    description: 'Delicious catering services for weddings and events',
+    imageUrl: 'catering.jpg',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+];
 
-  static async reset() {
-    await this.cleanup();
-    await this.seed();
-  }
+export const testWeddings = [
+  {
+    coupleName: 'John & Jane Doe',
+    weddingDate: new Date('2025-06-15'),
+    venue: 'Grand Hotel, Mumbai',
+    guestCount: 150,
+    budget: 'moderate',
+    theme: 'elegant',
+    specialRequests: 'Vegetarian catering required',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    coupleName: 'Mike & Sarah Smith',
+    weddingDate: new Date('2025-08-20'),
+    venue: 'Beach Resort, Goa',
+    guestCount: 80,
+    budget: 'premium',
+    theme: 'beach',
+    specialRequests: 'Outdoor ceremony preferred',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+];
 
-  private static async seedVendors() {
-    const testVendors = [
-      {
-        name: 'Test Photography Studio',
-        email: 'test@photography.com',
-        phone: '+91-9876543210',
-        category: 'Photography',
-        location: 'Mumbai',
-        description: 'Professional wedding photography',
-        services: 'Wedding Photography, Pre-wedding Shoots',
-        website: 'https://testphoto.com',
-        instagram: '@testphoto',
-        whatsapp: '+91-9876543210',
-        featured: true,
-        verified: true,
-        rating: 4.8,
-        reviewCount: 50,
-        priceRange: '₹75,000 - ₹1,50,000',
-        availability: 'Available',
-        portfolioImages: 'image1.jpg,image2.jpg',
-      },
-      {
-        name: 'Elite Catering Services',
-        email: 'info@elitecatering.com',
-        phone: '+91-9876543211',
-        category: 'Catering',
-        location: 'Delhi',
-        description: 'Premium wedding catering services',
-        services: 'Wedding Catering, Menu Planning',
-        website: 'https://elitecatering.com',
-        instagram: '@elitecatering',
-        whatsapp: '+91-9876543211',
-        featured: false,
-        verified: true,
-        rating: 4.5,
-        reviewCount: 30,
-        priceRange: '₹1,000 - ₹2,000 per plate',
-        availability: 'Available',
-        portfolioImages: 'food1.jpg,food2.jpg',
-      },
-    ];
+export const testBlogPosts = [
+  {
+    title: 'Top 10 Wedding Photography Tips',
+    slug: 'top-10-wedding-photography-tips',
+    excerpt: 'Essential tips for capturing your perfect wedding day',
+    content: 'Here are the top 10 tips for wedding photography...',
+    author: 'Wedding Expert',
+    featuredImage: 'photography-tips.jpg',
+    imageUrl: 'photography-tips.jpg',
+    tags: ['Photography', 'Wedding Tips', 'Planning'],
+    published: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    title: 'Choosing the Perfect Wedding Caterer',
+    slug: 'choosing-perfect-wedding-caterer',
+    excerpt: 'How to select the right catering service for your wedding',
+    content: 'Selecting the right caterer is crucial for your wedding...',
+    author: 'Catering Specialist',
+    featuredImage: 'catering-guide.jpg',
+    imageUrl: 'catering-guide.jpg',
+    tags: ['Catering', 'Wedding Planning', 'Food'],
+    published: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+];
 
-    await db.insert(vendors).values(testVendors);
-  }
+export const testRSVPs = [
+  {
+    weddingId: 1,
+    name: 'Alice Johnson',
+    email: 'alice@example.com',
+    response: 'attending',
+    guests: 2,
+    dietaryRestrictions: 'Vegetarian',
+    message: 'Looking forward to the celebration!',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    weddingId: 1,
+    name: 'Bob Wilson',
+    email: 'bob@example.com',
+    response: 'not_attending',
+    guests: 0,
+    dietaryRestrictions: '',
+    message: 'Sorry, unable to attend due to prior commitments.',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+];
 
-  private static async seedWeddings() {
-    const testWeddings = [
-      {
-        slug: 'test-wedding-2024',
-        brideName: 'Priya',
-        groomName: 'Rahul',
-        weddingDate: '2024-12-15',
-        venue: 'Grand Palace Hotel',
-        venueAddress: 'Mumbai, Maharashtra',
-        nuptialsTime: '18:00',
-        receptionTime: '20:00',
-        maxGuests: 200,
-        contactEmail: 'priya.rahul@wedding.com',
-        contactPhone: '+91-9876543212',
-        rsvpDeadline: '2024-12-01',
-      },
-    ];
+// Database setup and teardown
+export const setupTestDatabase = async () => {
+  // Clear existing data
+  await db.delete(rsvps);
+  await db.delete(weddings);
+  await db.delete(blogPosts);
+  await db.delete(vendors);
+  await db.delete(categories);
 
-    await db.insert(weddings).values(testWeddings);
-  }
-
-  private static async seedBlogPosts() {
-    const testBlogPosts = [
-      {
-        title: 'Top 10 Wedding Photography Tips',
-        slug: 'wedding-photography-tips',
-        excerpt: 'Essential tips for capturing perfect wedding moments',
-        content: 'Detailed content about wedding photography techniques...',
-        author: 'Photography Expert',
-        featuredImage: 'photography-tips.jpg',
-        imageUrl: 'blog-photography.jpg',
-        tags: 'photography,wedding,tips',
-        published: true,
-      },
-      {
-        title: 'Planning Your Dream Wedding Menu',
-        slug: 'dream-wedding-menu',
-        excerpt: 'How to create the perfect wedding menu for your guests',
-        content: 'Comprehensive guide to wedding menu planning...',
-        author: 'Catering Specialist',
-        featuredImage: 'wedding-menu.jpg',
-        imageUrl: 'blog-catering.jpg',
-        tags: 'catering,menu,planning',
-        published: true,
-      },
-    ];
-
-    await db.insert(blogPosts).values(testBlogPosts);
-  }
-
-  private static async seedBusinessSubmissions() {
-    // Business submissions not implemented yet
-    // const testSubmissions = [...];
-    // await db.insert(businessSubmissions).values(testSubmissions);
-  }
-}
-
-// Test data factories
-export const createTestVendor = (overrides = {}) => ({
-  name: 'Test Vendor',
-  email: 'test@vendor.com',
-  phone: '+91-9876543210',
-  category: 'Photography',
-  location: 'Mumbai',
-  description: 'Test vendor description',
-  services: 'Test services',
-  website: 'https://testvendor.com',
-  instagram: '@testvendor',
-  whatsapp: '+91-9876543210',
-  featured: false,
-  verified: true,
-  rating: 4.0,
-  reviewCount: 10,
-  priceRange: '₹50,000 - ₹1,00,000',
-  availability: 'Available',
-  portfolioImages: 'test1.jpg,test2.jpg',
-  ...overrides,
-});
-
-export const createTestWedding = (overrides = {}) => ({
-  slug: 'test-wedding',
-  brideName: 'Test Bride',
-  groomName: 'Test Groom',
-  weddingDate: '2024-12-31',
-  venue: 'Test Venue',
-  venueAddress: 'Test Address',
-  nuptialsTime: '16:00',
-  receptionTime: '19:00',
-  maxGuests: 100,
-  contactEmail: 'test@wedding.com',
-  contactPhone: '+91-9876543210',
-  rsvpDeadline: '2024-12-25',
-  ...overrides,
-});
-
-export const createTestBlogPost = (overrides = {}) => ({
-  title: 'Test Blog Post',
-  slug: 'test-blog-post',
-  excerpt: 'Test excerpt',
-  content: 'Test content',
-  author: 'Test Author',
-  featuredImage: 'test-featured.jpg',
-  imageUrl: 'test-image.jpg',
-  tags: 'test,blog',
-  published: true,
-  ...overrides,
-});
-
-export const createTestBusinessSubmission = (overrides = {}) => ({
-  businessName: 'Test Business',
-  ownerName: 'Test Owner',
-  email: 'test@business.com',
-  phone: '+91-9876543210',
-  category: 'Photography',
-  location: 'Mumbai',
-  description: 'Test business description',
-  services: 'Test services',
-  website: 'https://testbusiness.com',
-  instagram: '@testbusiness',
-  experience: '2 years',
-  portfolio: 'https://portfolio.test.com',
-  status: 'pending',
-  ...overrides,
-});
-
-// API test helpers
-export const createMockRequest = (overrides = {}) => ({
-  body: {},
-  params: {},
-  query: {},
-  headers: {},
-  ...overrides,
-});
-
-export const createMockResponse = () => {
-  const res: any = {};
-  res.status = jest.fn().mockReturnValue(res);
-  res.json = jest.fn().mockReturnValue(res);
-  res.send = jest.fn().mockReturnValue(res);
-  res.end = jest.fn().mockReturnValue(res);
-  return res;
+  // Insert test data
+  await db.insert(categories).values(testCategories);
+  await db.insert(vendors).values(testVendors);
+  await db.insert(weddings).values(testWeddings);
+  await db.insert(blogPosts).values(testBlogPosts);
+  await db.insert(rsvps).values(testRSVPs);
 };
 
-// Performance testing utilities
-export const measureExecutionTime = async (fn: () => Promise<any>) => {
-  const start = Date.now();
-  await fn();
-  return Date.now() - start;
+export const teardownTestDatabase = async () => {
+  // Clear all test data
+  await db.delete(rsvps);
+  await db.delete(weddings);
+  await db.delete(blogPosts);
+  await db.delete(vendors);
+  await db.delete(categories);
 };
 
-export const createLoadTestScenario = (concurrentRequests: number, testFunction: () => Promise<any>) => {
-  return Promise.all(
-    Array.from({ length: concurrentRequests }, () => testFunction())
-  );
+// Helper functions
+export const getTestVendor = async (id: number) => {
+  const result = await db.select().from(vendors).where(eq(vendors.id, id));
+  return result[0];
+};
+
+export const getTestCategory = async (id: number) => {
+  const result = await db.select().from(categories).where(eq(categories.id, id));
+  return result[0];
+};
+
+export const getTestWedding = async (id: number) => {
+  const result = await db.select().from(weddings).where(eq(weddings.id, id));
+  return result[0];
+};
+
+export const getTestBlogPost = async (id: number) => {
+  const result = await db.select().from(blogPosts).where(eq(blogPosts.id, id));
+  return result[0];
+};
+
+export const getTestRSVP = async (id: number) => {
+  const result = await db.select().from(rsvps).where(eq(rsvps.id, id));
+  return result[0];
 };

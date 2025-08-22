@@ -9,8 +9,8 @@ export function initializeSentry() {
       environment: process.env.NODE_ENV || 'development',
       tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
       integrations: [
-        new Sentry.Integrations.Http({ tracing: true }),
-        new Sentry.Integrations.Express({ app: undefined }),
+        // new Sentry.Integrations.Http({ tracing: true }),
+        // new Sentry.Integrations.Express({ app: undefined }),
       ],
     });
     console.log('✅ Sentry error monitoring initialized');
@@ -18,13 +18,19 @@ export function initializeSentry() {
 }
 
 // Request handler middleware
-export const sentryRequestHandler = () => Sentry.Handlers.requestHandler();
+export const sentryRequestHandler = () => {
+  // Sentry.Handlers.requestHandler();
+  return (req: any, res: any, next: any) => next();
+};
 
 // Error handler middleware
-export const sentryErrorHandler = () => Sentry.Handlers.errorHandler();
+export const sentryErrorHandler = () => {
+  // Sentry.Handlers.errorHandler();
+  return (err: any, req: any, res: any, next: any) => next(err);
+};
 
 // Custom error logging middleware
-export const errorLogger = (error: Error, req: Request, res: Response, next: NextFunction) => {
+export const errorLogger = (error: Error, req: Request, _res: Response, next: NextFunction) => {
   const errorInfo = {
     message: error.message,
     stack: error.stack,
@@ -56,7 +62,7 @@ export const errorLogger = (error: Error, req: Request, res: Response, next: Nex
 };
 
 // Production error handler
-export const productionErrorHandler = (error: Error, req: Request, res: Response, next: NextFunction) => {
+export const productionErrorHandler = (error: Error, req: Request, res: Response, _next: NextFunction) => {
   // Don't leak error details in production
   const isDevelopment = process.env.NODE_ENV === 'development';
   

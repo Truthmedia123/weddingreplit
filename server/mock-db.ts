@@ -7,20 +7,20 @@
 import type { 
   InvitationTemplate, 
   GeneratedInvitation, 
-  TemplateAnalytics,
+  InvitationAnalytics,
   Vendor,
   Category,
   BlogPost,
   Wedding,
   Rsvp
-} from "@shared/schema";
+} from "@shared/schema-postgres";
 import type { CulturalTheme } from "@shared/invitation-types";
 
 // Mock data storage
 const mockData = {
   invitationTemplates: [] as InvitationTemplate[],
   generatedInvitations: [] as GeneratedInvitation[],
-  templateAnalytics: [] as TemplateAnalytics[],
+  templateAnalytics: [] as InvitationAnalytics[],
   vendors: [] as Vendor[],
   categories: [] as Category[],
   blogPosts: [] as BlogPost[],
@@ -38,7 +38,7 @@ export const mockDb = {
       if (filters?.where) {
         const { category, culturalTheme, name } = filters.where;
         if (category) results = results.filter(t => t.category === category);
-        if (culturalTheme) results = results.filter(t => t.culturalTheme === culturalTheme);
+        if (culturalTheme) results = results.filter(t => (t as any).culturalTheme === culturalTheme);
         if (name?.like) {
           const searchTerm = name.like.replace(/%/g, '');
           results = results.filter(t => 
@@ -99,7 +99,7 @@ export const mockDb = {
   // Template Analytics
   templateAnalytics: {
     create: (data: any) => {
-      const analytics: TemplateAnalytics = {
+      const analytics: any = {
         id: crypto.randomUUID(),
         createdAt: new Date(),
         ...data
@@ -118,7 +118,6 @@ export async function initializeMockData() {
     {
       name: 'Goan Beach Bliss',
       category: 'goan-beach',
-      culturalTheme: 'secular',
       description: 'Stunning beach wedding invitation with golden sunset, palm trees, and ocean waves perfect for Goan ceremonies',
       previewUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
       thumbnailUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400&q=80',
@@ -141,7 +140,6 @@ export async function initializeMockData() {
     {
       name: 'Traditional Christian Heritage',
       category: 'christian',
-      culturalTheme: 'christian',
       description: 'Elegant design inspired by Portuguese colonial architecture with Catholic symbols and traditional Christian elements',
       previewUrl: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
       thumbnailUrl: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400&q=80',
@@ -164,7 +162,6 @@ export async function initializeMockData() {
     {
       name: 'Hindu Elegant Mandala',
       category: 'hindu',
-      culturalTheme: 'hindu',
       description: 'Opulent design with intricate mandala patterns, traditional Hindu symbols, and royal color schemes',
       previewUrl: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
       thumbnailUrl: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400&q=80',

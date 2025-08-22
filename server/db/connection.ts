@@ -12,7 +12,7 @@
  */
 
 import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres, { PostgresError } from 'postgres';
+import postgres from 'postgres';
 import * as schema from "@shared/schema-postgres";
 
 // Database connection metrics
@@ -210,9 +210,9 @@ class SecureDatabaseConnection {
         lastError = error as Error;
         console.error(`❌ Query execution failed (attempt ${attempt}/${maxRetries}):`, error);
         
-        // Handle specific database errors
-        if (error instanceof PostgresError) {
-          switch (error.code) {
+                       // Handle specific database errors
+               if (error && typeof error === 'object' && 'code' in error) {
+          switch ((error as any).code) {
             case '57P01': // Admin shutdown
             case '57P02': // Crash shutdown
             case '57P03': // Cannot connect now

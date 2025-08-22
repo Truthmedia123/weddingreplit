@@ -102,12 +102,22 @@ Allow: /
 Disallow: /api/
 Disallow: /admin/
 Disallow: /private/
+Disallow: /temp/
+Disallow: /backup/
 Disallow: /*.json$
 Disallow: /*?*utm_*
 Disallow: /*?*ref=*
+Disallow: /*?*fbclid=*
+Disallow: /*?*gclid=*
+Disallow: /search?*
+Disallow: /*?print=*
+Disallow: /*?pdf=*
 
 # Sitemap
 Sitemap: ${baseUrl}/sitemap.xml
+
+# Host preference
+Host: ${baseUrl.replace('https://', '').replace('http://', '')}
 
 # Crawl delay
 Crawl-delay: 1
@@ -115,15 +125,49 @@ Crawl-delay: 1
 # Specific bot instructions
 User-agent: Googlebot
 Allow: /
+Crawl-delay: 0.5
 
 User-agent: Bingbot
 Allow: /
+Crawl-delay: 1
 
 User-agent: facebookexternalhit
 Allow: /
+Crawl-delay: 0
 
 User-agent: Twitterbot
-Allow: /`;
+Allow: /
+Crawl-delay: 0
+
+User-agent: LinkedInBot
+Allow: /
+Crawl-delay: 1
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
+# Block problematic bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+# SEO tools - allow but with delay
+User-agent: MJ12bot
+Crawl-delay: 10
+
+User-agent: AhrefsBot
+Crawl-delay: 10`;
 
   res.set('Content-Type', 'text/plain');
   res.send(robotsTxt);

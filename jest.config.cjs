@@ -12,7 +12,7 @@ module.exports = {
       transform: {
         '^.+\\.(ts|js)$': 'ts-jest',
       },
-      moduleNameMapping: {
+      moduleNameMapper: {
         '^@shared/(.*)$': '<rootDir>/shared/$1',
         '^@server/(.*)$': '<rootDir>/server/$1',
       },
@@ -25,7 +25,7 @@ module.exports = {
       transform: {
         '^.+\\.(ts|tsx)$': 'ts-jest',
       },
-      moduleNameMapping: {
+      moduleNameMapper: {
         '^@/(.*)$': '<rootDir>/client/src/$1',
         '^@shared/(.*)$': '<rootDir>/shared/$1',
         '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
@@ -41,7 +41,7 @@ module.exports = {
       transform: {
         '^.+\\.(ts|js)$': 'ts-jest',
       },
-      moduleNameMapping: {
+      moduleNameMapper: {
         '^@shared/(.*)$': '<rootDir>/shared/$1',
       },
     }
