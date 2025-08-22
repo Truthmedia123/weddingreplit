@@ -5,7 +5,9 @@ export default function InvitationGenerator() {
   
   // Get templateId from URL path
   const path = window.location.pathname;
-  const templateId = path.split('/generate-invitation/')[1];
+  const templateId = path.includes('/generate-invitation/') 
+    ? path.split('/generate-invitation/')[1] 
+    : null;
   
   console.log('Path:', path);
   console.log('TemplateId:', templateId);
@@ -27,6 +29,17 @@ export default function InvitationGenerator() {
             <p className="text-lg">
               <strong>Status:</strong> ✅ Component loaded successfully!
             </p>
+            <p className="text-lg">
+              <strong>Test URLs:</strong>
+            </p>
+            <div className="space-y-2 text-sm">
+              <a href="/generate-invitation" className="block text-blue-600 hover:underline">
+                • /generate-invitation (no template)
+              </a>
+              <a href="/generate-invitation/goan-romance" className="block text-blue-600 hover:underline">
+                • /generate-invitation/goan-romance (with template)
+              </a>
+            </div>
             <div className="mt-8">
               <a 
                 href="/" 
