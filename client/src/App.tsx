@@ -62,12 +62,16 @@ function Router() {
         <Route path="/contact" component={() => <LazyPage component={Contact} />} />
         <Route path="/wishlist" component={() => <LazyPage component={Wishlist} />} />
         <Route path="/couples/:slug" component={() => <LazyPage component={Couples} />} />
-        <Route path="/create-rsvp" component={() => <LazyPage component={CreateRSVP} />} />
-        <Route path="/track/:slug" component={() => <LazyPage component={TrackRSVP} />} />
-        <Route path="/generate-invitation/:templateId" component={() => {
-          console.log('InvitationGenerator route matched');
+        <Route path="/generate-invitation" component={() => {
+          console.log('InvitationGenerator route matched (no params)');
           return <LazyPage component={InvitationGenerator} />;
         }} />
+        <Route path="/generate-invitation/:templateId" component={() => {
+          console.log('InvitationGenerator route matched (with params)');
+          return <LazyPage component={InvitationGenerator} />;
+        }} />
+        <Route path="/create-rsvp" component={() => <LazyPage component={CreateRSVP} />} />
+        <Route path="/track/:slug" component={() => <LazyPage component={TrackRSVP} />} />
         <Route path="/privacy-policy" component={() => <LazyPage component={PrivacyPolicy} />} />
         <Route path="/terms-conditions" component={() => <LazyPage component={TermsConditions} />} />
         <Route path="/cookie-policy" component={() => <LazyPage component={CookiePolicy} />} />
