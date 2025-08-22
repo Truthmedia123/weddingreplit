@@ -1,9 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { 
   ArrowLeft, 
@@ -11,11 +7,11 @@ import {
   Download, 
   FileText,
   Image as ImageIcon,
-  Plus,
-  X,
-  ZoomIn,
-  ZoomOut,
-  RotateCcw
+  Share,
+  Edit,
+  Move,
+  RotateCcw,
+  ChevronRight
 } from 'lucide-react';
 import { goanRomanceTemplate } from '../../../content-templates/index';
 
@@ -26,8 +22,8 @@ interface TextLayer {
   fontSize: number;
   fontFamily: string;
   color: string;
-  align: 'left' | 'center' | 'right';
-  fontStyle?: 'italic' | 'normal';
+  align: string;
+  fontStyle?: string;
   defaultText: string;
 }
 
@@ -49,16 +45,25 @@ export default function InvitationGenerator() {
 
   const canvasRef = useRef<HTMLDivElement>(null);
   const [templateData, setTemplateData] = useState<TemplateData>({});
-  const [zoom, setZoom] = useState(1);
+  const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Initialize template data
+  // Initialize template data with sample content
   useEffect(() => {
     if (templateId === 'goan-romance') {
-      const initialData: TemplateData = {};
-      goanRomanceTemplate.layers.forEach(layer => {
-        initialData[layer.key] = layer.defaultText;
-      });
+      const initialData: TemplateData = {
+        headerQuote: 'Two hearts become one',
+        verse: 'Ecclesiastes 4:12',
+        parentsLeft: 'Mr. Antonio Fernandes.\n& Mrs. Conceico Maria Feira.',
+        parentsRight: 'Mr. Francisco Almeida Santos\n& Mrs. Rosario Isabel Rodrigues',
+        inviteText: 'Request the honour of your presence',
+        coupleNames: 'Gabriella\n&\nArmando',
+        eventDetails: 'an Saturday, the 25th of October 2025\nat Se Cathedral, Old Goa\nat 4:00 pm',
+        reception: 'followed at Reception at Casa Portuguesco,',
+        addressLeft: 'H. No. 245, Fontainhas\nPanaio Goa\n9834367500',
+        addressRight: 'H. No.10610, Primeiro\nSanta Cruz - Gom\n9824463734',
+        blessing: 'Your Blessing is the only Precious Gift our heart desires'
+      };
 
       // Load saved draft if available
       const savedDraft = localStorage.getItem(`invitation-draft-${templateId}`);
@@ -76,13 +81,6 @@ export default function InvitationGenerator() {
     }
     setIsLoading(false);
   }, [templateId]);
-
-  const handleFieldChange = (key: string, value: string) => {
-    setTemplateData(prev => ({
-      ...prev,
-      [key]: value
-    }));
-  };
 
   const handleSaveDraft = () => {
     if (!templateId) return;
@@ -160,6 +158,15 @@ export default function InvitationGenerator() {
     }
   };
 
+  const handleShare = () => {
+    const shareUrl = window.location.href;
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      alert('Share link copied to clipboard!');
+    }).catch(() => {
+      alert('Share link: ' + shareUrl);
+    });
+  };
+
   const renderTextLayer = (layer: TextLayer) => {
     const value = templateData[layer.key] || '';
     
@@ -173,7 +180,7 @@ export default function InvitationGenerator() {
           fontSize: layer.fontSize,
           fontFamily: layer.fontFamily,
           color: layer.color,
-          textAlign: layer.align,
+          textAlign: layer.align as 'left' | 'center' | 'right',
           fontStyle: layer.fontStyle || 'normal',
           transform: 'translate(-50%, -50%)',
           whiteSpace: 'pre-wrap',
@@ -208,9 +215,7 @@ export default function InvitationGenerator() {
           height: goanRomanceTemplate.height,
           backgroundImage: `url(${goanRomanceTemplate.background})`,
           backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          transform: `scale(${zoom})`,
-          transformOrigin: 'center center'
+          backgroundPosition: 'center'
         }}
       >
         {goanRomanceTemplate.layers.map(layer => renderTextLayer(layer))}
@@ -244,10 +249,10 @@ export default function InvitationGenerator() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200 px-6 py-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button variant="outline" size="sm" onClick={() => window.location.href = '/'}>
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -263,106 +268,83 @@ export default function InvitationGenerator() {
             <Badge variant="secondary">Live Editor</Badge>
           </div>
         </div>
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Canvas Area */}
-          <div className="lg:col-span-2">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <span>Live Preview</span>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setZoom(Math.max(0.5, zoom - 0.1))}
-                    >
-                      <ZoomOut className="w-4 h-4" />
-                    </Button>
-                    <span className="text-sm text-muted-foreground">
-                      {Math.round(zoom * 100)}%
-                    </span>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setZoom(Math.min(2, zoom + 0.1))}
-                    >
-                      <ZoomIn className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setZoom(1)}
-                    >
-                      <RotateCcw className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="flex justify-center p-8">
-                <div className="overflow-auto max-h-[600px]">
-                  {renderCanvas()}
-                </div>
-              </CardContent>
-            </Card>
+      {/* Breadcrumbs */}
+      <div className="bg-white border-b border-gray-200 px-6 py-2">
+        <div className="max-w-7xl mx-auto">
+          <nav className="text-sm text-gray-600">
+            Home {'>'} Invitation Cards {'>'} Wedding Cards {'>'} {goanRomanceTemplate.name}
+          </nav>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Page Navigation */}
+        <div className="flex justify-center mb-6">
+          <Button variant="outline" className="bg-blue-50 border-blue-200 text-blue-700">
+            Page 1
+          </Button>
+        </div>
+
+        {/* Canvas Area - Centered */}
+        <div className="flex justify-center mb-8">
+          <div className="overflow-auto max-h-[600px]">
+            {renderCanvas()}
           </div>
+        </div>
 
-          {/* Editing Sidebar */}
-          <div className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Edit Text</CardTitle>
-                <p className="text-sm text-muted-foreground">
-                  Edit the text content for your invitation
-                </p>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {goanRomanceTemplate.layers.map((layer) => {
-                  const value = templateData[layer.key] || '';
-                  const InputComponent = layer.key === 'coupleNames' || layer.key === 'eventDetails' ? Textarea : Input;
+        {/* Bottom Toolbar */}
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+          <div className="flex items-center justify-between px-6 py-4">
+            <div className="flex items-center gap-3">
+              <Button 
+                variant={isEditing ? "default" : "outline"} 
+                size="sm"
+                onClick={() => setIsEditing(!isEditing)}
+              >
+                <Edit className="w-4 h-4 mr-2" />
+                Edit
+              </Button>
+              
+              <Button variant="outline" size="sm">
+                <Move className="w-4 h-4 mr-2" />
+                Size
+              </Button>
+              
+              <Button variant="outline" size="sm">
+                <RotateCcw className="w-4 h-4 mr-2" />
+                Undo
+              </Button>
+            </div>
 
-                  return (
-                    <div key={layer.key} className="space-y-2">
-                      <Label htmlFor={layer.key} className="text-sm font-medium">
-                        {layer.key.charAt(0).toUpperCase() + layer.key.slice(1).replace(/([A-Z])/g, ' $1')}
-                      </Label>
-                      <InputComponent
-                        id={layer.key}
-                        value={value}
-                        onChange={(e) => handleFieldChange(layer.key, e.target.value)}
-                        placeholder={`Enter ${layer.key.replace(/([A-Z])/g, ' $1').toLowerCase()}`}
-                        className="w-full"
-                        rows={layer.key === 'coupleNames' || layer.key === 'eventDetails' ? 3 : undefined}
-                      />
-                    </div>
-                  );
-                })}
-              </CardContent>
-            </Card>
-
-            {/* Actions */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Actions</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Button onClick={handleSaveDraft} className="w-full">
-                  <Save className="w-4 h-4 mr-2" />
-                  Save Draft
-                </Button>
-                
-                <div className="grid grid-cols-2 gap-2">
-                  <Button variant="outline" onClick={handleDownloadPNG}>
-                    <ImageIcon className="w-4 h-4 mr-2" />
-                    PNG
-                  </Button>
-                  <Button variant="outline" onClick={handleDownloadPDF}>
-                    <FileText className="w-4 h-4 mr-2" />
-                    PDF
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            <div className="flex items-center gap-3">
+              <Button variant="outline" size="sm" onClick={handleSaveDraft}>
+                <Save className="w-4 h-4 mr-2" />
+                Save Draft
+              </Button>
+              
+              <Button variant="outline" size="sm" onClick={handleDownloadPNG}>
+                <ImageIcon className="w-4 h-4 mr-2" />
+                PNG
+              </Button>
+              
+              <Button variant="outline" size="sm" onClick={handleDownloadPDF}>
+                <FileText className="w-4 h-4 mr-2" />
+                PDF
+              </Button>
+              
+              <Button variant="outline" size="sm" onClick={handleShare}>
+                <Share className="w-4 h-4 mr-2" />
+                Share
+              </Button>
+              
+              <Button size="sm" className="bg-pink-600 hover:bg-pink-700 text-white">
+                Next
+                <ChevronRight className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>
