@@ -38,10 +38,6 @@ export function createLazyComponent<T extends ComponentType<any>>(
 }
 
 // Heavy UI Components - Lazy loaded
-export const LazyInvitationGenerator = createLazyComponent(() => 
-  import('@/pages/InvitationGenerator')
-);
-
 export const LazyVendorProfile = createLazyComponent(() => 
   import('@/pages/VendorProfile')
 );
@@ -150,7 +146,6 @@ export const createDeviceAwareLazyComponent = <T extends ComponentType<any>>(
 
 // Export all lazy components
 export const lazyComponents = {
-  InvitationGenerator: LazyInvitationGenerator,
   VendorProfile: LazyVendorProfile,
   BlogPost: LazyBlogPost,
   Couples: LazyCouples,

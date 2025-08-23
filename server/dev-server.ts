@@ -94,7 +94,7 @@ app.use((req, res, next) => {
 
   // SEO endpoints - ENABLED
   app.get('/sitemap.xml', asyncHandler(generateSitemap));
-  app.get('/robots.txt', generateRobotsTxt);
+  app.get('/robots.txt', asyncHandler(generateRobotsTxt));
 
   // Simple API routes for development
   app.get("/api/vendors", async (req, res) => {
@@ -166,44 +166,7 @@ app.use((req, res, next) => {
     }
   });
 
-  // Invitation templates API
-  app.get("/api/invitation-templates", async (req, res) => {
-    try {
-      const { category, culturalTheme, search } = req.query;
-      const templates = await mockDb.invitationTemplates.findMany({
-        where: {
-          category: category as string,
-          culturalTheme: culturalTheme as string,
-          name: search ? { like: `%${search}%` } : undefined
-        }
-      });
-      res.json(templates);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch templates" });
-    }
-  });
 
-  app.get("/api/invitation-templates/:id", async (req, res) => {
-    try {
-      const template = await mockDb.invitationTemplates.findUnique(req.params.id);
-      if (!template) {
-        return res.status(404).json({ message: "Template not found" });
-      }
-      res.json(template);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch template" });
-    }
-  });
-
-  // Generate invitation
-  app.post("/api/generate-invitation", async (req, res) => {
-    try {
-      const invitation = await mockDb.generatedInvitations.create(req.body);
-      res.json(invitation);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to generate invitation" });
-    }
-  });
 
   // Static file serving
   if (process.env.NODE_ENV === 'development') {
@@ -225,7 +188,6 @@ app.use((req, res, next) => {
     console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
     console.log(`💾 Database: Mock (in-memory)`);
     console.log(`📝 API: http://localhost:${port}/api/vendors`);
-    console.log(`🎨 Templates: http://localhost:${port}/api/invitation-templates`);
   });
 
   return server;

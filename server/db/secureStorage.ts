@@ -15,7 +15,7 @@ import {
   createSafeDbOperation,
   validateAndSanitize,
   vendorValidation,
-  invitationValidation,
+
   rsvpValidation,
   searchValidation,
   validatePagination,
@@ -29,9 +29,7 @@ import type {
   BlogPost, InsertBlogPost,
   Wedding, InsertWedding,
   Rsvp, InsertRsvp,
-  InvitationTemplate, InsertInvitationTemplate,
-  GeneratedInvitation, InsertGeneratedInvitation,
-  InvitationAnalytics, InsertInvitationAnalytics
+
 } from "@shared/schema-postgres";
 
 export class SecureStorageService {
@@ -146,69 +144,7 @@ export class SecureStorageService {
     }, { identifier: 'search-vendors' })();
   }
   
-  /**
-   * INVITATION OPERATIONS
-   */
-  
-  async createInvitation(data: any): Promise<GeneratedInvitation> {
-    const validatedData = validateAndSanitize(invitationValidation.create, data);
-    
-    return createSafeDbOperation(async () => {
-      const db = await getDatabase();
-      const [invitation] = await db
-        .insert(schema.generatedInvitations)
-        .values({
-          id: crypto.randomUUID(),
-          ...validatedData
-        })
-        .returning();
-      return invitation;
-    }, { identifier: 'create-invitation' })();
-  }
-  
-  async getInvitationByToken(token: string): Promise<GeneratedInvitation | null> {
-    const validatedToken = validateAndSanitize(invitationValidation.token, { downloadToken: token });
-    
-    return createSafeDbOperation(async () => {
-      const db = await getDatabase();
-      const [invitation] = await db
-        .select()
-        .from(schema.generatedInvitations)
-        .where(eq(schema.generatedInvitations.downloadToken, validatedToken.downloadToken));
-      return invitation || null;
-    }, { identifier: 'get-invitation' })();
-  }
-  
-  async updateInvitationDownloadCount(id: string): Promise<void> {
-    const validatedId = validateAndSanitize(invitationValidation.id, { id });
-    
-    return createSafeDbOperation(async () => {
-      const db = await getDatabase();
-      await db
-        .update(schema.generatedInvitations)
-        .set({ 
-          downloadCount: sql`${schema.generatedInvitations.downloadCount} + 1`,
-          lastAccessedAt: new Date()
-        })
-        .where(eq(schema.generatedInvitations.id, String(validatedId.id)));
-    }, { identifier: 'update-invitation' })();
-  }
-  
-  async getInvitationTemplates(category?: string): Promise<InvitationTemplate[]> {
-    return createSafeDbOperation(async () => {
-      const db = await getDatabase();
-      const query = db
-        .select()
-        .from(schema.invitationTemplates)
-        .where(eq(schema.invitationTemplates.isActive, true));
-      
-      if (category) {
-        return await query.where(eq(schema.invitationTemplates.category, category)).orderBy(desc(schema.invitationTemplates.popular));
-      }
-      
-      return await query.orderBy(desc(schema.invitationTemplates.popular));
-    }, { identifier: 'get-templates' })();
-  }
+
   
   /**
    * RSVP OPERATIONS
@@ -289,19 +225,7 @@ export class SecureStorageService {
    * ANALYTICS OPERATIONS
    */
   
-  async trackInvitationAnalytics(data: any): Promise<InvitationAnalytics> {
-    return createSafeDbOperation(async () => {
-      const db = await getDatabase();
-      const [analytics] = await db
-        .insert(schema.invitationAnalytics)
-        .values({
-          id: crypto.randomUUID(),
-          ...data
-        })
-        .returning();
-      return analytics;
-    }, { identifier: 'track-analytics' })();
-  }
+
   
   /**
    * UTILITY OPERATIONS
@@ -318,13 +242,13 @@ export class SecureStorageService {
       
       const [vendorCount] = await db.select({ count: count() }).from(schema.vendors);
       const [categoryCount] = await db.select({ count: count() }).from(schema.categories);
-      const [invitationCount] = await db.select({ count: count() }).from(schema.generatedInvitations);
+
       const [rsvpCount] = await db.select({ count: count() }).from(schema.rsvps);
       
       return {
         vendors: Number(vendorCount?.count ?? 0),
         categories: Number(categoryCount?.count ?? 0),
-        invitations: Number(invitationCount?.count ?? 0),
+        invitations: 0,
         rsvps: Number(rsvpCount?.count ?? 0)
       };
     }, { identifier: 'get-stats' })();

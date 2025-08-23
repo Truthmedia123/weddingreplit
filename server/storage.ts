@@ -8,7 +8,8 @@ import type {
   Wedding, InsertWedding,
   Rsvp, InsertRsvp
 } from "@shared/schema-postgres";
-import type { CulturalTheme } from "@shared/invitation-types";
+import { redisCache } from "./cache/redis";
+import { sql } from "drizzle-orm";
 
 export interface IStorage {
   // Vendors
@@ -49,38 +50,39 @@ export interface IStorage {
   // Contact (placeholder methods)
   createContact(_contactData: any): Promise<any>;
 
-  // Enhanced Wedding Invitation Generator - Templates (placeholder methods)
-  getInvitationTemplates(_filters: { 
-    category?: string; 
-    culturalTheme?: string; 
-    search?: string; 
-    limit?: number; 
-    offset?: number; 
-  }): Promise<any[]>;
-  getInvitationTemplate(_id: string): Promise<any | undefined>;
-  getTemplateCategories(): Promise<{ id: string; name: string; count: number }[]>;
-  getCulturalThemes(): Promise<CulturalTheme[]>;
-  trackTemplateEvent(_eventData: any): Promise<void>;
-  createGeneratedInvitation(_data: any): Promise<any>;
-  getGeneratedInvitation(_id: string): Promise<any | undefined>;
-  getGeneratedInvitationByToken(_token: string): Promise<any | undefined>;
+  // Dashboard stats
+  getDashboardStats(): Promise<{
+    totalVendors: number;
+    totalCategories: number;
+    totalBlogPosts: number;
+    totalWeddings: number;
+    totalRsvps: number;
+    invitations: number;
+  }>;
 }
 
 export class DatabaseStorage implements IStorage {
-  // Vendors
   async getVendors(_filters: { category?: string; location?: string; search?: string }): Promise<Vendor[]> {
+    // Try to get from cache first
+    const cachedVendors = await redisCache.getVendors(_filters);
+    if (cachedVendors) {
+      console.log('📦 Cache HIT: Vendors retrieved from Redis');
+      return cachedVendors;
+    }
+
+    console.log('📦 Cache MISS: Fetching vendors from database');
+    
     let query = db.select().from(vendors);
-    
-    const conditions: any[] = [];
-    
+    const conditions = [];
+
     if (_filters.category) {
       conditions.push(eq(vendors.category, _filters.category));
     }
-    
+
     if (_filters.location) {
       conditions.push(eq(vendors.location, _filters.location));
     }
-    
+
     if (_filters.search) {
       conditions.push(
         or(
@@ -90,55 +92,103 @@ export class DatabaseStorage implements IStorage {
         )
       );
     }
-    
+
     if (conditions.length > 0) {
       query = query.where(and(...conditions)) as any;
     }
+
+    const result = await query;
     
-    return await query;
+    // Cache the result
+    await redisCache.setVendors(_filters, result);
+    
+    return result;
   }
 
   async getVendor(_id: number): Promise<Vendor | undefined> {
+    // Try to get from cache first
+    const cachedVendor = await redisCache.getVendor(_id);
+    if (cachedVendor) {
+      console.log('📦 Cache HIT: Vendor retrieved from Redis');
+      return cachedVendor;
+    }
+
+    console.log('📦 Cache MISS: Fetching vendor from database');
+    
     const result = await db.select().from(vendors).where(eq(vendors.id, _id));
-    return result[0] || undefined;
+    const vendor = result[0] || undefined;
+    
+    // Cache the result if found
+    if (vendor) {
+      await redisCache.setVendor(_id, vendor);
+    }
+    
+    return vendor;
   }
 
   async getFeaturedVendors(): Promise<Vendor[]> {
-    return await db.select().from(vendors).where(eq(vendors.featured, true));
+    // Try to get from cache first
+    const cachedVendors = await redisCache.getFeaturedVendors();
+    if (cachedVendors) {
+      console.log('📦 Cache HIT: Featured vendors retrieved from Redis');
+      return cachedVendors;
+    }
+
+    console.log('📦 Cache MISS: Fetching featured vendors from database');
+    
+    const result = await db.select().from(vendors).where(eq(vendors.featured, true));
+    
+    // Cache the result
+    await redisCache.setFeaturedVendors(result);
+    
+    return result;
   }
 
   async createVendor(_vendor: InsertVendor): Promise<Vendor> {
     const result = await db.insert(vendors).values(_vendor).returning();
-    return result[0]!;
+    const newVendor = result[0]!;
+    
+    // Invalidate relevant caches
+    await redisCache.invalidateAllVendors();
+    
+    return newVendor;
   }
 
   async updateVendor(_id: number, _updateData: Partial<InsertVendor>): Promise<Vendor | undefined> {
     const result = await db.update(vendors)
-      .set(_updateData)
+      .set({ ..._updateData, updatedAt: new Date() })
       .where(eq(vendors.id, _id))
       .returning();
-    return result[0] || undefined;
+    
+    const updatedVendor = result[0] || undefined;
+    
+    if (updatedVendor) {
+      // Invalidate relevant caches
+      await redisCache.invalidateVendor(_id);
+    }
+    
+    return updatedVendor;
   }
 
   async deleteVendor(_id: number): Promise<void> {
-          await db.delete(vendors).where(eq(vendors.id, _id));
+    await db.delete(vendors).where(eq(vendors.id, _id));
+    
+    // Invalidate relevant caches
+    await redisCache.invalidateVendor(_id);
   }
 
   async getVendorByEmail(_email: string): Promise<Vendor | undefined> {
-          const result = await db.select().from(vendors).where(eq(vendors.email, _email));
+    const result = await db.select().from(vendors).where(eq(vendors.email, _email));
     return result[0] || undefined;
   }
 
-  // Reviews - Implemented in PostgreSQL schema
-
-  // Categories
   async getCategories(): Promise<Category[]> {
     return await db.select().from(categories);
   }
 
   async getCategory(_slug: string): Promise<Category | undefined> {
-          const result = await db.select().from(categories).where(eq(categories.slug, _slug));
-    return result[0];
+    const result = await db.select().from(categories).where(eq(categories.slug, _slug));
+    return result[0] || undefined;
   }
 
   async createCategory(_category: InsertCategory): Promise<Category> {
@@ -146,15 +196,8 @@ export class DatabaseStorage implements IStorage {
     return result[0]!;
   }
 
-  // Blog Posts
-  async getBlogPosts(_published?: boolean): Promise<BlogPost[]> {
-    let query = db.select().from(blogPosts);
-    
-    if (_published !== undefined) {
-      query = query.where(eq(blogPosts.published, _published)) as any;
-    }
-    
-    return await query.orderBy(desc(blogPosts.createdAt));
+  async getBlogPosts(_published: boolean = true): Promise<BlogPost[]> {
+    return await db.select().from(blogPosts).where(eq(blogPosts.published, _published));
   }
 
   async getBlogPost(_slug: string): Promise<BlogPost | undefined> {
@@ -167,32 +210,24 @@ export class DatabaseStorage implements IStorage {
     return result[0]!;
   }
 
-  // Business Submissions - Implemented in PostgreSQL schema
-  // Contacts - Implemented in PostgreSQL schema
-
-  // Weddings
   async getWeddings(): Promise<Wedding[]> {
-    return await db.select().from(weddings).orderBy(desc(weddings.createdAt));
+    return await db.select().from(weddings);
   }
 
-  async getWedding(slug: string): Promise<Wedding | undefined> {
+  async getWedding(_slug: string): Promise<Wedding | undefined> {
     // Note: weddings table doesn't have a slug field, so we'll use id for now
     // This should be updated when slug field is added to the schema
-    const result = await db.select().from(weddings).where(eq(weddings.id, parseInt(slug) || 0));
+    const result = await db.select().from(weddings).where(eq(weddings.id, parseInt(_slug) || 0));
     return result[0] || undefined;
   }
 
   async createWedding(_wedding: InsertWedding): Promise<Wedding> {
-    // Generate a unique slug from the couple names
-    const slug = `${_wedding.coupleName.toLowerCase()}-${Date.now()}`.replace(/[^a-z0-9-]/g, '-');
-    const weddingWithSlug = { ..._wedding, slug };
-    const result = await db.insert(weddings).values(weddingWithSlug).returning();
+    const result = await db.insert(weddings).values(_wedding).returning();
     return result[0]!;
   }
 
-  // RSVPs
-  async getWeddingRsvps(weddingId: number): Promise<Rsvp[]> {
-    return await db.select().from(rsvps).where(eq(rsvps.weddingId, weddingId)).orderBy(desc(rsvps.createdAt));
+  async getWeddingRsvps(_weddingId: number): Promise<Rsvp[]> {
+    return await db.select().from(rsvps).where(eq(rsvps.weddingId, _weddingId));
   }
 
   async createRsvp(_rsvp: InsertRsvp): Promise<Rsvp> {
@@ -200,143 +235,81 @@ export class DatabaseStorage implements IStorage {
     return result[0]!;
   }
 
-  async getWeddingBySlug(slug: string): Promise<Wedding | undefined> {
-    return this.getWedding(slug);
-  }
-
-  async getAllWeddings(): Promise<Wedding[]> {
-    return this.getWeddings();
-  }
-
-  async getRsvpsByWeddingId(weddingId: number): Promise<Rsvp[]> {
-    return this.getWeddingRsvps(weddingId);
-  }
-
-  async getRsvpByEmail(weddingId: number, email: string): Promise<Rsvp | undefined> {
-    const result = await db.select().from(rsvps)
-      .where(and(eq(rsvps.weddingId, weddingId), eq(rsvps.email, email)));
-    return result[0] || undefined;
-  }
-
-  async updateRsvp(rsvpId: number, updateData: any): Promise<Rsvp | undefined> {
-    const result = await db.update(rsvps)
-      .set(updateData)
-      .where(eq(rsvps.id, rsvpId))
-      .returning();
-    return result[0] || undefined;
-  }
-
-  // Reviews (placeholder implementations)
+  // Placeholder methods for future implementation
   async getVendorReviews(_vendorId: number): Promise<any[]> {
-    // Placeholder implementation - return empty array for now
-    console.log(`Getting reviews for vendor ${_vendorId}`);
+    // TODO: Implement when reviews table is added
     return [];
   }
 
   async createReview(_reviewData: any): Promise<any> {
-    // Placeholder implementation - return the data with an ID
-    console.log('Creating review:', _reviewData);
-    return { id: Date.now(), ..._reviewData, createdAt: new Date().toISOString() };
+    // TODO: Implement when reviews table is added
+    return _reviewData;
   }
 
-  // Business Submissions (placeholder implementation)
   async createBusinessSubmission(_submissionData: any): Promise<any> {
-    // Placeholder implementation - return the data with an ID
-    console.log('Creating business submission:', _submissionData);
-    return { id: Date.now(), ..._submissionData, createdAt: new Date().toISOString(), status: 'pending' };
+    // TODO: Implement when business_submissions table is added
+    return _submissionData;
   }
 
-  // Contact (placeholder implementation)
   async createContact(_contactData: any): Promise<any> {
-    // Placeholder implementation - return the data with an ID
-    console.log('Creating contact:', _contactData);
-    return { id: Date.now(), ..._contactData, createdAt: new Date().toISOString() };
+    // TODO: Implement when contacts table is added
+    return _contactData;
   }
 
-  // Enhanced Wedding Invitation Generator - Templates
-  async getInvitationTemplates(_filters: { 
-    category?: string; 
-    culturalTheme?: string; 
-    search?: string; 
-    limit?: number; 
-    offset?: number; 
-  }): Promise<any[]> {
-    // Use mock database for now - replace with real DB when PostgreSQL is set up
-    const { mockDb, initializeMockData } = await import('./mock-db');
-    await initializeMockData();
-    
-    const whereClause: any = {};
-    if (_filters.category) whereClause.category = _filters.category;
-    if (_filters.culturalTheme) whereClause.culturalTheme = _filters.culturalTheme;
-    if (_filters.search) whereClause.name = { like: `%${_filters.search}%` };
-    
-    return await mockDb.invitationTemplates.findMany({ where: whereClause });
-  }
+  async getDashboardStats(): Promise<{
+    totalVendors: number;
+    totalCategories: number;
+    totalBlogPosts: number;
+    totalWeddings: number;
+    totalRsvps: number;
+    invitations: number;
+  }> {
+    // Try to get from cache first
+    const cachedStats = await redisCache.get<{
+      totalVendors: number;
+      totalCategories: number;
+      totalBlogPosts: number;
+      totalWeddings: number;
+      totalRsvps: number;
+      invitations: number;
+    }>('dashboard-stats');
+    if (cachedStats) {
+      return cachedStats;
+    }
 
-  async getInvitationTemplate(_id: string): Promise<any | undefined> {
-    const { mockDb } = await import('./mock-db');
-    const template = await mockDb.invitationTemplates.findUnique(_id);
-    return template || undefined;
-  }
+    const [vendorCount, categoryCount, blogCount, weddingCount, rsvpCount] = await Promise.all([
+      db.select({ count: sql`count(*)` }).from(vendors),
+      db.select({ count: sql`count(*)` }).from(categories),
+      db.select({ count: sql`count(*)` }).from(blogPosts),
+      db.select({ count: sql`count(*)` }).from(weddings),
+      db.select({ count: sql`count(*)` }).from(rsvps),
+    ]);
 
-  async getTemplateCategories(): Promise<{ id: string; name: string; count: number }[]> {
-    const { mockDb, initializeMockData } = await import('./mock-db');
-    await initializeMockData();
-    
-    const templates = await mockDb.invitationTemplates.findMany();
-    const categoryMap = new Map<string, number>();
-    
-    templates.forEach(template => {
-      const count = categoryMap.get(template.category) || 0;
-      categoryMap.set(template.category, count + 1);
-    });
-    
-    return Array.from(categoryMap.entries()).map(([id, count]) => ({
-      id,
-      name: this.formatCategoryName(id),
-      count
-    }));
-  }
-
-  async getCulturalThemes(): Promise<CulturalTheme[]> {
-    const { culturalThemes } = await import('./mock-db');
-    return culturalThemes;
-  }
-
-  async trackTemplateEvent(_eventData: any): Promise<void> {
-    // Placeholder implementation - use mock database for now
-    console.log('Tracking template event:', _eventData);
-  }
-
-  async createGeneratedInvitation(_data: any): Promise<any> {
-    // Use mock database for now - replace with real DB when PostgreSQL is set up
-    const { mockDb } = await import('./mock-db');
-    return await mockDb.generatedInvitations.create(_data);
-  }
-
-  async getGeneratedInvitation(_id: string): Promise<any | undefined> {
-    // Use mock database for now - replace with real DB when PostgreSQL is set up
-    const { mockDb } = await import('./mock-db');
-    return await mockDb.generatedInvitations.findUnique(_id);
-  }
-
-  async getGeneratedInvitationByToken(_token: string): Promise<any | undefined> {
-    // Use mock database for now - replace with real DB when PostgreSQL is set up
-    const { mockDb } = await import('./mock-db');
-    return await mockDb.generatedInvitations.findByToken(_token);
-  }
-
-  private formatCategoryName(category: string): string {
-    const categoryNames: Record<string, string> = {
-      'goan-beach': 'Goan Beach',
-      'christian': 'Christian',
-      'hindu': 'Hindu',
-      'muslim': 'Muslim',
-      'modern': 'Modern',
-      'floral': 'Floral'
+    const stats = {
+      totalVendors: Number(vendorCount[0]?.count || 0),
+      totalCategories: Number(categoryCount[0]?.count || 0),
+      totalBlogPosts: Number(blogCount[0]?.count || 0),
+      totalWeddings: Number(weddingCount[0]?.count || 0),
+      totalRsvps: Number(rsvpCount[0]?.count || 0),
+      invitations: 0, // Set to 0 since invitation feature was removed
     };
-    return categoryNames[category] || category;
+
+    // Cache the stats for 5 minutes
+    await redisCache.set('dashboard-stats', stats, { ttl: 300 });
+
+    return stats;
   }
 }
 
-export const storage: IStorage = new DatabaseStorage();
+// Initialize Redis connection
+export async function initializeStorage() {
+  try {
+    await redisCache.connect();
+    console.log('✅ Storage layer initialized with Redis caching');
+  } catch (error) {
+    console.error('❌ Failed to initialize Redis cache:', error);
+    console.log('⚠️  Continuing without Redis cache');
+  }
+}
+
+export const storage = new DatabaseStorage();

@@ -175,60 +175,7 @@ export const rsvps = pgTable("rsvps", {
   createdAtIdx: index("rsvps_created_at_idx").on(table.createdAt),
 }));
 
-// Enhanced Wedding Invitation Generator Tables
-export const invitationTemplates = pgTable("invitation_templates", {
-  id: text("id").primaryKey(),
-  name: text("name").notNull(),
-  category: text("category").notNull(), // 'goan-beach', 'christian', 'hindu', 'muslim', 'modern', 'vintage'
-  style: text("style").notNull(),
-  description: text("description").notNull(),
-  previewUrl: text("preview_url"),
-  templateData: jsonb("template_data"), // Canvas positioning, fonts, colors
-  features: text("features").array(),
-  colors: text("colors").array(),
-  price: text("price").default("Free"),
-  popular: boolean("popular").default(false),
-  premium: boolean("premium").default(false),
-  isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-}, (table) => ({
-  categoryIdx: index("invitation_templates_category_idx").on(table.category),
-  activeIdx: index("invitation_templates_active_idx").on(table.isActive),
-  popularIdx: index("invitation_templates_popular_idx").on(table.popular),
-}));
 
-export const generatedInvitations = pgTable("generated_invitations", {
-  id: text("id").primaryKey(),
-  templateId: text("template_id"),
-  formData: jsonb("form_data"),
-  customizationData: jsonb("customization_data"), // Fonts, colors, QR settings
-  downloadToken: text("download_token").notNull().unique(),
-  formats: jsonb("formats"), // Store multiple format URLs
-  downloadCount: integer("download_count").default(0),
-  createdAt: timestamp("created_at").defaultNow(),
-  expiresAt: timestamp("expires_at").notNull(),
-  lastAccessedAt: timestamp("last_accessed_at").defaultNow(),
-}, (table) => ({
-  tokenIdx: index("generated_invitations_token_idx").on(table.downloadToken),
-  expiresIdx: index("generated_invitations_expires_idx").on(table.expiresAt),
-  templateIdx: index("generated_invitations_template_idx").on(table.templateId),
-}));
-
-export const invitationAnalytics = pgTable("invitation_analytics", {
-  id: text("id").primaryKey(),
-  invitationId: text("invitation_id").notNull(),
-  templateId: text("template_id"),
-  action: text("action").notNull(), // 'created', 'downloaded', 'shared', 'previewed'
-  format: text("format"), // 'png', 'jpg', 'pdf', 'social', 'whatsapp'
-  userAgent: text("user_agent"),
-  ipAddress: text("ip_address"),
-  createdAt: timestamp("created_at").defaultNow(),
-}, (table) => ({
-  invitationIdx: index("invitation_analytics_invitation_idx").on(table.invitationId),
-  actionIdx: index("invitation_analytics_action_idx").on(table.action),
-  createdAtIdx: index("invitation_analytics_created_idx").on(table.createdAt),
-}));
 
 // Insert schemas with enhanced validation
 export const insertVendorSchema = createInsertSchema(vendors, {
@@ -305,23 +252,7 @@ export const insertRsvpSchema = createInsertSchema(rsvps).omit({
   createdAt: true,
 });
 
-// Enhanced Wedding Invitation Generator Insert Schemas
-export const insertInvitationTemplateSchema = createInsertSchema(invitationTemplates).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
 
-export const insertGeneratedInvitationSchema = createInsertSchema(generatedInvitations).omit({
-  id: true,
-  createdAt: true,
-  lastAccessedAt: true,
-});
-
-export const insertInvitationAnalyticsSchema = createInsertSchema(invitationAnalytics).omit({
-  id: true,
-  createdAt: true,
-});
 
 // Types
 export type Vendor = typeof vendors.$inferSelect;
@@ -341,13 +272,7 @@ export type InsertWedding = z.infer<typeof insertWeddingSchema>;
 export type Rsvp = typeof rsvps.$inferSelect;
 export type InsertRsvp = z.infer<typeof insertRsvpSchema>;
 
-// Enhanced Wedding Invitation Generator Types
-export type InvitationTemplate = typeof invitationTemplates.$inferSelect;
-export type InsertInvitationTemplate = z.infer<typeof insertInvitationTemplateSchema>;
-export type GeneratedInvitation = typeof generatedInvitations.$inferSelect;
-export type InsertGeneratedInvitation = z.infer<typeof insertGeneratedInvitationSchema>;
-export type InvitationAnalytics = typeof invitationAnalytics.$inferSelect;
-export type InsertInvitationAnalytics = z.infer<typeof insertInvitationAnalyticsSchema>;
+
 
 // Relations - All defined at the end after tables are initialized
 export const vendorsRelations = relations(vendors, ({ many }) => ({
@@ -372,26 +297,3 @@ export const rsvpsRelations = relations(rsvps, ({ one }) => ({
   }),
 }));
 
-// Enhanced Wedding Invitation Generator Relations
-export const invitationTemplatesRelations = relations(invitationTemplates, ({ many }) => ({
-  generatedInvitations: many(generatedInvitations),
-  analytics: many(invitationAnalytics),
-}));
-
-export const generatedInvitationsRelations = relations(generatedInvitations, ({ one }) => ({
-  template: one(invitationTemplates, {
-    fields: [generatedInvitations.templateId],
-    references: [invitationTemplates.id],
-  }),
-}));
-
-export const invitationAnalyticsRelations = relations(invitationAnalytics, ({ one }) => ({
-  invitation: one(generatedInvitations, {
-    fields: [invitationAnalytics.invitationId],
-    references: [generatedInvitations.id],
-  }),
-  template: one(invitationTemplates, {
-    fields: [invitationAnalytics.templateId],
-    references: [invitationTemplates.id],
-  }),
-}));

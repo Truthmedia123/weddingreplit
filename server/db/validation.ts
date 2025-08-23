@@ -96,32 +96,7 @@ export const vendorValidation = {
   })
 };
 
-export const invitationValidation = {
-  create: z.object({
-    templateId: baseValidationSchemas.id,
-    formData: baseValidationSchemas.json,
-    customizationData: baseValidationSchemas.json.optional(),
-    downloadToken: z.string().min(32).max(64),
-    formats: baseValidationSchemas.json.optional(),
-    expiresAt: baseValidationSchemas.date,
-  }),
-  
-  update: z.object({
-    formData: baseValidationSchemas.json.optional(),
-    customizationData: baseValidationSchemas.json.optional(),
-    formats: baseValidationSchemas.json.optional(),
-    downloadCount: z.number().int().min(0).optional(),
-    expiresAt: baseValidationSchemas.date.optional(),
-  }),
-  
-  id: z.object({
-    id: baseValidationSchemas.id
-  }),
-  
-  token: z.object({
-    downloadToken: z.string().min(32).max(64)
-  })
-};
+
 
 export const rsvpValidation = {
   create: z.object({

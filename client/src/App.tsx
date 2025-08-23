@@ -23,15 +23,7 @@ const Wishlist = lazy(() => import("@/pages/Wishlist"));
 const Couples = lazy(() => import("@/pages/Couples"));
 const CreateRSVP = lazy(() => import("@/pages/CreateRSVP"));
 const TrackRSVP = lazy(() => import("@/pages/TrackRSVP"));
-const InvitationGenerator = lazy(() => import("@/pages/InvitationGenerator").then(module => {
-  console.log('InvitationGenerator module loaded:', module);
-  return module;
-}));
-const TestInvitationGenerator = lazy(() => import("@/pages/TestInvitationGenerator").then(module => {
-  console.log('TestInvitationGenerator module loaded:', module);
-  return module;
-}));
-const InvitationEditor = lazy(() => import("@/features/invitations/pages/InvitationEditor"));
+
 const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
 const TermsConditions = lazy(() => import("@/pages/TermsConditions"));
 const CookiePolicy = lazy(() => import("@/pages/CookiePolicy"));
@@ -67,19 +59,7 @@ function Router() {
         <Route path="/contact" component={() => <LazyPage component={Contact} />} />
         <Route path="/wishlist" component={() => <LazyPage component={Wishlist} />} />
         <Route path="/couples/:slug" component={() => <LazyPage component={Couples} />} />
-        <Route path="/generate-invitation" component={() => {
-          console.log('InvitationGenerator route matched (no params)');
-          return <LazyPage component={InvitationGenerator} />;
-        }} />
-        <Route path="/generate-invitation/:templateId" component={() => {
-          console.log('InvitationGenerator route matched (with params)');
-          return <LazyPage component={InvitationGenerator} />;
-        }} />
-        <Route path="/test-invitation/:templateId" component={() => {
-          console.log('TestInvitationGenerator route matched');
-          return <LazyPage component={TestInvitationGenerator} />;
-        }} />
-        <Route path="/invitation/:templateId" component={() => <LazyPage component={InvitationEditor} />} />
+
         <Route path="/create-rsvp" component={() => <LazyPage component={CreateRSVP} />} />
         <Route path="/track/:slug" component={() => <LazyPage component={TrackRSVP} />} />
         <Route path="/privacy-policy" component={() => <LazyPage component={PrivacyPolicy} />} />

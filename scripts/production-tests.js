@@ -135,49 +135,7 @@ class ProductionTester {
     }
   }
 
-  async testInvitationGeneration() {
-    await this.runTest('Invitation generation', async () => {
-      const invitationData = {
-        bibleVerse: "I have found the one whom my soul loves",
-        bibleReference: "Song of Solomon 3:4",
-        groomName: "Test Groom",
-        groomFatherName: "Test Father",
-        groomMotherName: "Test Mother",
-        brideName: "Test Bride",
-        brideFatherName: "Test Father",
-        brideMotherName: "Test Mother",
-        ceremonyVenue: "Test Church",
-        ceremonyDay: "Saturday",
-        ceremonyDate: "December 25, 2024",
-        nuptialsTime: "10:00 AM",
-        receptionVenue: "Test Hall",
-        receptionTime: "6:00 PM",
-        address1: "Test Address 1",
-        location1: "Test Location 1",
-        contact1: "9876543210",
-        address2: "Test Address 2",
-        location2: "Test Location 2",
-        contact2: "9876543211",
-        qrCodeImage: ""
-      };
 
-      const response = await fetch(`${this.baseUrl}/api/invitation/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(invitationData)
-      });
-
-      if (!response.ok) {
-        const error = await response.text();
-        throw new Error(`HTTP ${response.status}: ${error}`);
-      }
-
-      const result = await response.json();
-      if (!result.downloadToken || !result.downloadUrl) {
-        throw new Error('Invalid invitation generation response');
-      }
-    });
-  }
 
   async testSEOEndpoints() {
     await this.runTest('Sitemap generation', async () => {
@@ -270,7 +228,7 @@ class ProductionTester {
     await this.testHealthEndpoints();
     await this.testVendorBrowsing();
     await this.testRSVPFlow();
-    await this.testInvitationGeneration();
+
     await this.testSEOEndpoints();
     await this.testPerformance();
     await this.testSecurity();

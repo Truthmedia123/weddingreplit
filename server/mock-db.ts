@@ -5,22 +5,15 @@
  */
 
 import type { 
-  InvitationTemplate, 
-  GeneratedInvitation, 
-  InvitationAnalytics,
   Vendor,
   Category,
   BlogPost,
   Wedding,
   Rsvp
 } from "@shared/schema-postgres";
-import type { CulturalTheme } from "@shared/invitation-types";
 
 // Mock data storage
 const mockData = {
-  invitationTemplates: [] as InvitationTemplate[],
-  generatedInvitations: [] as GeneratedInvitation[],
-  templateAnalytics: [] as InvitationAnalytics[],
   vendors: [] as Vendor[],
   categories: [] as Category[],
   blogPosts: [] as BlogPost[],
@@ -30,20 +23,20 @@ const mockData = {
 
 // Mock database operations
 export const mockDb = {
-  // Invitation Templates
-  invitationTemplates: {
+  // Vendors
+  vendors: {
     findMany: (filters?: any) => {
-      let results = mockData.invitationTemplates.filter(t => t.isActive);
+      let results = mockData.vendors;
       
       if (filters?.where) {
-        const { category, culturalTheme, name } = filters.where;
-        if (category) results = results.filter(t => t.category === category);
-        if (culturalTheme) results = results.filter(t => (t as any).culturalTheme === culturalTheme);
+        const { category, location, name } = filters.where;
+        if (category) results = results.filter(v => v.category === category);
+        if (location) results = results.filter(v => v.location === location);
         if (name?.like) {
           const searchTerm = name.like.replace(/%/g, '');
-          results = results.filter(t => 
-            t.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            t.description?.toLowerCase().includes(searchTerm.toLowerCase())
+          results = results.filter(v => 
+            v.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            v.description?.toLowerCase().includes(searchTerm.toLowerCase())
           );
         }
       }
@@ -52,188 +45,118 @@ export const mockDb = {
     },
     
     findUnique: (id: string) => {
-      const template = mockData.invitationTemplates.find(t => t.id === id && t.isActive);
-      return Promise.resolve(template || null);
+      const vendor = mockData.vendors.find(v => v.id === parseInt(id));
+      return Promise.resolve(vendor || null);
     },
     
     create: (data: any) => {
-      const template: InvitationTemplate = {
-        id: crypto.randomUUID(),
+      const vendor: any = {
+        id: mockData.vendors.length + 1,
         createdAt: new Date(),
         updatedAt: new Date(),
-        isActive: true,
-        sortOrder: 0,
         ...data
       };
-      mockData.invitationTemplates.push(template);
-      return Promise.resolve(template);
+      mockData.vendors.push(vendor);
+      return Promise.resolve(vendor);
     }
   },
 
-  // Generated Invitations
-  generatedInvitations: {
-    create: (data: any) => {
-      const invitation: GeneratedInvitation = {
-        id: crypto.randomUUID(),
-        createdAt: new Date(),
-        generationStatus: 'pending',
-        viewCount: 0,
-        downloadCount: 0,
-        ...data
-      };
-      mockData.generatedInvitations.push(invitation);
-      return Promise.resolve(invitation);
+  // Categories
+  categories: {
+    findMany: () => {
+      return Promise.resolve(mockData.categories);
     },
     
     findUnique: (id: string) => {
-      const invitation = mockData.generatedInvitations.find(i => i.id === id);
-      return Promise.resolve(invitation || null);
+      const category = mockData.categories.find(c => c.id === parseInt(id));
+      return Promise.resolve(category || null);
     },
     
-    findByToken: (token: string) => {
-      const invitation = mockData.generatedInvitations.find(i => i.downloadToken === token);
-      return Promise.resolve(invitation || null);
+    create: (data: any) => {
+      const category: any = {
+        id: mockData.categories.length + 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        ...data
+      };
+      mockData.categories.push(category);
+      return Promise.resolve(category);
     }
   },
 
-  // Template Analytics
-  templateAnalytics: {
+  // Blog Posts
+  blogPosts: {
+    findMany: () => {
+      return Promise.resolve(mockData.blogPosts);
+    },
+    
+    findUnique: (id: string) => {
+      const post = mockData.blogPosts.find(p => p.id === parseInt(id));
+      return Promise.resolve(post || null);
+    },
+    
     create: (data: any) => {
-      const analytics: any = {
-        id: crypto.randomUUID(),
+      const post: any = {
+        id: mockData.blogPosts.length + 1,
         createdAt: new Date(),
+        updatedAt: new Date(),
         ...data
       };
-      mockData.templateAnalytics.push(analytics);
-      return Promise.resolve(analytics);
+      mockData.blogPosts.push(post);
+      return Promise.resolve(post);
+    }
+  },
+
+  // Weddings
+  weddings: {
+    findMany: () => {
+      return Promise.resolve(mockData.weddings);
+    },
+    
+    findUnique: (id: string) => {
+      const wedding = mockData.weddings.find(w => w.id === parseInt(id));
+      return Promise.resolve(wedding || null);
+    },
+    
+    create: (data: any) => {
+      const wedding: any = {
+        id: mockData.weddings.length + 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        ...data
+      };
+      mockData.weddings.push(wedding);
+      return Promise.resolve(wedding);
+    }
+  },
+
+  // RSVPs
+  rsvps: {
+    findMany: () => {
+      return Promise.resolve(mockData.rsvps);
+    },
+    
+    findUnique: (id: string) => {
+      const rsvp = mockData.rsvps.find(r => r.id === parseInt(id));
+      return Promise.resolve(rsvp || null);
+    },
+    
+    create: (data: any) => {
+      const rsvp: any = {
+        id: mockData.rsvps.length + 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        ...data
+      };
+      mockData.rsvps.push(rsvp);
+      return Promise.resolve(rsvp);
     }
   }
 };
 
-// Initialize with sample templates
+// Initialize mock data
 export async function initializeMockData() {
-  if (mockData.invitationTemplates.length > 0) return; // Already initialized
-
-  const sampleTemplates: Partial<InvitationTemplate>[] = [
-    {
-      name: 'Goan Beach Bliss',
-      category: 'goan-beach',
-      description: 'Stunning beach wedding invitation with golden sunset, palm trees, and ocean waves perfect for Goan ceremonies',
-      previewUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
-      thumbnailUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400&q=80',
-      templateData: {
-        elements: [],
-        layout: { canvasSize: { width: 800, height: 1200 }, margins: { top: 60, right: 60, bottom: 60, left: 60 }, zones: [] }
-      },
-      colorSchemes: [
-        { id: 'tropical-sunset', name: 'Tropical Sunset', primary: '#FF7F7F', secondary: '#40E0D0', accent: '#FFD700', background: '#FFF8DC', text: '#8B4513' }
-      ],
-      typography: {
-        headingFont: 'Montserrat',
-        bodyFont: 'Source Sans Pro',
-        accentFont: 'Pacifico',
-        sizes: { heading: 30, subheading: 22, body: 16, caption: 12 }
-      },
-      features: ['Beach Sunset Theme', 'Palm Tree Silhouettes', 'Ocean Wave Borders', 'Popular'],
-      sortOrder: 1
-    },
-    {
-      name: 'Traditional Christian Heritage',
-      category: 'christian',
-      description: 'Elegant design inspired by Portuguese colonial architecture with Catholic symbols and traditional Christian elements',
-      previewUrl: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
-      thumbnailUrl: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400&q=80',
-      templateData: {
-        elements: [],
-        layout: { canvasSize: { width: 800, height: 1200 }, margins: { top: 60, right: 60, bottom: 60, left: 60 }, zones: [] }
-      },
-      colorSchemes: [
-        { id: 'colonial-elegance', name: 'Colonial Elegance', primary: '#4169E1', secondary: '#FFFFFF', accent: '#FFD700', background: '#F8F8FF', text: '#191970' }
-      ],
-      typography: {
-        headingFont: 'Playfair Display',
-        bodyFont: 'Lato',
-        accentFont: 'Dancing Script',
-        sizes: { heading: 32, subheading: 24, body: 16, caption: 12 }
-      },
-      features: ['Portuguese Colonial Style', 'Catholic Symbols', 'Bilingual Support'],
-      sortOrder: 2
-    },
-    {
-      name: 'Hindu Elegant Mandala',
-      category: 'hindu',
-      description: 'Opulent design with intricate mandala patterns, traditional Hindu symbols, and royal color schemes',
-      previewUrl: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800&q=80',
-      thumbnailUrl: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400&q=80',
-      templateData: {
-        elements: [],
-        layout: { canvasSize: { width: 800, height: 1200 }, margins: { top: 60, right: 60, bottom: 60, left: 60 }, zones: [] }
-      },
-      colorSchemes: [
-        { id: 'royal-red-gold', name: 'Royal Red & Gold', primary: '#DC143C', secondary: '#FFD700', accent: '#F4C430', background: '#FFF8DC', text: '#8B0000' }
-      ],
-      typography: {
-        headingFont: 'Cinzel',
-        bodyFont: 'Open Sans',
-        accentFont: 'Kalam',
-        sizes: { heading: 36, subheading: 26, body: 16, caption: 12 }
-      },
-      features: ['Intricate Mandalas', 'Sanskrit Elements', 'Royal Motifs', 'Premium'],
-      sortOrder: 3
-    }
-  ];
-
-  for (const template of sampleTemplates) {
-    await mockDb.invitationTemplates.create(template);
-  }
-
-  console.log('✅ Mock database initialized with sample templates');
+  console.log('✅ Mock database initialized');
 }
 
-// Cultural themes data
-export const culturalThemes: CulturalTheme[] = [
-  {
-    id: 'christian',
-    name: 'christian',
-    displayName: 'Christian',
-    description: 'Traditional Christian wedding themes with Portuguese colonial influences',
-    colors: ['#4169E1', '#FFFFFF', '#FFD700'],
-    symbols: ['Cross', 'Church', 'Rings', 'Dove'],
-    typography: ['Playfair Display', 'Lato', 'Dancing Script'],
-    traditions: ['Church Ceremony', 'Bible Readings', 'Wedding Vows'],
-    languages: ['English', 'Portuguese', 'Konkani']
-  },
-  {
-    id: 'hindu',
-    name: 'hindu',
-    displayName: 'Hindu',
-    description: 'Traditional Hindu wedding themes with sacred symbols and vibrant colors',
-    colors: ['#DC143C', '#FFD700', '#F4C430'],
-    symbols: ['Om', 'Mandala', 'Lotus', 'Kalash'],
-    typography: ['Cinzel', 'Open Sans', 'Kalam'],
-    traditions: ['Mandap Ceremony', 'Saptapadi', 'Mangalsutra'],
-    languages: ['English', 'Hindi', 'Sanskrit', 'Konkani']
-  },
-  {
-    id: 'muslim',
-    name: 'muslim',
-    displayName: 'Muslim',
-    description: 'Islamic wedding themes with geometric patterns and elegant calligraphy',
-    colors: ['#50C878', '#FFD700', '#FFFFFF'],
-    symbols: ['Crescent', 'Star', 'Geometric Patterns', 'Calligraphy'],
-    typography: ['Amiri', 'Noto Sans', 'Scheherazade'],
-    traditions: ['Nikah Ceremony', 'Mehndi', 'Walima'],
-    languages: ['English', 'Arabic', 'Urdu']
-  },
-  {
-    id: 'secular',
-    name: 'secular',
-    displayName: 'Secular',
-    description: 'Modern non-religious themes suitable for civil ceremonies and beach weddings',
-    colors: ['#2F4F4F', '#F5F5DC', '#FF69B4'],
-    symbols: ['Hearts', 'Rings', 'Flowers', 'Beach Elements'],
-    typography: ['Montserrat', 'Source Sans Pro', 'Pacifico'],
-    traditions: ['Civil Ceremony', 'Beach Wedding', 'Garden Party'],
-    languages: ['English', 'Portuguese']
-  }
-];
+

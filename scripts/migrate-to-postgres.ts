@@ -25,9 +25,6 @@ async function migrateToPostgres() {
     console.log("📋 Creating PostgreSQL tables...");
     
     // Drop existing tables if they exist (be careful in production!)
-    await pgDb.execute(sql`DROP TABLE IF EXISTS invitation_analytics CASCADE`);
-    await pgDb.execute(sql`DROP TABLE IF EXISTS generated_invitations CASCADE`);
-    await pgDb.execute(sql`DROP TABLE IF EXISTS invitation_templates CASCADE`);
     await pgDb.execute(sql`DROP TABLE IF EXISTS rsvps CASCADE`);
     await pgDb.execute(sql`DROP TABLE IF EXISTS weddings CASCADE`);
     await pgDb.execute(sql`DROP TABLE IF EXISTS contacts CASCADE`);
@@ -193,54 +190,7 @@ async function migrateToPostgres() {
       )
     `);
 
-    // Create invitation tables
-    await pgDb.execute(sql`
-      CREATE TABLE invitation_templates (
-        id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
-        name TEXT NOT NULL,
-        category TEXT NOT NULL,
-        style TEXT NOT NULL,
-        description TEXT NOT NULL,
-        preview_url TEXT,
-        template_data JSONB,
-        features TEXT[],
-        colors TEXT[],
-        price TEXT DEFAULT 'Free',
-        popular BOOLEAN DEFAULT false,
-        premium BOOLEAN DEFAULT false,
-        is_active BOOLEAN DEFAULT true,
-        created_at TIMESTAMP DEFAULT NOW(),
-        updated_at TIMESTAMP DEFAULT NOW()
-      )
-    `);
 
-    await pgDb.execute(sql`
-      CREATE TABLE generated_invitations (
-        id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
-        template_id TEXT,
-        form_data JSONB,
-        customization_data JSONB,
-        download_token TEXT NOT NULL UNIQUE,
-        formats JSONB,
-        download_count INTEGER DEFAULT 0,
-        created_at TIMESTAMP DEFAULT NOW(),
-        expires_at TIMESTAMP NOT NULL,
-        last_accessed_at TIMESTAMP DEFAULT NOW()
-      )
-    `);
-
-    await pgDb.execute(sql`
-      CREATE TABLE invitation_analytics (
-        id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
-        invitation_id TEXT NOT NULL,
-        template_id TEXT,
-        action TEXT NOT NULL,
-        format TEXT,
-        user_agent TEXT,
-        ip_address TEXT,
-        created_at TIMESTAMP DEFAULT NOW()
-      )
-    `);
 
     // Create indexes for performance
     console.log("🔍 Creating indexes...");
@@ -255,16 +205,7 @@ async function migrateToPostgres() {
     await pgDb.execute(sql`CREATE INDEX weddings_slug_idx ON weddings(slug)`);
     await pgDb.execute(sql`CREATE INDEX rsvps_wedding_idx ON rsvps(wedding_id)`);
     
-    // Invitation table indexes
-    await pgDb.execute(sql`CREATE INDEX invitation_templates_category_idx ON invitation_templates(category)`);
-    await pgDb.execute(sql`CREATE INDEX invitation_templates_active_idx ON invitation_templates(is_active)`);
-    await pgDb.execute(sql`CREATE INDEX invitation_templates_popular_idx ON invitation_templates(popular)`);
-    await pgDb.execute(sql`CREATE INDEX generated_invitations_token_idx ON generated_invitations(download_token)`);
-    await pgDb.execute(sql`CREATE INDEX generated_invitations_expires_idx ON generated_invitations(expires_at)`);
-    await pgDb.execute(sql`CREATE INDEX generated_invitations_template_idx ON generated_invitations(template_id)`);
-    await pgDb.execute(sql`CREATE INDEX invitation_analytics_invitation_idx ON invitation_analytics(invitation_id)`);
-    await pgDb.execute(sql`CREATE INDEX invitation_analytics_action_idx ON invitation_analytics(action)`);
-    await pgDb.execute(sql`CREATE INDEX invitation_analytics_created_idx ON invitation_analytics(created_at)`);
+
 
     // Migrate data
     console.log("📦 Migrating data...");
@@ -361,63 +302,7 @@ async function migrateToPostgres() {
       console.log(`✅ Migrated ${weddings.length} weddings`);
     }
 
-    // Migrate invitation templates
-    const invitationTemplates = await sqliteDb.select().from(sqliteSchema.invitationTemplates);
-    if (invitationTemplates.length > 0) {
-      for (const template of invitationTemplates) {
-        await pgDb.insert(pgSchema.invitationTemplates).values({
-          id: template.id,
-          name: template.name,
-          category: template.category,
-          style: template.style,
-          description: template.description,
-          previewUrl: template.previewUrl,
-          templateData: template.templateData,
-          features: template.features,
-          colors: template.colors,
-          price: template.price || "Free",
-          popular: template.popular || false,
-          premium: template.premium || false,
-          isActive: template.isActive !== false,
-        });
-      }
-      console.log(`✅ Migrated ${invitationTemplates.length} invitation templates`);
-    }
 
-    // Migrate generated invitations
-    const generatedInvitations = await sqliteDb.select().from(sqliteSchema.generatedInvitations);
-    if (generatedInvitations.length > 0) {
-      for (const invitation of generatedInvitations) {
-        await pgDb.insert(pgSchema.generatedInvitations).values({
-          id: invitation.id,
-          templateId: invitation.templateId,
-          formData: invitation.formData,
-          customizationData: invitation.customizationData,
-          downloadToken: invitation.downloadToken,
-          formats: invitation.formats,
-          downloadCount: invitation.downloadCount || 0,
-          expiresAt: invitation.expiresAt,
-        });
-      }
-      console.log(`✅ Migrated ${generatedInvitations.length} generated invitations`);
-    }
-
-    // Migrate invitation analytics
-    const invitationAnalytics = await sqliteDb.select().from(sqliteSchema.invitationAnalytics);
-    if (invitationAnalytics.length > 0) {
-      for (const analytics of invitationAnalytics) {
-        await pgDb.insert(pgSchema.invitationAnalytics).values({
-          id: analytics.id,
-          invitationId: analytics.invitationId,
-          templateId: analytics.templateId,
-          action: analytics.action,
-          format: analytics.format,
-          userAgent: analytics.userAgent,
-          ipAddress: analytics.ipAddress,
-        });
-      }
-      console.log(`✅ Migrated ${invitationAnalytics.length} invitation analytics`);
-    }
 
     console.log("🎉 Migration completed successfully!");
 

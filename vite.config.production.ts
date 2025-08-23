@@ -94,12 +94,7 @@ export default defineConfig({
             'lucide-react',
           ],
           
-          // Invitation generator specific
-          'invitation': [
-            'html2canvas',
-            'jspdf',
-            'qrcode',
-          ],
+
           
           // Image and media handling
           'media': [

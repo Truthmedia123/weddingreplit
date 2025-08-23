@@ -32,7 +32,7 @@ export {
   validateDatabaseConnection,
   baseValidationSchemas,
   vendorValidation,
-  invitationValidation,
+
   rsvpValidation,
   searchValidation,
   rateLimitValidation,
