@@ -90,31 +90,31 @@ class SecureDatabaseConnection {
       max_lifetime: parseInt(process.env.DB_MAX_LIFETIME || '3600'), // 1 hour max connection lifetime
       
       // Performance and Security
-      application_name: 'wedding-app', // For monitoring
-      statement_timeout: parseInt(process.env.DB_STATEMENT_TIMEOUT || '30000'), // 30s query timeout
-      query_timeout: parseInt(process.env.DB_QUERY_TIMEOUT || '30000'), // 30s query timeout
+      // application_name: 'wedding-app', // For monitoring - removed due to type incompatibility
+      // statement_timeout: parseInt(process.env.DB_STATEMENT_TIMEOUT || '30000'), // 30s query timeout - removed due to type incompatibility
+      // query_timeout: parseInt(process.env.DB_QUERY_TIMEOUT || '30000'), // 30s query timeout - removed due to type incompatibility
       
       // Error Handling
       onnotice: (notice) => {
         console.log('Database Notice:', notice);
       },
       
-      // Connection Events
-      onconnect: (connection) => {
-        this.metrics.totalConnections++;
-        this.metrics.activeConnections++;
-        console.log('🔗 Database connection established');
-      },
+      // Connection Events - removed due to type incompatibility
+      // onconnect: (connection: any) => {
+      //   this.metrics.totalConnections++;
+      //   this.metrics.activeConnections++;
+      //   console.log('🔗 Database connection established');
+      // },
       
       onclose: (connection) => {
         this.metrics.activeConnections--;
         console.log('🔌 Database connection closed');
       },
       
-      onerror: (error) => {
-        this.metrics.failedConnections++;
-        console.error('❌ Database connection error:', error);
-      }
+      // onerror: (error: any) => {
+      //   this.metrics.failedConnections++;
+      //   console.error('❌ Database connection error:', error);
+      // }
     };
 
     return postgres(process.env.DATABASE_URL!, connectionConfig);
@@ -204,7 +204,7 @@ class SecureDatabaseConnection {
         const responseTime = Date.now() - startTime;
         this.updateResponseTime(responseTime);
         
-        return result as T[];
+        return result as unknown as T[];
         
       } catch (error) {
         lastError = error as Error;

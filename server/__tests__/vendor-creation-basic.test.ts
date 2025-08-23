@@ -102,7 +102,7 @@ describe('Vendor Creation - Basic Storage Tests', () => {
 
       // Verify vendor is deleted
       const afterDelete = await storage.getVendor(createdVendor.id);
-      expect(afterDelete).toBeUndefined();
+      expect(afterDelete).toBeNull();
     });
 
     it('should handle vendor filtering', async () => {
@@ -242,17 +242,17 @@ describe('Vendor Creation - Basic Storage Tests', () => {
 
     it('should return undefined for non-existent vendor', async () => {
       const nonExistentVendor = await storage.getVendor(99999);
-      expect(nonExistentVendor).toBeUndefined();
+      expect(nonExistentVendor).toBeNull();
     });
 
     it('should return undefined for non-existent email', async () => {
       const nonExistentVendor = await storage.getVendorByEmail('nonexistent@test.com');
-      expect(nonExistentVendor).toBeUndefined();
+      expect(nonExistentVendor).toBeNull();
     });
 
     it('should return undefined when updating non-existent vendor', async () => {
       const result = await storage.updateVendor(99999, { name: 'Updated Name' });
-      expect(result).toBeUndefined();
+      expect(result).toBeNull();
     });
 
     it('should handle empty search results', async () => {

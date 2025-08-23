@@ -4,8 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Heart, Share2, Phone, Mail } from "lucide-react";
 import { useWishlist } from "@/hooks/use-wishlist";
-import { useToast } from "@/hooks/use-toast";
+import { useToastActions } from "@/components/ui/Toast";
 import InlineSVGImage from "@/components/InlineSVGImage";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { useAnalytics } from "@/components/Performance/Analytics";
 import type { Vendor } from "@shared/schema";
 
 interface VendorCardProps {
@@ -14,7 +16,8 @@ interface VendorCardProps {
 
 export default function VendorCard({ vendor }: VendorCardProps) {
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
-  const { toast } = useToast();
+  const { success } = useToastActions();
+  const { trackUserAction } = useAnalytics();
 
   const handleEmail = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -41,22 +44,20 @@ export default function VendorCard({ vendor }: VendorCardProps) {
     
     if (isInWishlist(vendor.id)) {
       removeFromWishlist(vendor.id);
-      toast({
-        title: "Removed from wishlist",
-        description: `${vendor.name} has been removed from your wishlist.`,
-      });
+      trackUserAction('wishlist_remove', { vendor_id: vendor.id, vendor_name: vendor.name });
+      success("Removed from wishlist", `${vendor.name} has been removed from your wishlist.`);
     } else {
       addToWishlist(vendor);
-      toast({
-        title: "Added to wishlist",
-        description: `${vendor.name} has been saved to your wishlist.`,
-      });
+      trackUserAction('wishlist_add', { vendor_id: vendor.id, vendor_name: vendor.name });
+      success("Added to wishlist", `${vendor.name} has been saved to your wishlist.`);
     }
   };
 
   const handleShare = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    
+    trackUserAction('vendor_share', { vendor_id: vendor.id, vendor_name: vendor.name });
     
     if (navigator.share) {
       try {
@@ -71,10 +72,7 @@ export default function VendorCard({ vendor }: VendorCardProps) {
     } else {
       // Fallback to copying URL
       await navigator.clipboard.writeText(`${window.location.origin}/vendor/${vendor.id}`);
-      toast({
-        title: "Link copied",
-        description: "Vendor link has been copied to clipboard.",
-      });
+      success("Link copied", "Vendor link has been copied to clipboard.");
     }
   };
 

@@ -79,7 +79,7 @@ export const useWebVitals = () => {
 
     // Cumulative Layout Shift (CLS)
     let clsValue = 0;
-    let clsEntries: any[] = [];
+    const clsEntries: any[] = [];
     
     const clsObserver = new PerformanceObserver((list) => {
       const entries = list.getEntries();
@@ -135,8 +135,8 @@ export const useWebVitals = () => {
 
   const reportWebVital = (name: string, value: number) => {
     // Send to analytics service
-    if (typeof gtag !== 'undefined') {
-      gtag('event', name, {
+    if (typeof (window as any).gtag !== 'undefined') {
+      (window as any).gtag('event', name, {
         event_category: 'Web Vitals',
         value: Math.round(value),
         non_interaction: true,
@@ -318,7 +318,7 @@ export const useIntersectionObserver = (
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
-        if (entry.isIntersecting) {
+        if (entry?.isIntersecting) {
           setIsIntersecting(true);
           observer.unobserve(element);
         }

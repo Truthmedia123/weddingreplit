@@ -112,7 +112,7 @@ export const useBreadcrumbs = (pathname: string): BreadcrumbItem[] => {
   const breadcrumbs: BreadcrumbItem[] = [];
 
   segments.forEach((segment, index) => {
-    const url = '/' + segments.slice(0, index + 1).join('/');
+    const url = `/${  segments.slice(0, index + 1).join('/')}`;
     const isLast = index === segments.length - 1;
     
     // Convert URL segment to readable name

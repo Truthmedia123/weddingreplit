@@ -1,5 +1,6 @@
 // Jest setup file
 import { TextEncoder, TextDecoder } from 'util';
+import '@testing-library/jest-dom';
 
 // Polyfills for Node.js environment
 global.TextEncoder = TextEncoder;

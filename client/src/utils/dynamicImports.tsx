@@ -52,16 +52,10 @@ export const LazyCouples = createLazyComponent(() =>
 
 // Heavy UI Components with preloading
 export const LazyChart = createLazyComponent(() => 
-  import('@/components/ui/chart')
+  import('@/components/ui/chart').then(module => ({ default: module.ChartContainer }))
 );
 
-export const LazyPDFViewer = createLazyComponent(() => 
-  import('@/components/PDFViewer')
-);
-
-export const LazyQRCodeGenerator = createLazyComponent(() => 
-  import('@/components/QRCodeGenerator')
-);
+// Removed PDFViewer and QRCodeGenerator as they were part of the invitation generator feature
 
 // Utility functions for preloading
 export const preloadComponent = (importFn: () => Promise<any>) => {
@@ -150,6 +144,4 @@ export const lazyComponents = {
   BlogPost: LazyBlogPost,
   Couples: LazyCouples,
   Chart: LazyChart,
-  PDFViewer: LazyPDFViewer,
-  QRCodeGenerator: LazyQRCodeGenerator,
 };

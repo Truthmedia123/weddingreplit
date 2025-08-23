@@ -44,11 +44,10 @@ export const FormField: React.FC<FormFieldProps> = ({
       
       <div className="relative">
         {React.cloneElement(children as React.ReactElement, {
-          id,
           'aria-invalid': error ? 'true' : 'false',
           'aria-describedby': [descriptionId, errorId].filter(Boolean).join(' ') || undefined,
           className: cn(
-            (children as React.ReactElement).props.className,
+            (children as React.ReactElement).props?.className || '',
             error && 'border-red-500 focus:border-red-500 focus:ring-red-500'
           ),
         })}

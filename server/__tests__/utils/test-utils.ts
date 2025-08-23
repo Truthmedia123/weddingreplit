@@ -17,7 +17,7 @@ export const testVendors = [
     whatsapp: '+91-98765-43210',
     featured: true,
     verified: true,
-    rating: 4.8,
+    rating: "4.8",
     reviewCount: 45,
     priceRange: '$$$',
     availability: 'Available',
@@ -41,7 +41,7 @@ export const testVendors = [
     whatsapp: '+91-98765-43211',
     featured: false,
     verified: true,
-    rating: 4.6,
+    rating: "4.6",
     reviewCount: 32,
     priceRange: '$$',
     availability: 'Available',
@@ -60,6 +60,8 @@ export const testCategories = [
     slug: 'photography',
     description: 'Professional photography services for your special day',
     imageUrl: 'photography.jpg',
+    icon: 'camera',
+    color: 'blue',
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -68,6 +70,8 @@ export const testCategories = [
     slug: 'catering',
     description: 'Delicious catering services for weddings and events',
     imageUrl: 'catering.jpg',
+    icon: 'utensils',
+    color: 'green',
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -76,6 +80,7 @@ export const testCategories = [
 export const testWeddings = [
   {
     coupleName: 'John & Jane Doe',
+    contactEmail: 'john.jane@example.com',
     weddingDate: new Date('2025-06-15'),
     venue: 'Grand Hotel, Mumbai',
     guestCount: 150,
@@ -87,6 +92,7 @@ export const testWeddings = [
   },
   {
     coupleName: 'Mike & Sarah Smith',
+    contactEmail: 'mike.sarah@example.com',
     weddingDate: new Date('2025-08-20'),
     venue: 'Beach Resort, Goa',
     guestCount: 80,
@@ -184,22 +190,69 @@ export const getTestVendor = async (id: number) => {
   return result[0];
 };
 
+export const createTestVendor = (vendorData: any = {}) => {
+  const defaultVendor = {
+    name: 'Test Vendor',
+    email: 'test@example.com',
+    phone: '+91-9876543210',
+    category: 'Photography',
+    location: 'Mumbai',
+    description: 'Professional photography services',
+    services: 'Wedding Photography, Portrait Photography',
+    website: 'https://testvendor.com',
+    instagram: '@testvendor',
+    whatsapp: '+91-9876543210',
+    address: '123 Test Street, Mumbai',
+    youtube: '@testvendor',
+    facebook: '@testvendor',
+    profileImage: 'profile.jpg',
+    coverImage: 'cover.jpg',
+    gallery: ['gallery1.jpg', 'gallery2.jpg'],
+    portfolioImages: ['portfolio1.jpg', 'portfolio2.jpg'],
+    featured: false,
+    verified: false,
+    rating: "0",
+    reviewCount: 0,
+    priceRange: '$$',
+    availability: 'Available',
+  };
+  
+  return { ...defaultVendor, ...vendorData };
+};
+
+export const createTestVendorInDB = async (vendorData: any = {}) => {
+  const [vendor] = await db.insert(vendors).values(vendorData).returning();
+  return vendor;
+};
+
+// Export TestDatabase for backward compatibility
+// Move function declarations before the object
 export const getTestCategory = async (id: number) => {
-  const result = await db.select().from(categories).where(eq(categories.id, id));
-  return result[0];
+  return await db.select().from(categories).where(eq(categories.id, id)).limit(1).then(rows => rows[0]);
 };
 
 export const getTestWedding = async (id: number) => {
-  const result = await db.select().from(weddings).where(eq(weddings.id, id));
-  return result[0];
+  return await db.select().from(weddings).where(eq(weddings.id, id)).limit(1).then(rows => rows[0]);
 };
 
 export const getTestBlogPost = async (id: number) => {
-  const result = await db.select().from(blogPosts).where(eq(blogPosts.id, id));
-  return result[0];
+  return await db.select().from(blogPosts).where(eq(blogPosts.id, id)).limit(1).then(rows => rows[0]);
 };
 
 export const getTestRSVP = async (id: number) => {
-  const result = await db.select().from(rsvps).where(eq(rsvps.id, id));
-  return result[0];
+  return await db.select().from(rsvps).where(eq(rsvps.id, id)).limit(1).then(rows => rows[0]);
 };
+
+export const TestDatabase = {
+  setup: setupTestDatabase,
+  teardown: teardownTestDatabase,
+  reset: setupTestDatabase,
+  cleanup: teardownTestDatabase,
+  seed: setupTestDatabase,
+  getVendor: getTestVendor,
+  getCategory: getTestCategory,
+  getWedding: getTestWedding,
+  getBlogPost: getTestBlogPost,
+  getRSVP: getTestRSVP,
+};
+

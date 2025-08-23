@@ -124,7 +124,7 @@ const blogPostsData = [
     author: "Priya Sharma",
     published: true,
     featuredImage: "https://images.unsplash.com/photo-1519741497674-611481863552",
-    tags: "weddings,trends,goa,beach weddings",
+    tags: ["weddings", "trends", "goa", "beach weddings"],
   },
   {
     title: "Planning Your Perfect Beach Wedding in Goa",
@@ -134,14 +134,14 @@ const blogPostsData = [
     author: "Raj Verma",
     published: true,
     featuredImage: "https://images.unsplash.com/photo-1520854221256-17451cc331bf",
-    tags: "beach wedding,planning,goa,destination wedding",
+    tags: ["beach wedding", "planning", "goa", "destination wedding"],
   },
 ];
 
 const weddingsData = [
   {
-    brideName: "Priya Sharma",
-    groomName: "Raj Verma",
+    coupleName: "Priya Sharma & Raj Verma",
+    contactEmail: "priya.raj.wedding@gmail.com",
     weddingDate: new Date("2024-12-15T16:00:00"),
     venue: "Paradise Beach Resort",
     venueAddress: "Calangute Beach, North Goa",
@@ -153,7 +153,6 @@ const weddingsData = [
     rsvpDeadline: new Date("2024-12-01T23:59:59"),
     maxGuests: 150,
     isPublic: true,
-    contactEmail: "priya.raj.wedding@gmail.com",
     contactPhone: "+91 9876543210",
   },
 ];
@@ -190,23 +189,26 @@ export async function seedDatabase() {
     if (insertedVendors.length >= 2) {
       const reviewsData = [
         {
-          vendorId: insertedVendors[0].id,
+          vendorId: insertedVendors[0]?.id || 1,
           customerName: "Anita & Rohit",
           customerEmail: "anita.rohit@email.com",
-          rating: 5,
+          rating: "5.0",
           comment: "Absolutely stunning venue! The beach ceremony was magical and the staff was incredibly helpful throughout our wedding.",
           images: [],
         },
         {
-          vendorId: insertedVendors[1].id,
+          vendorId: insertedVendors[1]?.id || 2,
           customerName: "Priya & Raj",
           customerEmail: "priya.raj@email.com",
-          rating: 5,
+          rating: "5.0",
           comment: "Amazing photographers! They captured every moment perfectly. The pre-wedding shoot was fantastic too.",
           images: [],
         },
       ];
-      await db.insert(reviews).values(reviewsData);
+      await db.insert(reviews).values(reviewsData.map(review => ({
+        ...review,
+        rating: parseInt(review.rating)
+      })));
     }
 
     console.log("✅ Database seeded successfully!");

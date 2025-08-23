@@ -6,6 +6,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import PerformanceOptimizations from "@/components/PerformanceOptimizations";
 import { MobileOptimizations } from "@/components/MobileOptimizations";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { ToastProvider } from "@/components/ui/Toast";
+import { AnalyticsProvider } from "@/components/Performance/Analytics";
+import { PWAInstallPrompt, PWAUpdatePrompt, OfflineIndicator } from "@/components/PWA/ServiceWorker";
 
 import Layout from "@/components/Layout";
 
@@ -32,8 +36,11 @@ const NotFound = lazy(() => import("@/pages/not-found"));
 
 // Loading component for Suspense fallback
 const PageLoading = () => (
-  <div className="flex items-center justify-center min-h-[400px]">
-    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  <div className="flex items-center justify-center min-h-[400px] bg-gray-50">
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+      <p className="text-gray-600">Loading...</p>
+    </div>
   </div>
 );
 
@@ -74,14 +81,23 @@ function Router() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <PerformanceOptimizations />
-        <MobileOptimizations />
-        <Toaster />
-        <Router />
-      </TooltipProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <ToastProvider>
+          <AnalyticsProvider>
+            <TooltipProvider>
+              <PerformanceOptimizations />
+              <MobileOptimizations />
+              <Toaster />
+              <Router />
+              <PWAInstallPrompt />
+              <PWAUpdatePrompt />
+              <OfflineIndicator />
+            </TooltipProvider>
+          </AnalyticsProvider>
+        </ToastProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

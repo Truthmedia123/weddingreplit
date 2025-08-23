@@ -103,7 +103,7 @@ const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
   }, []);
 
   useEffect(() => {
-    if (!isVisible) return;
+    if (!isVisible) return undefined;
 
     const measurePerformance = () => {
       // Measure Core Web Vitals
@@ -129,7 +129,8 @@ const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
       if ('PerformanceObserver' in window) {
         new PerformanceObserver((entryList) => {
           const entries = entryList.getEntries();
-          fid = entries[entries.length - 1]?.processingStart - entries[entries.length - 1]?.startTime || 0;
+          const lastEntry = entries[entries.length - 1] as any;
+          fid = lastEntry?.processingStart - lastEntry?.startTime || 0;
         }).observe({ entryTypes: ['first-input'] });
       }
 
@@ -181,6 +182,7 @@ const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
     // Measure after page load
     if (document.readyState === 'complete') {
       measurePerformance();
+      return undefined;
     } else {
       window.addEventListener('load', measurePerformance);
       return () => window.removeEventListener('load', measurePerformance);

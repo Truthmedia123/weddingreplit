@@ -195,14 +195,14 @@ export const SwipeableGallery: React.FC<SwipeableGalleryProps> = ({
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     if (!isMobile) return;
     setIsDragging(true);
-    setStartX(e.touches[0].clientX);
+    setStartX(e.touches[0]?.clientX || 0);
     setTranslateX(0);
   }, [isMobile]);
 
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
     if (!isMobile || !isDragging) return;
     e.preventDefault();
-    const currentX = e.touches[0].clientX;
+    const currentX = e.touches[0]?.clientX || 0;
     const diff = currentX - startX;
     setTranslateX(diff);
   }, [isMobile, isDragging, startX]);
@@ -400,8 +400,8 @@ export const useHorizontalScrollPrevention = () => {
         const isAtStart = scrollLeft === 0;
         const isAtEnd = scrollLeft + clientWidth >= scrollWidth;
         
-        if ((e.touches[0].clientX < 50 && isAtStart) || 
-            (e.touches[0].clientX > window.innerWidth - 50 && isAtEnd)) {
+                if ((e.touches[0]?.clientX && e.touches[0].clientX < 50 && isAtStart) ||
+            (e.touches[0]?.clientX && e.touches[0].clientX > window.innerWidth - 50 && isAtEnd)) {
           e.preventDefault();
         }
       }
@@ -417,7 +417,7 @@ export const useHorizontalScrollPrevention = () => {
 
 // Mobile-specific CSS classes
 export const MobileStyles: React.FC = () => (
-  <style jsx global>{`
+  <style>{`
     @media (max-width: 768px) {
       /* Ensure minimum touch targets */
       button, a, input, select, textarea {

@@ -60,7 +60,7 @@ const DEFAULT_CDN_CONFIG: CDNConfig = {
 /**
  * Generate CDN URL for static assets
  */
-export function generateCDNUrl(filePath: string, config: CDNConfig = DEFAULT_CDN_CONFIG): string {
+export async function generateCDNUrl(filePath: string, config: CDNConfig = DEFAULT_CDN_CONFIG): Promise<string> {
   if (!config.enabled || !config.baseUrl) {
     return filePath;
   }
@@ -69,7 +69,7 @@ export function generateCDNUrl(filePath: string, config: CDNConfig = DEFAULT_CDN
   const cleanPath = filePath.startsWith('/') ? filePath.slice(1) : filePath;
   
   // Generate hash for cache busting
-  const hash = generateFileHash(filePath);
+  const hash = await generateFileHash(filePath);
   const ext = path.extname(filePath);
   const nameWithoutExt = path.basename(filePath, ext);
   
@@ -83,7 +83,7 @@ export function generateCDNUrl(filePath: string, config: CDNConfig = DEFAULT_CDN
 /**
  * Generate hash for file cache busting
  */
-function generateFileHash(filePath: string): string {
+async function generateFileHash(filePath: string): Promise<string> {
   try {
     // In production, this would be based on file content
     // For now, use a simple hash based on filename and modification time
@@ -111,7 +111,7 @@ export function cdnMiddleware(config: CDNConfig = DEFAULT_CDN_CONFIG) {
     if (isStaticAsset(filePath)) {
       try {
         // Try to serve from CDN first
-        const cdnUrl = generateCDNUrl(filePath, config);
+        const cdnUrl = await generateCDNUrl(filePath, config);
         
         if (cdnUrl !== filePath) {
           // Set appropriate cache headers
@@ -233,7 +233,7 @@ export function imageOptimizationMiddleware(config: CDNConfig = DEFAULT_CDN_CONF
       // Check if browser supports WebP
       if (acceptHeader.includes('image/webp')) {
         const webpPath = filePath.replace(ext, '.webp');
-        const cdnUrl = generateCDNUrl(webpPath, config);
+        const cdnUrl = await generateCDNUrl(webpPath, config);
         
         if (cdnUrl !== webpPath) {
           res.redirect(301, cdnUrl);
@@ -244,7 +244,7 @@ export function imageOptimizationMiddleware(config: CDNConfig = DEFAULT_CDN_CONF
       // Check if browser supports AVIF
       if (config.optimization.avif && acceptHeader.includes('image/avif')) {
         const avifPath = filePath.replace(ext, '.avif');
-        const cdnUrl = generateCDNUrl(avifPath, config);
+        const cdnUrl = await generateCDNUrl(avifPath, config);
         
         if (cdnUrl !== avifPath) {
           res.redirect(301, cdnUrl);
@@ -277,7 +277,7 @@ export function responsiveImageMiddleware(config: CDNConfig = DEFAULT_CDN_CONFIG
       if (width || height) {
         // Generate responsive image URL
         const responsivePath = generateResponsiveImagePath(filePath, width, height);
-        const cdnUrl = generateCDNUrl(responsivePath, config);
+        const cdnUrl = await generateCDNUrl(responsivePath, config);
         
         if (cdnUrl !== responsivePath) {
           res.redirect(301, cdnUrl);

@@ -32,7 +32,7 @@ describe('Vendor Management Tests (PostgreSQL)', () => {
         whatsapp: '+91-98765-43210',
         featured: false,
         verified: false,
-        rating: 0,
+        rating: "0.0",
         reviewCount: 0,
       };
 
@@ -57,7 +57,7 @@ describe('Vendor Management Tests (PostgreSQL)', () => {
           whatsapp: '+91-98765-43211',
           featured: false,
           verified: false,
-          rating: 0,
+          rating: "0.0",
           reviewCount: 0,
         },
         {
@@ -70,7 +70,7 @@ describe('Vendor Management Tests (PostgreSQL)', () => {
           whatsapp: '+91-98765-43212',
           featured: false,
           verified: false,
-          rating: 0,
+          rating: "0.0",
           reviewCount: 0,
         }
       ]);
@@ -96,7 +96,7 @@ describe('Vendor Management Tests (PostgreSQL)', () => {
         whatsapp: '+91-98765-43213',
         featured: false,
         verified: false,
-        rating: 0,
+        rating: "0.0",
         reviewCount: 0,
       }).returning();
 
@@ -129,7 +129,7 @@ describe('Vendor Management Tests (PostgreSQL)', () => {
         whatsapp: '+91-98765-43214',
         featured: false,
         verified: false,
-        rating: 0,
+        rating: "0.0",
         reviewCount: 0,
       }).returning();
 
@@ -160,7 +160,7 @@ describe('Vendor Management Tests (PostgreSQL)', () => {
           whatsapp: '+91-98765-43215',
           featured: true,
           verified: true,
-          rating: 4.8,
+          rating: "4.8",
           reviewCount: 50,
         },
         {
@@ -173,7 +173,7 @@ describe('Vendor Management Tests (PostgreSQL)', () => {
           whatsapp: '+91-98765-43216',
           featured: false,
           verified: false,
-          rating: 3.5,
+          rating: "3.5",
           reviewCount: 10,
         },
         {
@@ -186,7 +186,7 @@ describe('Vendor Management Tests (PostgreSQL)', () => {
           whatsapp: '+91-98765-43217',
           featured: true,
           verified: true,
-          rating: 4.9,
+          rating: "4.9",
           reviewCount: 75,
         }
       ]);

@@ -217,8 +217,8 @@ export const BusinessHeading: React.FC<BusinessHeadingProps> = ({
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
-    "name": name,
-    "description": description,
+    name,
+    description,
     "address": {
       "@type": "PostalAddress",
       "addressLocality": location,
@@ -227,12 +227,12 @@ export const BusinessHeading: React.FC<BusinessHeadingProps> = ({
     },
     "serviceType": category,
     "areaServed": "Goa, India",
-    ...(priceRange && { "priceRange": priceRange }),
+    ...(priceRange && { priceRange }),
     ...(rating && reviewCount && {
       "aggregateRating": {
         "@type": "AggregateRating",
         "ratingValue": rating,
-        "reviewCount": reviewCount,
+        reviewCount,
         "bestRating": 5,
         "worstRating": 1
       }

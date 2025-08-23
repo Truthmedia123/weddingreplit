@@ -25,7 +25,7 @@ export const vendors = pgTable("vendors", {
   priceRange: text("price_range"),
   featured: boolean("featured").default(false),
   verified: boolean("verified").default(false),
-  rating: decimal("rating", { precision: 3, scale: 2 }).default("0"),
+  rating: decimal("rating", { precision: 3, scale: 2 }).default("0.0"),
   reviewCount: integer("review_count").default(0),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -145,6 +145,13 @@ export const weddings = pgTable("weddings", {
   contactPhone: text("contact_phone"),
   weddingDate: timestamp("wedding_date").notNull(),
   venue: text("venue").notNull(),
+  venueAddress: text("venue_address"),
+  nuptialsTime: text("nuptials_time"),
+  receptionTime: text("reception_time"),
+  coverImage: text("cover_image"),
+  story: text("story"),
+  slug: text("slug").unique(),
+  isPublic: boolean("is_public").default(true),
   guestCount: integer("guest_count"),
   budget: text("budget"),
   theme: text("theme"),
@@ -156,6 +163,8 @@ export const weddings = pgTable("weddings", {
   statusIdx: index("weddings_status_idx").on(table.status),
   weddingDateIdx: index("weddings_date_idx").on(table.weddingDate),
   createdAtIdx: index("weddings_created_at_idx").on(table.createdAt),
+  slugIdx: uniqueIndex("weddings_slug_idx").on(table.slug),
+  isPublicIdx: index("weddings_is_public_idx").on(table.isPublic),
 }));
 
 export const rsvps = pgTable("rsvps", {
@@ -183,10 +192,9 @@ export const insertVendorSchema = createInsertSchema(vendors, {
   phone: z.string().min(10, "Phone number must be at least 10 digits"),
   whatsapp: z.string().min(10, "WhatsApp number must be at least 10 digits"),
   website: z.string().url("Invalid website URL").optional().or(z.literal("")),
-  rating: z.coerce.number().min(0).max(5),
+  rating: z.string().regex(/^\d+(\.\d{1,2})?$/, "Rating must be a decimal with up to 2 places").optional(),
 }).omit({
   id: true,
-  rating: true,
   reviewCount: true,
   createdAt: true,
   updatedAt: true,
@@ -194,7 +202,6 @@ export const insertVendorSchema = createInsertSchema(vendors, {
 
 export const insertReviewSchema = createInsertSchema(reviews, {
   rating: z.coerce.number().min(1).max(5),
-  email: z.string().email("Invalid email format").optional().or(z.literal("")),
 }).omit({
   id: true,
   verified: true,

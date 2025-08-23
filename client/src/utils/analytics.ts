@@ -50,7 +50,7 @@ export const trackEvent = (action: string, category: string, label?: string, val
   window.gtag('event', action, {
     event_category: category,
     event_label: label,
-    value: value,
+    value,
   });
 };
 
@@ -103,8 +103,8 @@ export const trackPurchase = (transactionId: string, value: number, currency: st
 
   window.gtag('event', 'purchase', {
     transaction_id: transactionId,
-    value: value,
-    currency: currency,
+    value,
+    currency,
   });
 };
 

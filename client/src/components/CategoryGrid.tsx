@@ -1,7 +1,7 @@
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
-import type { Category } from "@shared/schema-sqlite";
+import type { Category } from "@shared/schema";
 import { fetchCategories } from "@/services/dataService";
 
 interface CategoryGridProps {
@@ -77,33 +77,20 @@ export default function CategoryGrid({ showAll = false, maxCategories = 8, searc
                 <CardContent className="p-0 relative">
                   {/* Image Container */}
                   <div className="relative h-48 md:h-56 overflow-hidden">
-                    <img
-                      src={(category as any).image || `https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80`}
-                      alt={category.name}
-                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
-                      loading="lazy"
-                      onError={(e) => {
-                        // Fallback to gradient background
-                        e.currentTarget.style.display = 'none';
-                        const parent = e.currentTarget.parentElement;
-                        if (parent) {
-                          parent.innerHTML = `<div class="w-full h-full bg-gradient-to-br ${category.color} flex items-center justify-center">
-                            <div class="text-6xl text-white opacity-80">
-                              ${(() => {
-                                const textIcons: {[key: string]: string} = {
-                                  'PartyPopper': '🎉', 'Music': '♪', 'Wine': '🍷', 'Sparkles': '✨', 'Cake': '🎂',
-                                  'Car': '🚗', 'ChefHat': '👨‍🍳', 'Baby': '👶', 'Gem': '💎', 'Flower2': '🌸',
-                                  'Zap': '⚡', 'Leaf': '🍃', 'Mic': '🎤', 'Shield': '🛡️', 'Gift': '🎁',
-                                  'Music2': '♫', 'Star': '⭐', 'Users': '👥', 'FileText': '📄', 'Heart': '❤️',
-                                  'Home': '🏠', 'Dog': '🐕', 'Coffee': '☕', 'Camera': '📷'
-                                };
-                                return textIcons[category.icon] || '📷';
-                              })()}
-                            </div>
-                          </div>`;
-                        }
-                      }}
-                    />
+                    <div className={`w-full h-full bg-gradient-to-br ${category.color} flex items-center justify-center`}>
+                      <div className="text-6xl text-white opacity-80">
+                        {(() => {
+                          const textIcons: {[key: string]: string} = {
+                            'PartyPopper': '🎉', 'Music': '♪', 'Wine': '🍷', 'Sparkles': '✨', 'Cake': '🎂',
+                            'Car': '🚗', 'ChefHat': '👨‍🍳', 'Baby': '👶', 'Gem': '💎', 'Flower2': '🌸',
+                            'Zap': '⚡', 'Leaf': '🍃', 'Mic': '🎤', 'Shield': '🛡️', 'Gift': '🎁',
+                            'Music2': '♫', 'Star': '⭐', 'Users': '👥', 'FileText': '📄', 'Heart': '❤️',
+                            'Home': '🏠', 'Dog': '🐕', 'Coffee': '☕', 'Camera': '📷'
+                          };
+                          return textIcons[category.icon] || '📷';
+                        })()}
+                      </div>
+                    </div>
                     
                     {/* Gradient Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>

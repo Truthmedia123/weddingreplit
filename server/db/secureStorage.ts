@@ -37,13 +37,13 @@ export class SecureStorageService {
    * VENDOR OPERATIONS
    */
   
-  async createVendor(data: any): Promise<Vendor> {
+  async createVendor(data: any): Promise<Vendor | null> {
     const validatedData = validateAndSanitize(vendorValidation.create, data);
     
     return createSafeDbOperation(async () => {
       const db = await getDatabase();
       const [vendor] = await db.insert(schema.vendors).values(validatedData).returning();
-      return vendor;
+      return vendor || null;
     }, { identifier: 'create-vendor' })();
   }
   
@@ -126,10 +126,11 @@ export class SecureStorageService {
       );
       
       // Get total count
-      const [{ total }] = await db
+      const totalResult = await db
         .select({ total: count() })
         .from(schema.vendors)
         .where(whereClause);
+      const total = totalResult[0]?.total || 0;
       
       // Get vendors
       const vendors = await db
@@ -150,7 +151,7 @@ export class SecureStorageService {
    * RSVP OPERATIONS
    */
   
-  async createRSVP(data: any): Promise<Rsvp> {
+  async createRSVP(data: any): Promise<Rsvp | null> {
     const validatedData = validateAndSanitize(rsvpValidation.create, data);
     
     return createSafeDbOperation(async () => {
@@ -162,7 +163,7 @@ export class SecureStorageService {
           weddingId: Number(validatedData.weddingId)
         })
         .returning();
-      return rsvp;
+      return rsvp || null;
     }, { identifier: 'create-rsvp' })();
   }
   

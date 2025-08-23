@@ -30,6 +30,7 @@ export const CopyrightHeader: React.FC<CopyrightHeaderProps> = ({ className = ''
         e.preventDefault();
         return false;
       }
+      return true;
     };
 
     // Disable drag and drop
@@ -49,6 +50,7 @@ export const CopyrightHeader: React.FC<CopyrightHeaderProps> = ({ className = ''
         e.preventDefault();
         return false;
       }
+      return true;
     };
 
     // Add event listeners

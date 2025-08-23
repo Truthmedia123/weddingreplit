@@ -13,6 +13,8 @@ import { render, RenderOptions } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import { TooltipProvider } from '@radix-ui/react-tooltip';
+import { ToastProvider } from '@/components/ui/Toast';
+import { AnalyticsProvider } from '@/components/Performance/Analytics';
 // import { BrowserRouter } from 'react-router-dom'; // Commented out as it's not available
 // import { axe, toHaveNoViolations } from 'jest-axe'; // Commented out as it's not available
 
@@ -49,7 +51,11 @@ const AllTheProviders: React.FC<AllTheProvidersProps> = ({
 
   return (
     <QueryClientProvider client={queryClient || new QueryClient()}>
-      {content}
+      <ToastProvider>
+        <AnalyticsProvider>
+          {content}
+        </AnalyticsProvider>
+      </ToastProvider>
     </QueryClientProvider>
   );
 };
@@ -72,7 +78,7 @@ const customRender = (
   } = options || {};
 
   return render(ui, {
-    wrapper: ({ children }) => (
+    wrapper: ({ children }: { children: React.ReactNode }) => (
       <AllTheProviders
         queryClient={queryClient || undefined}
         withRouter={withRouter}
@@ -102,7 +108,7 @@ export const mockVendor = {
   description: 'Test description',
   verified: true,
   featured: false,
-  rating: 4.5,
+  rating: "4.5",
   reviewCount: 10,
   priceRange: '$$',
   availability: 'Available',
@@ -113,6 +119,9 @@ export const mockVendor = {
   website: 'https://testvendor.com',
   instagram: '@testvendor',
   youtube: '@testvendor',
+  facebook: '@testvendor',
+  profileImage: 'profile.jpg',
+  coverImage: 'cover.jpg',
   services: ['Wedding Photography', 'Portrait Photography'],
   gallery: ['gallery1.jpg', 'gallery2.jpg'],
   updatedAt: new Date(),

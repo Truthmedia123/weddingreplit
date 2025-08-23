@@ -50,11 +50,11 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
 
   // If image failed to load, show placeholder
   if (imageError) {
-    const presetDimensions = preset ? imageOptimizationPresets[preset] : {};
+    const presetDimensions = preset ? imageOptimizationPresets[preset] : { width: 800, height: 600 };
     return (
       <PlaceholderImage
-        width={width || presetDimensions.width || 800}
-        height={height || presetDimensions.height || 600}
+        width={width || presetDimensions?.width || 800}
+        height={height || presetDimensions?.height || 600}
         text={alt}
         className={className}
         alt={alt}

@@ -68,7 +68,7 @@ export default defineConfig({
           'date-utils': ['date-fns', 'react-day-picker'],
           'animations': ['framer-motion'],
           'charts': ['recharts'],
-          'document-generation': ['pdf-lib', 'qrcode.react'],
+          'document-generation': ['qrcode.react'],
           'query-client': ['@tanstack/react-query'],
           'routing': ['wouter'],
           'ui-components': ['cmdk', 'embla-carousel-react', 'vaul', 'react-resizable-panels']
@@ -183,7 +183,6 @@ export default defineConfig({
     ],
     exclude: [
       // Exclude heavy dependencies that should be loaded dynamically
-      'pdf-lib',
       'canvas',
       'sharp',
     ],

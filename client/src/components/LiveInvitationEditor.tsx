@@ -241,7 +241,7 @@ export default function LiveInvitationEditor({
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {selectedTemplate.id === 'goan-romance' && 
-                    selectedTemplate.schema.fields.map((field: any) => 
+                    selectedTemplate.schema.fields?.map((field: any) => 
                       renderTextField(field.id as keyof TemplateData, field)
                     )
                   }

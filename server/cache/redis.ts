@@ -37,7 +37,7 @@ class RedisCacheService {
       url: process.env.REDIS_URL || 'redis://localhost:6379',
       socket: {
         connectTimeout: 10000,
-        lazyConnect: true,
+        // lazyConnect: true, // Removed due to type incompatibility
         reconnectStrategy: (retries) => {
           if (retries > 10) {
             console.error('Redis connection failed after 10 retries');
@@ -343,7 +343,9 @@ class RedisCacheService {
       lines.forEach(line => {
         if (line.includes(':')) {
           const [key, value] = line.split(':');
-          memoryInfo[key] = value;
+          if (typeof key === 'string') {
+            memoryInfo[key] = value;
+          }
         }
       });
 

@@ -123,7 +123,7 @@ export default function VendorProfile() {
 
   return (
     <>
-      <SEOHead {...seoData} />
+      <SEOHead {...seoData} ogImage={seoData?.ogImage || undefined} />
       <div className="min-h-screen bg-slate-50">
       {/* Hero Section */}
       <section className="relative h-96">

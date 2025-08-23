@@ -46,7 +46,7 @@ export const securityHeaders = helmet({
       objectSrc: ["'none'"],
       baseUri: ["'self'"],
       formAction: ["'self'"],
-      upgradeInsecureRequests: process.env.NODE_ENV === 'production',
+      ...(process.env.NODE_ENV === 'production' && { upgradeInsecureRequests: [] }),
     },
   } : false, // Disable CSP in development
   crossOriginEmbedderPolicy: false, // Allow embedding for hCaptcha
@@ -234,7 +234,7 @@ export const sanitizeInput = (req: Request, _res: Response, next: NextFunction) 
 };
 
 // hCaptcha verification middleware
-export const verifyCaptcha = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const verifyCaptcha = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
   const { captchaToken } = req.body;
 
   if (!captchaToken) {

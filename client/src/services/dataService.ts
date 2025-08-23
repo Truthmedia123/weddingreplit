@@ -98,59 +98,77 @@ const fallbackVendors: Vendor[] = [
   {
     id: 1,
     name: "Goan Beach Photography",
-    slug: "goan-beach-photography",
     category: "Photography & Videography",
     description: "Specializing in stunning beach wedding photography with authentic Goan charm",
     location: "Calangute, Goa",
-    rating: 4.9,
+    rating: "4.9",
     reviewCount: 127,
     priceRange: "₹50,000 - ₹2,00,000",
-    images: ["https://images.unsplash.com/photo-1606216794074-735e91aa2c92?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=80"],
     featured: true,
     verified: true,
-    contactInfo: {
-      phone: "+91 98765 43210",
-      email: "info@goanbeachphoto.com",
-      website: "https://goanbeachphoto.com"
-    }
+    phone: "+91 98765 43210",
+    email: "info@goanbeachphoto.com",
+    whatsapp: "+91 98765 43210",
+    address: "Calangute Beach Road, Goa",
+    website: "https://goanbeachphoto.com",
+    instagram: "@goanbeachphoto",
+    youtube: "@goanbeachphoto",
+    facebook: "@goanbeachphoto",
+    profileImage: null,
+    coverImage: null,
+    gallery: [],
+    services: ["Wedding Photography", "Videography", "Engagement Shoots"],
+    createdAt: new Date()
   },
   {
     id: 2,
     name: "Spice Route Catering",
-    slug: "spice-route-catering",
     category: "Catering & Food Services",
     description: "Authentic Goan cuisine and international dishes for your perfect wedding feast",
     location: "Panaji, Goa",
-    rating: 4.8,
+    rating: "4.8",
     reviewCount: 89,
     priceRange: "₹800 - ₹2,500 per person",
-    images: ["https://images.unsplash.com/photo-1555244162-803834f70033?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=80"],
     featured: true,
     verified: true,
-    contactInfo: {
-      phone: "+91 98765 43211",
-      email: "bookings@spiceroutegoa.com",
-      website: "https://spiceroutegoa.com"
-    }
+    phone: "+91 98765 43211",
+    email: "bookings@spiceroutegoa.com",
+    whatsapp: "+91 98765 43211",
+    address: "Panaji, Goa",
+    website: "https://spiceroutegoa.com",
+    instagram: "@spiceroutegoa",
+    youtube: "@spiceroutegoa",
+    facebook: "@spiceroutegoa",
+    profileImage: null,
+    coverImage: null,
+    gallery: [],
+    services: ["Wedding Catering", "Corporate Events", "Private Parties"],
+    createdAt: new Date()
   },
   {
     id: 3,
     name: "Tropical Blooms Goa",
-    slug: "tropical-blooms-goa",
     category: "Floral Design & Decorations",
     description: "Exquisite floral arrangements using tropical flowers and traditional Goan elements",
     location: "Margao, Goa",
-    rating: 4.7,
+    rating: "4.7",
     reviewCount: 156,
     priceRange: "₹25,000 - ₹1,50,000",
-    images: ["https://images.unsplash.com/photo-1478146896981-b80fe463b330?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=80"],
     featured: true,
     verified: true,
-    contactInfo: {
-      phone: "+91 98765 43212",
-      email: "hello@tropicalbloomsgoa.com",
-      website: "https://tropicalbloomsgoa.com"
-    }
+    phone: "+91 98765 43212",
+    email: "hello@tropicalbloomsgoa.com",
+    whatsapp: "+91 98765 43212",
+    address: "Margao, Goa",
+    website: "https://tropicalbloomsgoa.com",
+    instagram: "@tropicalbloomsgoa",
+    youtube: "@tropicalbloomsgoa",
+    facebook: "@tropicalbloomsgoa",
+    profileImage: null,
+    coverImage: null,
+    gallery: [],
+    services: ["Wedding Flowers", "Bridal Bouquets", "Venue Decoration"],
+    createdAt: new Date()
   }
 ];
 
@@ -161,9 +179,13 @@ const fallbackBlogPosts: BlogPost[] = [
     slug: "planning-perfect-goan-beach-wedding",
     excerpt: "Everything you need to know about organizing a stunning beach wedding in Goa",
     content: "Planning a beach wedding in Goa...",
+    imageUrl: null,
     featuredImage: "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400&q=80",
+    author: "Wedding Planner",
+    tags: null,
     published: true,
-    createdAt: new Date().toISOString()
+    updatedAt: null,
+    createdAt: new Date()
   },
   {
     id: 2,
@@ -171,9 +193,13 @@ const fallbackBlogPosts: BlogPost[] = [
     slug: "traditional-goan-wedding-customs",
     excerpt: "Discover the rich traditions and customs of Goan weddings",
     content: "Goan weddings are known for...",
+    imageUrl: null,
     featuredImage: "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400&q=80",
+    author: "Wedding Expert",
+    tags: null,
     published: true,
-    createdAt: new Date().toISOString()
+    updatedAt: null,
+    createdAt: new Date()
   }
 ];
 

@@ -20,7 +20,7 @@ export const PlaceholderImage: React.FC<PlaceholderImageProps> = ({
   return (
     <div 
       className={`bg-gradient-to-br ${gradient} flex items-center justify-center text-white font-semibold ${className}`}
-      style={{ width: width, height: height, minHeight: height }}
+      style={{ width, height, minHeight: height }}
       role="img"
       aria-label={alt}
     >

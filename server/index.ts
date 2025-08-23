@@ -20,12 +20,15 @@ import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import { registerRoutes } from "./routes";
-import { initializeDatabase } from "./db";
+import { initializeDatabase } from "./db/index";
 import { initializeStorage } from "./storage";
 import { redisCache } from "./cache/redis";
 
 const app = express();
 const PORT = process.env.PORT || 5002;
+
+// Export app for testing
+export { app };
 
 // Security middleware
 app.use(helmet({
@@ -58,8 +61,12 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
-  trustProxy: process.env.TRUST_PROXY === '1',
 });
+
+// Trust proxy configuration
+if (process.env.TRUST_PROXY === '1') {
+  app.set('trust proxy', 1);
+}
 
 app.use(limiter);
 
@@ -133,7 +140,10 @@ async function initializeApp() {
     
   } catch (error) {
     console.error('❌ Failed to initialize application:', error);
-    process.exit(1);
+    // Don't exit during tests
+    if (process.env.NODE_ENV !== 'test') {
+      process.exit(1);
+    }
   }
 }
 
@@ -150,5 +160,11 @@ process.on('SIGINT', async () => {
   process.exit(0);
 });
 
-// Start the application
-initializeApp();
+// Always register routes for testing, but only start server in non-test environments
+if (process.env.NODE_ENV === 'test') {
+  // For tests, just register routes without starting the server
+  registerRoutes(app).catch(console.error);
+} else {
+  // For production/development, start the full application
+  initializeApp();
+}

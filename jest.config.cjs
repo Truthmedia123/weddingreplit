@@ -8,7 +8,7 @@ module.exports = {
       displayName: 'server',
       testEnvironment: 'node',
       roots: ['<rootDir>/server'],
-      testMatch: ['<rootDir>/server/**/__tests__/**/*.+(ts|js)', '<rootDir>/server/**/*.(test|spec).+(ts|js)'],
+      testMatch: ['<rootDir>/server/**/__tests__/**/*.+(test|spec).+(ts|js)', '<rootDir>/server/**/*.(test|spec).+(ts|js)'],
       transform: {
         '^.+\\.(ts|js)$': 'ts-jest',
       },
@@ -16,12 +16,13 @@ module.exports = {
         '^@shared/(.*)$': '<rootDir>/shared/$1',
         '^@server/(.*)$': '<rootDir>/server/$1',
       },
+      setupFilesAfterEnv: ['<rootDir>/server/__tests__/setup.ts'],
     },
     {
       displayName: 'client',
       testEnvironment: 'jsdom',
       roots: ['<rootDir>/client'],
-      testMatch: ['<rootDir>/client/**/__tests__/**/*.+(ts|tsx|js)', '<rootDir>/client/**/*.(test|spec).+(ts|tsx|js)'],
+      testMatch: ['<rootDir>/client/**/__tests__/**/*.+(test|spec).+(ts|tsx|js)', '<rootDir>/client/**/*.(test|spec).+(ts|tsx|js)'],
       transform: {
         '^.+\\.(ts|tsx)$': 'ts-jest',
       },
@@ -37,7 +38,7 @@ module.exports = {
       displayName: 'shared',
       testEnvironment: 'node',
       roots: ['<rootDir>/shared'],
-      testMatch: ['<rootDir>/shared/**/__tests__/**/*.+(ts|js)', '<rootDir>/shared/**/*.(test|spec).+(ts|js)'],
+      testMatch: ['<rootDir>/shared/**/__tests__/**/*.+(test|spec).+(ts|js)', '<rootDir>/shared/**/*.(test|spec).+(ts|js)'],
       transform: {
         '^.+\\.(ts|js)$': 'ts-jest',
       },
@@ -81,7 +82,7 @@ module.exports = {
   },
 
   // Snapshot serializers
-  snapshotSerializers: ['jest-serializer-html'],
+  // snapshotSerializers: ['jest-serializer-html'],
 
   // Clear mocks between tests
   clearMocks: true,

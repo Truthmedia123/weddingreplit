@@ -27,5 +27,6 @@ export const getBlogImageForPost = (postId?: number): string => {
     "https://images.unsplash.com/photo-1583939003579-730e3918a45a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400&q=80"
   ];
   
-  return blogImages[(postId || 0) % blogImages.length];
+  const id = postId ?? 0;
+  return blogImages[id % blogImages.length] || blogImages[0] || '';
 };

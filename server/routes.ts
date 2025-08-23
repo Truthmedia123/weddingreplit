@@ -33,9 +33,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/monitoring/performance", (_req, res) => {
     try {
       const stats = performanceMonitor.getStats();
-      res.json(stats);
+      return res.json(stats);
     } catch (_error) {
-      res.status(500).json({ error: "Failed to get performance stats" });
+      return res.status(500).json({ error: "Failed to get performance stats" });
     }
   });
 
@@ -48,18 +48,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         location: location as string,
         search: search as string,
       });
-      res.json(vendors);
+      return res.json(vendors);
     } catch (_error) {
-      res.status(500).json({ message: "Failed to fetch vendors" });
+      return res.status(500).json({ message: "Failed to fetch vendors" });
     }
   });
 
   app.get("/api/vendors/featured", async (_req, res) => {
     try {
       const vendors = await storage.getFeaturedVendors();
-      res.json(vendors);
+      return res.json(vendors);
     } catch (_error) {
-      res.status(500).json({ message: "Failed to fetch featured vendors" });
+      return res.status(500).json({ message: "Failed to fetch featured vendors" });
     }
   });
 
@@ -162,7 +162,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const vendorId = parseInt(req.params.id);
       const reviews = await storage.getVendorReviews(vendorId);
-      res.json(reviews);
+      return res.json(reviews);
     } catch (_error) {
       return res.status(500).json({ message: "Failed to fetch reviews" });
     }
@@ -173,7 +173,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const vendorId = parseInt(req.params.id);
       const reviewData = insertReviewSchema.parse({ ...req.body, vendorId });
       const review = await storage.createReview(reviewData);
-      res.status(201).json(review);
+      return res.status(201).json(review);
     } catch (_error) {
       if (_error instanceof z.ZodError) {
         return res.status(400).json({ message: "Invalid review data", errors: _error.errors });
@@ -186,7 +186,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/categories", async (_req, res) => {
     try {
       const categories = await storage.getCategories();
-      res.json(categories);
+      return res.json(categories);
     } catch (_error) {
       return res.status(500).json({ message: "Failed to fetch categories" });
     }
@@ -198,7 +198,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!category) {
         return res.status(404).json({ message: "Category not found" });
       }
-      res.json(category);
+      return res.json(category);
     } catch (_error) {
       return res.status(500).json({ message: "Failed to fetch category" });
     }
@@ -208,7 +208,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/blog", async (_req, res) => {
     try {
       const posts = await storage.getBlogPosts(true);
-      res.json(posts);
+      return res.json(posts);
     } catch (_error) {
       console.error("Blog posts API error:", _error);
       return res.status(500).json({ message: "Failed to fetch blog posts", error: (_error as Error)?.message || "Unknown error" });
@@ -221,7 +221,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!post) {
         return res.status(404).json({ message: "Blog post not found" });
       }
-      res.json(post);
+      return res.json(post);
     } catch (error) {
       return res.status(500).json({ message: "Failed to fetch blog post" });
     }
@@ -232,7 +232,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const submissionData = insertBusinessSubmissionSchema.parse(req.body);
       const submission = await storage.createBusinessSubmission(submissionData);
-      res.status(201).json(submission);
+      return res.status(201).json(submission);
     } catch (error) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ message: "Invalid submission data", errors: error.errors });
@@ -246,7 +246,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const contactData = insertContactSchema.parse(req.body);
       const contact = await storage.createContact(contactData);
-      res.status(201).json(contact);
+      return res.status(201).json(contact);
     } catch (error) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ message: "Invalid contact data", errors: error.errors });
@@ -259,9 +259,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/weddings", async (_req, res) => {
     try {
       const weddings = await storage.getWeddings();
-      res.json(weddings);
+      return res.json(weddings);
     } catch (error) {
-      res.status(500).json({ error: "Failed to fetch weddings" });
+      return res.status(500).json({ error: "Failed to fetch weddings" });
     }
   });
 
@@ -281,10 +281,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log("Processed wedding data:", weddingData);
       const wedding = await storage.createWedding(weddingData);
-      res.status(201).json(wedding);
+      return res.status(201).json(wedding);
     } catch (error) {
       console.error("Wedding creation error:", error);
-      res.status(500).json({ message: "Failed to create wedding", error: error instanceof Error ? error.message : String(error) });
+      return res.status(500).json({ message: "Failed to create wedding", error: error instanceof Error ? error.message : String(error) });
     }
   });
 
@@ -294,9 +294,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!wedding) {
         return res.status(404).json({ error: "Wedding not found" });
       }
-      res.json(wedding);
+      return res.json(wedding);
     } catch (error) {
-      res.status(500).json({ error: "Failed to fetch wedding" });
+      return res.status(500).json({ error: "Failed to fetch wedding" });
     }
   });
 
@@ -305,9 +305,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/weddings/:id/rsvps", async (req, res) => {
     try {
       const rsvps = await storage.getWeddingRsvps(parseInt(req.params.id));
-      res.json(rsvps);
+      return res.json(rsvps);
     } catch (error) {
-      res.status(500).json({ error: "Failed to fetch RSVPs" });
+      return res.status(500).json({ error: "Failed to fetch RSVPs" });
     }
   });
 
@@ -315,9 +315,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const rsvpData = { ...req.body, weddingId: parseInt(req.params.id) };
       const rsvp = await storage.createRsvp(rsvpData);
-      res.json(rsvp);
+      return res.json(rsvp);
     } catch (error) {
-      res.status(500).json({ error: "Failed to submit RSVP" });
+      return res.status(500).json({ error: "Failed to submit RSVP" });
     }
   });
 

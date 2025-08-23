@@ -37,7 +37,7 @@ type CreateRSVPForm = z.infer<typeof createRSVPSchema>;
 
 export default function CreateRSVP() {
   const [createdWedding, setCreatedWedding] = useState<any>(null);
-
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -57,7 +57,7 @@ export default function CreateRSVP() {
       contactPhone2: "",
       story: "",
       coverImage: "",
-      maxGuests: "100",
+      maxGuests: 100,
       rsvpDeadline: "",
     },
   });
@@ -141,8 +141,8 @@ export default function CreateRSVP() {
     },
   });
 
-  const onSubmit = (data: CreateRSVPForm) => {
-    createWeddingMutation.mutate(data);
+  const onSubmit = (data: any) => {
+    createWeddingMutation.mutate(data as CreateRSVPForm);
   };
 
   const downloadRSVPInfo = () => {

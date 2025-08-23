@@ -1,3 +1,4 @@
+// Test setup for client tests
 import '@testing-library/jest-dom';
 
 // Mock window.matchMedia
@@ -16,20 +17,32 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 // Mock IntersectionObserver
-global.IntersectionObserver = class IntersectionObserver {
-  constructor() {}
-  disconnect() {}
-  observe() {}
-  unobserve() {}
-};
+global.IntersectionObserver = jest.fn().mockImplementation(() => ({
+  observe: jest.fn(),
+  unobserve: jest.fn(),
+  disconnect: jest.fn(),
+}));
 
 // Mock ResizeObserver
-global.ResizeObserver = class ResizeObserver {
-  constructor() {}
-  disconnect() {}
-  observe() {}
-  unobserve() {}
-};
+global.ResizeObserver = jest.fn().mockImplementation(() => ({
+  observe: jest.fn(),
+  unobserve: jest.fn(),
+  disconnect: jest.fn(),
+}));
+
+// Mock navigator.share
+Object.defineProperty(navigator, 'share', {
+  writable: true,
+  value: jest.fn(),
+});
+
+// Mock navigator.clipboard
+Object.defineProperty(navigator, 'clipboard', {
+  writable: true,
+  value: {
+    writeText: jest.fn(),
+  },
+});
 
 // Mock fetch
 global.fetch = jest.fn();

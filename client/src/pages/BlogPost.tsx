@@ -78,7 +78,7 @@ export default function BlogPostPage() {
         <div className="absolute inset-0 bg-black/50"></div>
         <div className="absolute bottom-8 left-8 text-white max-w-4xl">
           <div className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold mb-4 inline-block uppercase">
-            {post.category}
+            Wedding Tips
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">{post.title}</h1>
           <p className="text-lg opacity-90">{post.excerpt}</p>
@@ -102,16 +102,16 @@ export default function BlogPostPage() {
                 />
                 
                 {/* Tags */}
-                {post.tags && post.tags.length > 0 && (
+                {post.tags && (
                   <div className="mt-8 pt-8 border-t">
                     <h3 className="font-semibold mb-3">Tags</h3>
                     <div className="flex flex-wrap gap-2">
-                      {post.tags.map((tag, index) => (
+                      {post.tags.split(',').map((tag, index) => (
                         <span 
                           key={index}
                           className="bg-slate-100 px-3 py-1 rounded-full text-sm"
                         >
-                          {tag}
+                          {tag.trim()}
                         </span>
                       ))}
                     </div>

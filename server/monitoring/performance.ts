@@ -41,7 +41,7 @@ class PerformanceMonitor {
       });
     });
 
-    this.observer.observe({ entryTypes: ['measure', 'navigation', 'resource'] });
+    this.observer.observe({ entryTypes: ['measure', 'resource'] });
   }
 
   private addMetric(metric: PerformanceMetric) {
@@ -93,7 +93,7 @@ class PerformanceMonitor {
           console.warn(`Slow request detected: ${req.method} ${req.path} took ${duration.toFixed(2)}ms`);
         }
 
-        originalEnd.apply(this, args);
+        return originalEnd.apply(this, args as any);
       };
 
       next();

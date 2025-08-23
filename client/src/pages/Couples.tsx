@@ -18,10 +18,12 @@ export default function Couples() {
   const [showRsvpForm, setShowRsvpForm] = useState(false);
   const [rsvpForm, setRsvpForm] = useState({
     guestName: "",
+    guestEmail: "",
     guestPhone: "",
     attendingCeremony: true,
     attendingReception: true,
     numberOfGuests: 1,
+    dietaryRestrictions: "",
     message: ""
   });
 

@@ -53,7 +53,7 @@ const DEFAULT_SSL_CONFIG: SSLConfig = {
     'ECDHE-RSA-AES256-SHA384',
     'ECDHE-RSA-AES256-SHA',
     'ECDHE-RSA-AES128-SHA',
-  ].join(':'),
+  ],
 };
 
 /**
@@ -180,7 +180,7 @@ export function loadSSLCertificates(config: SSLConfig['certificate']): https.Ser
         
         // Configure SSL/TLS protocols and ciphers
         sslOptions.secureProtocol = 'TLSv1_2_method';
-        sslOptions.ciphers = DEFAULT_SSL_CONFIG.ciphers;
+        sslOptions.ciphers = DEFAULT_SSL_CONFIG.ciphers.join(':');
         sslOptions.honorCipherOrder = true;
         
         console.log('✅ SSL certificates loaded successfully');

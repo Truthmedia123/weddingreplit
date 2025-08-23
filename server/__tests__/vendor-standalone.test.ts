@@ -29,7 +29,7 @@ describe('Vendor Standalone Tests (PostgreSQL)', () => {
       whatsapp: '+91-98765-43210',
       featured: false,
       verified: false,
-      rating: 0,
+      rating: "0.0",
       reviewCount: 0,
     };
 
@@ -61,7 +61,7 @@ describe('Vendor Standalone Tests (PostgreSQL)', () => {
       whatsapp: '+91-98765-43211',
       featured: false,
       verified: false,
-      rating: 0,
+      rating: "0.0",
       reviewCount: 0,
     }).returning();
 
@@ -93,7 +93,7 @@ describe('Vendor Standalone Tests (PostgreSQL)', () => {
       whatsapp: '+91-98765-43212',
       featured: false,
       verified: false,
-      rating: 0,
+      rating: "0.0",
       reviewCount: 0,
     }).returning();
 

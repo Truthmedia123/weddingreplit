@@ -156,7 +156,7 @@ async function checkDisk(): Promise<{
   details: any;
 }> {
   try {
-    const stats = await fs.statvfs ? fs.statvfs('.') : null;
+    const stats = await fs.statfs ? fs.statfs('.') : null;
     
     if (!stats) {
       // Fallback for systems without statvfs
@@ -167,8 +167,8 @@ async function checkDisk(): Promise<{
       };
     }
     
-    const total = stats.bavail * stats.frsize;
-    const free = stats.bavail * stats.frsize;
+    const total = (await stats).bavail * (await stats).bsize;
+    const free = (await stats).bavail * (await stats).bsize;
     const used = total - free;
     const percentage = (used / total) * 100;
     
@@ -212,10 +212,10 @@ function checkCPU(): {
 } {
   const loadAvg = os.loadavg();
   const cores = os.cpus().length;
-  const loadPercentage = (loadAvg[0] / cores) * 100;
+  const loadPercentage = (loadAvg?.[0] || 0) / cores * 100;
   
   let status: 'pass' | 'warn' | 'fail' = 'pass';
-  let message = `CPU load: ${loadPercentage.toFixed(1)}% (${loadAvg[0].toFixed(2)}/${cores} cores)`;
+  let message = `CPU load: ${loadPercentage.toFixed(1)}% (${(loadAvg?.[0] || 0).toFixed(2)}/${cores} cores)`;
   
   if (loadPercentage > 90) {
     status = 'fail';
@@ -248,7 +248,7 @@ async function checkExternalServices(): Promise<{
   message: string;
   details: any;
 }> {
-  const services = [
+  const services: any[] = [
     // Add your external service checks here
     // Example: Supabase, CDN, third-party APIs
   ];

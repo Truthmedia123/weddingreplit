@@ -73,7 +73,7 @@ app.use((req, res, next) => {
       }
 
       if (logLine.length > 80) {
-        logLine = logLine.slice(0, 79) + "…";
+        logLine = `${logLine.slice(0, 79)  }…`;
       }
 
       log(logLine);
@@ -168,13 +168,6 @@ app.use((req, res, next) => {
 
 
 
-  // Static file serving
-  if (process.env.NODE_ENV === 'development') {
-    await setupVite(app);
-  } else {
-    serveStatic(app);
-  }
-
   // Error handling
   app.use(notFoundHandler);
   app.use(errorHandler);
@@ -189,6 +182,13 @@ app.use((req, res, next) => {
     console.log(`💾 Database: Mock (in-memory)`);
     console.log(`📝 API: http://localhost:${port}/api/vendors`);
   });
+
+  // Static file serving
+  if (process.env.NODE_ENV === 'development') {
+    await setupVite(app, server);
+  } else {
+    serveStatic(app);
+  }
 
   return server;
 })();

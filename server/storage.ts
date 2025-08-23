@@ -1,6 +1,6 @@
 import { vendors, categories, blogPosts, weddings, rsvps } from "@shared/schema-postgres";
 import { db } from "./db";
-import { eq, and, desc, like, or } from "drizzle-orm";
+import { eq, and, like, or } from "drizzle-orm";
 import type { 
   Vendor, InsertVendor, 
   Category, InsertCategory,
@@ -62,9 +62,9 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
-  async getVendors(_filters: { category?: string; location?: string; search?: string }): Promise<Vendor[]> {
+  async getVendors(filters: { category?: string; location?: string; search?: string }): Promise<Vendor[]> {
     // Try to get from cache first
-    const cachedVendors = await redisCache.getVendors(_filters);
+          const cachedVendors = await redisCache.getVendors(filters);
     if (cachedVendors) {
       console.log('📦 Cache HIT: Vendors retrieved from Redis');
       return cachedVendors;
@@ -75,20 +75,20 @@ export class DatabaseStorage implements IStorage {
     let query = db.select().from(vendors);
     const conditions = [];
 
-    if (_filters.category) {
-      conditions.push(eq(vendors.category, _filters.category));
+    if (filters.category) {
+      conditions.push(eq(vendors.category, filters.category));
     }
 
-    if (_filters.location) {
-      conditions.push(eq(vendors.location, _filters.location));
+    if (filters.location) {
+      conditions.push(eq(vendors.location, filters.location));
     }
 
-    if (_filters.search) {
+    if (filters.search) {
       conditions.push(
         or(
-          like(vendors.name, `%${_filters.search}%`),
-          like(vendors.description, `%${_filters.search}%`),
-          like(vendors.services, `%${_filters.search}%`)
+          like(vendors.name, `%${filters.search}%`),
+          like(vendors.description, `%${filters.search}%`),
+          like(vendors.services, `%${filters.search}%`)
         )
       );
     }
@@ -100,14 +100,14 @@ export class DatabaseStorage implements IStorage {
     const result = await query;
     
     // Cache the result
-    await redisCache.setVendors(_filters, result);
+    await redisCache.setVendors(filters, result);
     
     return result;
   }
 
-  async getVendor(_id: number): Promise<Vendor | undefined> {
+  async getVendor(id: number): Promise<Vendor | undefined> {
     // Try to get from cache first
-    const cachedVendor = await redisCache.getVendor(_id);
+    const cachedVendor = await redisCache.getVendor(id);
     if (cachedVendor) {
       console.log('📦 Cache HIT: Vendor retrieved from Redis');
       return cachedVendor;
@@ -115,12 +115,12 @@ export class DatabaseStorage implements IStorage {
 
     console.log('📦 Cache MISS: Fetching vendor from database');
     
-    const result = await db.select().from(vendors).where(eq(vendors.id, _id));
+    const result = await db.select().from(vendors).where(eq(vendors.id, id));
     const vendor = result[0] || undefined;
     
     // Cache the result if found
     if (vendor) {
-      await redisCache.setVendor(_id, vendor);
+      await redisCache.setVendor(id, vendor);
     }
     
     return vendor;
@@ -144,8 +144,8 @@ export class DatabaseStorage implements IStorage {
     return result;
   }
 
-  async createVendor(_vendor: InsertVendor): Promise<Vendor> {
-    const result = await db.insert(vendors).values(_vendor).returning();
+  async createVendor(vendor: InsertVendor): Promise<Vendor> {
+    const result = await db.insert(vendors).values(vendor).returning();
     const newVendor = result[0]!;
     
     // Invalidate relevant caches
@@ -154,27 +154,27 @@ export class DatabaseStorage implements IStorage {
     return newVendor;
   }
 
-  async updateVendor(_id: number, _updateData: Partial<InsertVendor>): Promise<Vendor | undefined> {
+  async updateVendor(id: number, updateData: Partial<InsertVendor>): Promise<Vendor | undefined> {
     const result = await db.update(vendors)
-      .set({ ..._updateData, updatedAt: new Date() })
-      .where(eq(vendors.id, _id))
+      .set({ ...updateData, updatedAt: new Date() })
+      .where(eq(vendors.id, id))
       .returning();
     
     const updatedVendor = result[0] || undefined;
     
     if (updatedVendor) {
       // Invalidate relevant caches
-      await redisCache.invalidateVendor(_id);
+      await redisCache.invalidateVendor(id);
     }
     
     return updatedVendor;
   }
 
-  async deleteVendor(_id: number): Promise<void> {
-    await db.delete(vendors).where(eq(vendors.id, _id));
+  async deleteVendor(id: number): Promise<void> {
+    await db.delete(vendors).where(eq(vendors.id, id));
     
     // Invalidate relevant caches
-    await redisCache.invalidateVendor(_id);
+    await redisCache.invalidateVendor(id);
   }
 
   async getVendorByEmail(_email: string): Promise<Vendor | undefined> {
