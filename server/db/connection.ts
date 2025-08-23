@@ -1,3 +1,10 @@
+import { config } from 'dotenv';
+import { resolve } from 'path';
+
+// Load environment variables from .env file
+const result = config({ path: resolve(process.cwd(), '.env') });
+console.log('🔧 Dotenv result:', result);
+
 /**
  * 🔒 SECURE DATABASE CONNECTION UTILITY
  * 
@@ -13,7 +20,7 @@
 
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import * as schema from "@shared/schema-postgres";
+import * as schema from "@shared/schema";
 
 // Database connection metrics
 interface ConnectionMetrics {
@@ -49,6 +56,10 @@ class SecureDatabaseConnection {
    * Validate environment variables and configuration
    */
   private validateEnvironment(): void {
+    console.log('🔍 Validating environment...');
+    console.log('DATABASE_URL:', process.env.DATABASE_URL ? 'EXISTS' : 'MISSING');
+    console.log('NODE_ENV:', process.env.NODE_ENV);
+    
     if (!process.env.DATABASE_URL) {
       throw new Error("DATABASE_URL environment variable is required for PostgreSQL connection");
     }

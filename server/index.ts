@@ -1,3 +1,5 @@
+import "dotenv/config";
+
 /**
  * ⚠️  SECURITY WARNING ⚠️
  * 
@@ -14,7 +16,6 @@
  * 
  * NEVER disable these security features in production!
  */
-
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
@@ -23,6 +24,12 @@ import { registerRoutes } from "./routes";
 import { initializeDatabase } from "./db/index";
 import { initializeStorage } from "./storage";
 import { redisCache } from "./cache/redis";
+
+// Debug environment variables
+console.log('🔍 Environment check:');
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('DATABASE_URL exists:', !!process.env.DATABASE_URL);
+console.log('PORT:', process.env.PORT);
 
 const app = express();
 const PORT = process.env.PORT || 5002;

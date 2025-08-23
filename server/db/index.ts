@@ -36,7 +36,7 @@ export const initializeDatabase = async () => {
 // Legacy export for backward compatibility
 export const getDatabase = () => import('../db-config').then(m => m.db);
 
-// Validation exports (same for both SQLite and PostgreSQL)
+// Validation exports for PostgreSQL
 export {
   validateAndSanitize,
   sanitizeInput,
