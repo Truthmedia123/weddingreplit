@@ -10,14 +10,14 @@ import { sql } from 'drizzle-orm';
 // Export the main database instance
 export { db, pool } from '../db-config';
 
-// Export secure connection utilities
-export { 
-  getClient, 
-  healthCheck, 
-  getMetrics, 
-  disconnect, 
-  isConnected 
-} from './connection';
+// Import enhanced connection utilities
+import enhancedDbConnection from './connection-improved';
+
+export const getClient = () => enhancedDbConnection.getClient();
+export const healthCheck = () => enhancedDbConnection.healthCheck();
+export const getMetrics = () => enhancedDbConnection.getMetrics();
+export const disconnect = () => enhancedDbConnection.disconnect();
+export const isConnected = () => enhancedDbConnection.isConnected;
 
 // Database initialization function
 export const initializeDatabase = async () => {

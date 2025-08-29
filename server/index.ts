@@ -20,8 +20,9 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import path from "path";
 import { registerRoutes } from "./routes";
-import { initializeDatabase } from "./db/index";
+import supabaseDbConnection from "./db/connection-supabase";
 import { initializeStorage } from "./storage";
 import { redisCache } from "./cache/redis";
 
@@ -81,6 +82,8 @@ app.use(limiter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+
+
 // Performance monitoring middleware
 app.use((req, res, next) => {
   const start = Date.now();
@@ -94,7 +97,7 @@ app.use((req, res, next) => {
 // Health check endpoint
 app.get('/health', async (req, res) => {
   try {
-    const dbHealth = await initializeDatabase();
+    const dbHealth = await supabaseDbConnection.healthCheck();
     const redisHealth = await redisCache.healthCheck();
     
     const healthStatus = {
@@ -127,7 +130,7 @@ async function initializeApp() {
     console.log('🚀 Initializing Wedding Directory Platform...');
     
     // Initialize database
-    await initializeDatabase();
+    await supabaseDbConnection.connect();
     console.log('✅ Database initialized');
     
     // Initialize storage with Redis
@@ -157,12 +160,14 @@ async function initializeApp() {
 // Graceful shutdown
 process.on('SIGTERM', async () => {
   console.log('🛑 SIGTERM received, shutting down gracefully...');
+  await supabaseDbConnection.disconnect();
   await redisCache.disconnect();
   process.exit(0);
 });
 
 process.on('SIGINT', async () => {
   console.log('🛑 SIGINT received, shutting down gracefully...');
+  await supabaseDbConnection.disconnect();
   await redisCache.disconnect();
   process.exit(0);
 });

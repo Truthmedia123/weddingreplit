@@ -4,7 +4,7 @@ import VendorCard from './VendorCard';
 import { VendorCardSkeleton } from './ui/Skeleton';
 import { LoadingSpinner } from './ui/LoadingSpinner';
 import { useAnalytics } from './Performance/Analytics';
-import { useToastActions } from './ui/Toast';
+import { useToastActions } from './ui/toast';
 import type { Vendor } from '@shared/schema';
 
 interface VendorGridProps {

@@ -21,15 +21,16 @@
  * 3. Check for unauthorized access
  */
 
-// Import the secure database connection
-export { 
-  getDatabase, 
-  getClient, 
-  healthCheck as dbHealthCheck, 
-  getMetrics as getDbMetrics, 
-  disconnect as disconnectDb, 
-  isConnected as isDbConnected 
-} from './db/connection';
+// Import the Supabase database connection
+import supabaseDbConnection from './db/connection-supabase';
+
+export const getDatabase = () => supabaseDbConnection.getDatabase();
+export const getClient = () => supabaseDbConnection.getClient();
+export const getSupabaseClient = () => supabaseDbConnection.getSupabaseClient();
+export const dbHealthCheck = () => supabaseDbConnection.healthCheck();
+export const getDbMetrics = () => supabaseDbConnection.getMetrics();
+export const disconnectDb = () => supabaseDbConnection.disconnect();
+export const isDbConnected = () => supabaseDbConnection.isConnected;
 
 // Export validation utilities
 export * from './db/validation';

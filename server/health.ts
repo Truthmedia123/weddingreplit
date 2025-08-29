@@ -1,8 +1,7 @@
 // Health check and monitoring endpoints
 import type { Express } from "express";
 import { storage } from "./storage";
-import { healthCheck as dbHealthCheck } from './db/connection';
-import { getDatabase } from './db/connection';
+import enhancedDbConnection from './db/connection-improved';
 
 interface HealthStatus {
   status: 'healthy' | 'unhealthy' | 'degraded';

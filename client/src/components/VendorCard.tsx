@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Heart, Share2, Phone, Mail } from "lucide-react";
 import { useWishlist } from "@/hooks/use-wishlist";
-import { useToastActions } from "@/components/ui/Toast";
+import { useToastActions } from "@/components/ui/toast";
 import InlineSVGImage from "@/components/InlineSVGImage";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useAnalytics } from "@/components/Performance/Analytics";

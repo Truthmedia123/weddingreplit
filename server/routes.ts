@@ -1,5 +1,6 @@
-import type { Express } from "express";
+import express, { type Express } from "express";
 import { createServer, type Server } from "http";
+import path from "path";
 import { storage } from "./storage";
 import { insertReviewSchema, insertBusinessSubmissionSchema, insertContactSchema } from "@shared/schema";
 import { z } from "zod";
@@ -321,7 +322,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Image optimization endpoint
+  app.get("/api/images/optimize", async (req, res) => {
+    try {
+      const { src, w, h, q, f } = req.query;
+      
+      if (!src) {
+        return res.status(400).json({ error: "Missing 'src' parameter" });
+      }
 
+      // For now, just redirect to the original image
+      // In a production environment, you would implement actual image optimization here
+      return res.redirect(src as string);
+    } catch (error) {
+      console.error("Image optimization error:", error);
+      return res.status(500).json({ error: "Failed to optimize image" });
+    }
+  });
+
+  // Serve static files from the built frontend
+  app.use(express.static(path.join(process.cwd(), 'dist', 'public')));
+
+  // Root route handler - serve the main application
+  app.get('/', (req, res) => {
+    res.sendFile(path.join(process.cwd(), 'dist', 'public', 'index.html'));
+  });
+
+  // Catch-all route for SPA - serve index.html for any non-API route
+  app.get('*', (req, res, next) => {
+    // Skip API routes
+    if (req.path.startsWith('/api/') || req.path.startsWith('/health')) {
+      return next();
+    }
+    // Serve index.html for all other routes (SPA routing)
+    res.sendFile(path.join(process.cwd(), 'dist', 'public', 'index.html'));
+  });
 
   const httpServer = createServer(app);
   return httpServer;

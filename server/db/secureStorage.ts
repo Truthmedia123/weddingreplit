@@ -22,7 +22,7 @@ import {
   createSafeOrderBy,
   dbRateLimiter
 } from './index';
-import * as schema from "@shared/schema-postgres";
+import * as schema from "@shared/schema";
 import type {
   Vendor, InsertVendor,
   Category, InsertCategory,
@@ -30,7 +30,7 @@ import type {
   Wedding, InsertWedding,
   Rsvp, InsertRsvp,
 
-} from "@shared/schema-postgres";
+} from "@shared/schema";
 
 export class SecureStorageService {
   /**

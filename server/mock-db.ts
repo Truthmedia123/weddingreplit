@@ -10,7 +10,7 @@ import type {
   BlogPost,
   Wedding,
   Rsvp
-} from "@shared/schema-postgres";
+} from "@shared/schema";
 
 // Mock data storage
 const mockData = {

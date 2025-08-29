@@ -301,8 +301,8 @@ export const dbRateLimiter = new DatabaseRateLimiter();
  */
 export async function validateDatabaseConnection(): Promise<boolean> {
   try {
-    const { getClient } = await import('./connection');
-    const client = await getClient();
+    const enhancedDbConnection = await import('./connection-improved');
+    const client = enhancedDbConnection.default.getClient();
     await client`SELECT 1`;
     return true;
   } catch (error) {

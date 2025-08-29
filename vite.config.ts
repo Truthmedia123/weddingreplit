@@ -19,60 +19,29 @@ export default defineConfig({
       // Enable JSX runtime for better tree shaking
       jsxRuntime: 'automatic',
     }),
-    runtimeErrorOverlay(),
-    ...(process.env.NODE_ENV !== "production" &&
-    process.env.REPL_ID !== undefined
-      ? [
-          await import("@replit/vite-plugin-cartographer").then((m) =>
-            m.cartographer(),
-          ),
-        ]
-      : []),
-    // Bundle analyzer for production builds
-    ...(process.env.ANALYZE === 'true' ? [bundleAnalyzer] : []),
   ],
+  esbuild: {
+    logOverride: { 'this-is-undefined-in-esm': 'silent' }
+  },
   resolve: {
     alias: {
-      "@": path.resolve(import.meta.dirname, "client", "src"),
-      "@shared": path.resolve(import.meta.dirname, "shared"),
-      "@assets": path.resolve(import.meta.dirname, "attached_assets"),
+      "@": path.resolve(__dirname, "client", "src"),
+      "@shared": path.resolve(__dirname, "shared"),
+      "@assets": path.resolve(__dirname, "attached_assets"),
     },
   },
-  root: path.resolve(import.meta.dirname, "client"),
+  root: path.resolve(__dirname, "client"),
   build: {
-    outDir: path.resolve(import.meta.dirname, "dist/public"),
+    outDir: path.resolve(__dirname, "dist/public"),
     emptyOutDir: true,
     target: 'es2018',
     // Disable source maps in production for security
     sourcemap: false,
     // Optimize chunk size warnings
     chunkSizeWarningLimit: 1000,
-    rollupOptions: {
-      output: {
-        // Manual chunk splitting for optimal caching
-        manualChunks: {
-          'react-vendor': ['react', 'react-dom'],
-          'radix-ui': [
-            '@radix-ui/react-accordion', '@radix-ui/react-alert-dialog', '@radix-ui/react-aspect-ratio',
-            '@radix-ui/react-avatar', '@radix-ui/react-checkbox', '@radix-ui/react-collapsible',
-            '@radix-ui/react-context-menu', '@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu',
-            '@radix-ui/react-hover-card', '@radix-ui/react-label', '@radix-ui/react-menubar',
-            '@radix-ui/react-navigation-menu', '@radix-ui/react-popover', '@radix-ui/react-progress',
-            '@radix-ui/react-radio-group', '@radix-ui/react-scroll-area', '@radix-ui/react-select',
-            '@radix-ui/react-separator', '@radix-ui/react-slider', '@radix-ui/react-slot',
-            '@radix-ui/react-switch', '@radix-ui/react-tabs', '@radix-ui/react-toast',
-            '@radix-ui/react-toggle', '@radix-ui/react-toggle-group', '@radix-ui/react-tooltip'
-          ],
-          'ui-utils': ['lucide-react', 'class-variance-authority', 'clsx', 'tailwind-merge', 'tailwindcss-animate'],
-          'form-validation': ['react-hook-form', '@hookform/resolvers', 'zod', 'zod-validation-error'],
-          'date-utils': ['date-fns', 'react-day-picker'],
-          'animations': ['framer-motion'],
-          'charts': ['recharts'],
-          'document-generation': ['qrcode.react'],
-          'query-client': ['@tanstack/react-query'],
-          'routing': ['wouter'],
-          'ui-components': ['cmdk', 'embla-carousel-react', 'vaul', 'react-resizable-panels']
-        },
+          rollupOptions: {
+        output: {
+          // Simplified chunk splitting - let Vite handle it automatically
         // Optimize chunk naming
         chunkFileNames: 'js/[name]-[hash].js',
         entryFileNames: 'js/[name]-[hash].js',

@@ -1,4 +1,4 @@
-import { vendors, categories, blogPosts, weddings, rsvps } from "@shared/schema-postgres";
+import { vendors, categories, blogPosts, weddings, rsvps } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, like, or } from "drizzle-orm";
 import type { 
@@ -7,7 +7,7 @@ import type {
   BlogPost, InsertBlogPost,
   Wedding, InsertWedding,
   Rsvp, InsertRsvp
-} from "@shared/schema-postgres";
+} from "@shared/schema";
 import { redisCache } from "./cache/redis";
 import { sql } from "drizzle-orm";
 

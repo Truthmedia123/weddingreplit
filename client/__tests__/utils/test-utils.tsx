@@ -13,7 +13,7 @@ import { render, RenderOptions } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import { TooltipProvider } from '@radix-ui/react-tooltip';
-import { ToastProvider } from '@/components/ui/Toast';
+import { ToastProvider } from '@/components/ui/toast';
 import { AnalyticsProvider } from '@/components/Performance/Analytics';
 // import { BrowserRouter } from 'react-router-dom'; // Commented out as it's not available
 // import { axe, toHaveNoViolations } from 'jest-axe'; // Commented out as it's not available
