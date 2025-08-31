@@ -2,10 +2,15 @@ import React, { Suspense, lazy } from "react";
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "@/components/ui/toaster";
+// Note: Toaster is now handled by ToastProvider
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { ToastProvider } from "@/components/ui/toast";
+<<<<<<< HEAD
+import { AnalyticsProvider } from "@/components/Performance/Analytics";
+import { PWAInstallPrompt, PWAUpdatePrompt, OfflineIndicator } from "@/components/PWA/ServiceWorker";
+=======
+>>>>>>> c5e9b79926bcd1565a2e058d377db7ca2e3028c5
 
 import Layout from "@/components/Layout";
 
@@ -80,10 +85,24 @@ function App() {
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <ToastProvider>
+<<<<<<< HEAD
+          <AnalyticsProvider>
+            <TooltipProvider>
+              <PerformanceOptimizations />
+              <MobileOptimizations />
+              {/* Toaster functionality is now provided by ToastProvider */}
+              <Router />
+              <PWAInstallPrompt />
+              <PWAUpdatePrompt />
+              <OfflineIndicator />
+            </TooltipProvider>
+          </AnalyticsProvider>
+=======
           <TooltipProvider>
             <Toaster />
             <Router />
           </TooltipProvider>
+>>>>>>> c5e9b79926bcd1565a2e058d377db7ca2e3028c5
         </ToastProvider>
       </QueryClientProvider>
     </ErrorBoundary>
